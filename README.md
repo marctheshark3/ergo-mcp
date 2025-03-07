@@ -34,13 +34,37 @@ pip install "mcp>=0.5.0" httpx
 
 ## Usage
 
-Start the server:
+Start the server using the run script:
 
 ```bash
-python ergo_mcp_server.py
+python run_server.py
 ```
 
 The server will run on port 3001 by default.
+
+## Project Structure
+
+The project is organized into the following structure:
+
+```
+ergo_explorer/
+├── __init__.py         # Package initialization
+├── api/                # API client for Ergo Explorer
+│   └── __init__.py     # API client functions
+├── config.py           # Configuration settings
+├── prompts/            # MCP prompts
+│   ├── __init__.py     # Prompts initialization
+│   └── prompts.py      # Prompt templates
+├── resources/          # MCP resources
+│   ├── __init__.py     # Resources initialization
+│   └── resources.py    # Resource handlers
+├── server.py           # Main MCP server setup
+└── tools/              # MCP tools
+    ├── __init__.py     # Tools initialization
+    ├── address.py      # Address-related tools
+    ├── misc.py         # Miscellaneous tools
+    └── transaction.py  # Transaction-related tools
+```
 
 ## Available Tools
 
