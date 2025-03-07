@@ -89,79 +89,41 @@ ergo_explorer/
 
 ## Available Tools
 
-The server exposes the following tools:
+The server provides the following tools:
 
 ### Explorer API Tools
 
 These tools use the public Ergo Explorer API:
 
-#### `get_address_balance`
-Get the confirmed balance for an Ergo address.
-
-**Parameters:**
-- `address`: Ergo blockchain address
-
-#### `analyze_transaction`
-Analyze a transaction on the Ergo blockchain.
-
-**Parameters:**
-- `tx_id`: Transaction ID (hash)
-
-#### `get_transaction_history`
-Get the transaction history for an Ergo address.
-
-**Parameters:**
-- `address`: Ergo blockchain address
-- `limit`: Maximum number of transactions to retrieve (default: 20)
-
-#### `analyze_address`
-Perform forensic analysis on an Ergo address, following transaction flows up to a specified depth.
-
-**Parameters:**
-- `address`: Ergo blockchain address to analyze
-- `depth`: How many layers of transactions to analyze (1-4, default: 2)
-- `tx_limit`: Maximum transactions per address to analyze (default: 5)
-
-#### `search_for_token`
-Search for tokens on the Ergo blockchain by name or ID.
-
-**Parameters:**
-- `query`: Token name or ID (minimum 3 characters)
-
-#### `get_network_status`
-Get the current status of the Ergo blockchain network.
+- **get_address_balance**: Get the confirmed balance for an Ergo address.
+- **get_transaction_history**: Get the transaction history for an Ergo address.
+- **analyze_address**: Perform forensic analysis on an Ergo address, following transaction flows up to a specified depth.
+- **analyze_transaction**: Analyze the details of a transaction on the Ergo blockchain.
+- **search_for_token**: Search for tokens on the Ergo blockchain.
+- **get_network_status**: Get the current status of the Ergo blockchain network.
 
 ### Node API Tools
 
-These tools use a direct connection to an Ergo Node:
+These tools use a direct connection to an Ergo node:
 
-#### `get_address_balance_from_node`
-Get the confirmed and unconfirmed balance for an Ergo address from a direct node connection.
+- **get_node_wallet**: Get the node's own wallet information including addresses and balances.
+- **get_address_balance_from_node**: Get the confirmed and unconfirmed balance for an Ergo address from a direct node connection.
+- **analyze_transaction_from_node**: Analyze a transaction using direct node connection.
+- **get_transaction_history_from_node**: Get the transaction history for an Ergo address using a direct node connection.
+- **get_network_status_from_node**: Get the current status of the Ergo blockchain from direct node connection.
+- **search_for_token_from_node**: Search for tokens using direct node connection.
 
-**Parameters:**
-- `address`: Ergo blockchain address
+### ErgoWatch API Tools
 
-#### `analyze_transaction_from_node`
-Analyze a transaction on the Ergo blockchain using a direct node connection.
+These tools use the ErgoWatch API for blockchain analytics:
 
-**Parameters:**
-- `tx_id`: Transaction ID (hash)
-
-#### `get_transaction_history_from_node`
-Get the transaction history for an Ergo address using a direct node connection.
-
-**Parameters:**
-- `address`: Ergo blockchain address
-- `limit`: Maximum number of transactions to retrieve (default: 20)
-
-#### `get_network_status_from_node`
-Get the current status of the Ergo blockchain network from a direct node connection.
-
-#### `search_for_token_from_node`
-Search for tokens on the Ergo blockchain by name or ID using a direct node connection.
-
-**Parameters:**
-- `query`: Token name or ID (minimum 3 characters)
+- **get_address_balance_history**: Get balance history for an address
+- **get_address_balance_at_height**: Get address balance at a specific block height
+- **get_contract_stats**: Get statistics about contract addresses
+- **get_p2pk_stats**: Get statistics about P2PK addresses
+- **get_exchange_addresses**: Get information about exchange addresses
+- **get_rich_list**: Get a list of addresses sorted by balance
+- **get_address_rank**: Get the rank of a P2PK address by balance
 
 ## Resource Endpoints
 
@@ -177,11 +139,14 @@ The server provides the following resource endpoints:
 
 ## API Reference
 
-This server uses two APIs:
+This server uses three main APIs:
 - Public Ergo Explorer API at `https://api.ergoplatform.com/api/v1`
 - Direct Ergo Node API connection, typically at `http://localhost:9053`
+- ErgoWatch API at `https://api.ergo.watch`
 
-The Ergo Node API integration is based on the [Ergo Node API OpenAPI specification](https://github.com/ergoplatform/ergo/blob/master/src/main/resources/api/openapi.yaml).
+### API Documentation
+- [Ergo Node API OpenAPI specification](https://github.com/ergoplatform/ergo/blob/master/src/main/resources/api/openapi.yaml)
+- [ErgoWatch API Documentation](https://api.ergo.watch/docs)
 
 ## License
 

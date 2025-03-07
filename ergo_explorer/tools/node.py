@@ -10,7 +10,8 @@ from ergo_explorer.api.node import (
     get_unspent_boxes_by_address_node,
     get_token_by_id_node,
     search_for_token_node,
-    get_network_info_node
+    get_network_info_node,
+    get_node_wallet_addresses
 )
 
 async def get_address_balance_from_node(address: str) -> str:
@@ -305,27 +306,33 @@ async def get_transaction_history_from_node(address: str, limit: int = 20) -> st
 async def get_network_status_from_node() -> str:
     """Get the current status of the Ergo blockchain network from direct node connection."""
     try:
-        info = await get_network_info_node()
+        result = await get_network_info_node()
         
-        result = "Ergo Network Status:\n"
-        result += f"Node Version: {info.get('appVersion', 'Unknown')}\n"
-        result += f"Network Type: {info.get('networkType', 'Unknown')}\n"
-        result += f"Current Height: {info.get('fullHeight', 'Unknown')}\n"
-        result += f"Headers Height: {info.get('headersHeight', 'Unknown')}\n"
-        result += f"Connected Peers: {info.get('peersCount', 'Unknown')}\n"
-        result += f"Unconfirmed Transactions: {info.get('unconfirmedCount', 'Unknown')}\n"
-        result += f"Difficulty: {info.get('difficulty', 'Unknown')}\n"
+        # Format the response
+        version = result.get("version", "Unknown")
+        network_type = result.get("networkType", "Unknown")
+        current_height = result.get("fullHeight", 0)
+        headers_height = result.get("headersHeight", 0)
+        peers = result.get("peers", 0)
+        unconfirmed_txs = result.get("unconfirmedCount", 0)
+        difficulty = result.get("difficulty", 0)
+        mining_enabled = "True" if result.get("isMining", False) else "False"
+        state_type = result.get("stateType", "Unknown")
         
-        # Add mining info if available
-        result += f"Mining Enabled: {info.get('isMining', False)}\n"
+        output = "Ergo Network Status:\n"
+        output += f"Node Version: {version}\n"
+        output += f"Network Type: {network_type}\n"
+        output += f"Current Height: {current_height}\n"
+        output += f"Headers Height: {headers_height}\n"
+        output += f"Connected Peers: {peers}\n"
+        output += f"Unconfirmed Transactions: {unconfirmed_txs}\n"
+        output += f"Difficulty: {difficulty}\n"
+        output += f"Mining Enabled: {mining_enabled}\n"
+        output += f"State Type: {state_type}\n"
         
-        # Add state info
-        state_type = info.get('stateType', 'Unknown')
-        result += f"State Type: {state_type}\n"
-        
-        return result
+        return output
     except Exception as e:
-        return f"Error fetching network status from node: {str(e)}"
+        return f"Error getting network status: {str(e)}"
 
 async def search_for_token_from_node(query: str) -> str:
     """Search for tokens on the Ergo blockchain using direct node connection.
@@ -361,4 +368,53 @@ async def search_for_token_from_node(query: str) -> str:
         
         return result
     except Exception as e:
-        return f"Error searching for tokens from node: {str(e)}" 
+        return f"Error searching for tokens from node: {str(e)}"
+
+async def get_node_wallet_info() -> str:
+    """Get information about the node's wallet including addresses and balances."""
+    try:
+        # First, get all wallet addresses from the node
+        addresses = await get_node_wallet_addresses()
+        
+        if not addresses:
+            return "No wallet addresses found on this node."
+        
+        output = "Node Wallet Information:\n\n"
+        
+        # For each address, get its balance
+        for i, address in enumerate(addresses, 1):
+            # Get balance for this address
+            balance_data = await get_address_balance_node(address)
+            
+            confirmed = balance_data.get("confirmed", {})
+            unconfirmed = balance_data.get("unconfirmed", {})
+            
+            # Format ERG amount
+            confirmed_erg = confirmed.get("nanoErgs", 0) / 1_000_000_000
+            unconfirmed_erg = unconfirmed.get("nanoErgs", 0) / 1_000_000_000
+            
+            output += f"Address {i}: {address}\n"
+            output += f"• Confirmed: {confirmed_erg:.9f} ERG\n"
+            output += f"• Unconfirmed: {unconfirmed_erg:.9f} ERG\n\n"
+            
+            # Format token balances
+            confirmed_tokens = confirmed.get("tokens", [])
+            if confirmed_tokens:
+                output += "Tokens:\n"
+                for token in confirmed_tokens:
+                    token_amount = token.get("amount", 0)
+                    token_name = token.get("name", "Unknown Token")
+                    token_id = token.get("tokenId", "")
+                    token_decimals = token.get("decimals", 0)
+                    
+                    # Format decimal amount correctly
+                    if token_decimals > 0:
+                        token_formatted_amount = token_amount / (10 ** token_decimals)
+                        output += f"• {token_formatted_amount} {token_name} (ID: {token_id[:8]}...)\n"
+                    else:
+                        output += f"• {token_amount} {token_name} (ID: {token_id[:8]}...)\n"
+                output += "\n"
+        
+        return output
+    except Exception as e:
+        return f"Error getting node wallet information: {str(e)}" 

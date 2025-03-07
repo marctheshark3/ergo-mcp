@@ -4,6 +4,18 @@ import httpx
 from typing import Dict, List, Any, Optional
 from mcp.server.fastmcp import FastMCP, Context, Image
 from dataclasses import dataclass
+from ergo_explorer.tools.node import (
+    get_address_balance_from_node,
+    analyze_transaction_from_node,
+    get_transaction_history_from_node,
+    get_network_status_from_node,
+    search_for_token_from_node,
+    get_node_wallet_info
+)
+from ergo_explorer.api.explorer import (
+    get_box_by_id as get_box_by_id_explorer,
+    get_token_by_id as get_token_by_id_explorer
+)
 
 # Create MCP server
 mcp = FastMCP("Ergo Explorer", dependencies=["httpx"], port=3001)
@@ -623,6 +635,21 @@ In your analysis:
 5. Note any high-value transfers or token movements
 
 Present the results in a clear, structured format that emphasizes the most significant findings."""
+
+@mcp.prompt()
+def node_wallet_prompt() -> str:
+    """Prompt for retrieving the node's wallet information."""
+    return """Please provide details about this Ergo node's wallet.
+Include:
+1. All wallet addresses
+2. The confirmed and unconfirmed balance for each address
+3. Any tokens held in the wallet addresses
+4. A summary of the total assets held across all addresses"""
+
+@mcp.tool()
+async def get_node_wallet() -> str:
+    """Get information about the node's own wallet, including addresses and balances."""
+    return await get_node_wallet_info()
 
 # Run the server
 if __name__ == "__main__":

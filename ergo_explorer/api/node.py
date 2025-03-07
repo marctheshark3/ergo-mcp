@@ -80,4 +80,8 @@ async def search_for_token_node(query: str) -> Dict:
 # Utility endpoints
 async def get_network_info_node() -> Dict:
     """Get network information directly from the node."""
-    return await fetch_node_api("info") 
+    return await fetch_node_api("info")
+
+async def get_node_wallet_addresses() -> List[str]:
+    """Get all wallet addresses from the node wallet."""
+    return await fetch_node_api("wallet/addresses") 
