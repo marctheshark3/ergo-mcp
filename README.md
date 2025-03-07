@@ -24,8 +24,8 @@ This server provides a set of tools for interacting with the Ergo blockchain thr
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/ergo-explorer-mcp.git
-cd ergo-explorer-mcp
+git clone https://github.com/yourusername/ergo-mcp.git
+cd ergo-mcp
 ```
 
 2. Install dependencies:
