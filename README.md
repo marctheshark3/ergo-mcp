@@ -64,14 +64,38 @@ The server will run on port 3001 by default.
 
 To use this MCP server with Cursor:
 
+#### Option 1: Command-based Setup (Recommended)
+
 1. Open Cursor and go to Settings (gear icon in the bottom left)
 2. Navigate to "AI" → "Claude" → "MCP Settings"
-3. Add a new MCP provider with the following information:
+3. Click "Add MCP Server"
+4. Configure with the following information:
    - Name: Ergo Explorer
+   - Type: command (select from dropdown)
+   - Command: [Path to your Python interpreter] [Path to the run_server.py script]
+   
+   Example:
+   ```
+   /home/username/bin/python /home/username/Documents/ergo/ergo-explorer-mcp/run_server.py
+   ```
+5. Click Save
+
+With this command-based approach, Cursor will automatically start the MCP server when needed and stop it when not in use.
+
+#### Option 2: URL-based Setup
+
+Alternatively, you can run the server separately and connect to it via URL:
+
+1. Start the MCP server as described in the Usage section
+2. Open Cursor Settings (gear icon)
+3. Navigate to "AI" → "Claude" → "MCP Settings"
+4. Add a new MCP provider with the following information:
+   - Name: Ergo Explorer
+   - Type: URL
    - URL: http://localhost:3001 (or the custom port you configured)
    - Authentication: None (unless you've configured authentication)
-4. Save your settings
-5. Make sure the server is running locally before using the MCP tools in Cursor
+5. Save your settings
+6. Make sure to keep the server running separately while using Cursor
 
 ### Using with Claude Desktop
 
