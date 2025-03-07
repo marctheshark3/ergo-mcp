@@ -1,10 +1,8 @@
 """
-API client for interacting with the Ergo Explorer API.
+Ergo Explorer API client.
 """
-
 import httpx
-from typing import Dict, Optional
-
+from typing import Dict, List, Any, Optional
 from ergo_explorer.config import ERGO_EXPLORER_API, USER_AGENT
 
 async def fetch_api(endpoint: str, params: Optional[Dict] = None) -> Dict:
@@ -44,58 +42,4 @@ async def fetch_box(box_id: str) -> Dict:
 async def search_tokens(query: str) -> Dict:
     """Search for tokens by ID or symbol."""
     params = {"query": query}
-    return await fetch_api("tokens/search", params=params)
-
-"""
-API functions for the Ergo Explorer MCP server.
-"""
-
-# Explorer API functions
-from ergo_explorer.api.explorer import (
-    fetch_api,
-    fetch_balance,
-    fetch_address_transactions,
-    fetch_transaction,
-    fetch_block,
-    fetch_network_state,
-    fetch_box,
-    search_tokens
-)
-
-# Node API functions
-from ergo_explorer.api.node import (
-    get_address_balance_node,
-    get_transaction_node,
-    get_transaction_by_address_node,
-    submit_transaction_node,
-    get_box_by_id_node,
-    get_box_by_address_node,
-    get_unspent_boxes_by_address_node,
-    get_token_by_id_node,
-    search_for_token_node,
-    get_network_info_node
-)
-
-__all__ = [
-    # Explorer API
-    'fetch_api',
-    'fetch_balance',
-    'fetch_address_transactions',
-    'fetch_transaction',
-    'fetch_block',
-    'fetch_network_state',
-    'fetch_box',
-    'search_tokens',
-    
-    # Node API
-    'get_address_balance_node',
-    'get_transaction_node',
-    'get_transaction_by_address_node',
-    'submit_transaction_node',
-    'get_box_by_id_node',
-    'get_box_by_address_node',
-    'get_unspent_boxes_by_address_node',
-    'get_token_by_id_node',
-    'search_for_token_node',
-    'get_network_info_node'
-]
+    return await fetch_api("tokens/search", params=params) 

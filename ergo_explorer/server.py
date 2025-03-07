@@ -11,11 +11,18 @@ from ergo_explorer.tools import (
     analyze_address,
     analyze_transaction,
     search_for_token,
-    get_network_status
+    get_network_status,
+    get_address_balance_from_node,
+    analyze_transaction_from_node,
+    get_transaction_history_from_node,
+    get_network_status_from_node,
+    search_for_token_from_node
 )
 from ergo_explorer.resources import (
     get_address_balance_resource,
-    get_transaction_resource
+    get_transaction_resource,
+    get_address_balance_node_resource,
+    get_transaction_node_resource
 )
 from ergo_explorer.prompts import (
     check_balance_prompt,
@@ -34,9 +41,20 @@ mcp.tool()(analyze_transaction)
 mcp.tool()(search_for_token)
 mcp.tool()(get_network_status)
 
+# Register node-specific MCP tools
+mcp.tool()(get_address_balance_from_node)
+mcp.tool()(analyze_transaction_from_node)
+mcp.tool()(get_transaction_history_from_node)
+mcp.tool()(get_network_status_from_node)
+mcp.tool()(search_for_token_from_node)
+
 # Register MCP resources
 mcp.resource("ergo://address/{address}/balance")(get_address_balance_resource)
 mcp.resource("ergo://transaction/{tx_id}")(get_transaction_resource)
+
+# Register node-specific MCP resources
+mcp.resource("ergo://node/address/{address}/balance")(get_address_balance_node_resource)
+mcp.resource("ergo://node/transaction/{tx_id}")(get_transaction_node_resource)
 
 # Register MCP prompts
 mcp.prompt()(check_balance_prompt)
