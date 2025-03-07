@@ -58,6 +58,37 @@ python run_server.py
 
 The server will run on port 3001 by default.
 
+## Using with Cursor and Claude Desktop
+
+### Configuring in Cursor
+
+To use this MCP server with Cursor:
+
+1. Open Cursor and go to Settings (gear icon in the bottom left)
+2. Navigate to "AI" → "Claude" → "MCP Settings"
+3. Add a new MCP provider with the following information:
+   - Name: Ergo Explorer
+   - URL: http://localhost:3001 (or the custom port you configured)
+   - Authentication: None (unless you've configured authentication)
+4. Save your settings
+5. Make sure the server is running locally before using the MCP tools in Cursor
+
+### Using with Claude Desktop
+
+To use this MCP server with Claude Desktop:
+
+1. Start the MCP server as described in the Usage section
+2. Open Claude Desktop settings
+3. Navigate to the "Plugins" or "Extensions" section
+4. Add a new MCP connection with:
+   - Name: Ergo Explorer
+   - URL: http://localhost:3001 (or your custom port)
+   - No authentication required (unless configured)
+5. Save settings
+6. In your conversations with Claude, you can now use Ergo blockchain analysis tools
+
+The MCP tools will be available to Claude when interacting with the Ergo blockchain, analyzing addresses, transactions, and exploring other blockchain data.
+
 ## Project Structure
 
 The project is organized into the following structure:
