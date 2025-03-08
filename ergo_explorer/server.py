@@ -16,7 +16,16 @@ from ergo_explorer.tools import (
     analyze_transaction_from_node,
     get_transaction_history_from_node,
     get_network_status_from_node,
-    search_for_token_from_node
+    search_for_token_from_node,
+    # Tokenomics tools
+    get_token_price_info,
+    get_token_price_chart,
+    get_liquidity_pool_info,
+    get_token_swap_info,
+    # Smart contract tools
+    analyze_smart_contract,
+    get_contract_statistics,
+    simulate_contract_execution
 )
 from ergo_explorer.resources import (
     get_address_balance_resource,
@@ -31,7 +40,7 @@ from ergo_explorer.prompts import (
 )
 
 # Create MCP server
-mcp = FastMCP(SERVER_NAME, dependencies=SERVER_DEPENDENCIES, port=SERVER_PORT)
+mcp = FastMCP(SERVER_NAME, dependencies=SERVER_DEPENDENCIES)
 
 # Register MCP tools
 mcp.tool()(get_address_balance)
@@ -47,6 +56,17 @@ mcp.tool()(analyze_transaction_from_node)
 mcp.tool()(get_transaction_history_from_node)
 mcp.tool()(get_network_status_from_node)
 mcp.tool()(search_for_token_from_node)
+
+# Register tokenomics MCP tools
+mcp.tool()(get_token_price_info)
+mcp.tool()(get_token_price_chart)
+mcp.tool()(get_liquidity_pool_info)
+mcp.tool()(get_token_swap_info)
+
+# Register smart contract MCP tools
+mcp.tool()(analyze_smart_contract)
+mcp.tool()(get_contract_statistics)
+mcp.tool()(simulate_contract_execution)
 
 # Register MCP resources
 mcp.resource("ergo://address/{address}/balance")(get_address_balance_resource)
