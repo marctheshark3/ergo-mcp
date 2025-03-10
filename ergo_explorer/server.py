@@ -15,15 +15,6 @@ from ergo_explorer.tools.node import (
     get_network_status_from_node,
     search_for_token_from_node,
     get_node_wallet_info,
-    # Tokenomics tools
-    get_token_price_info,
-    get_token_price_chart,
-    get_liquidity_pool_info,
-    get_token_swap_info,
-    # Smart contract tools
-    analyze_smart_contract,
-    get_contract_statistics,
-    simulate_contract_execution
 )
 from ergo_explorer.api.explorer import (
     fetch_box as get_box_by_id_explorer,
@@ -46,21 +37,6 @@ logger.info("Initializing Ergo Explorer MCP server...")
 # Constants
 ERGO_EXPLORER_API = "https://api.ergoplatform.com/api/v1"
 USER_AGENT = "ErgoMCPServer/1.0"
-
-# Register tokenomics MCP tools
-mcp.tool()(get_token_price_info)
-mcp.tool()(get_token_price_chart)
-mcp.tool()(get_liquidity_pool_info)
-mcp.tool()(get_token_swap_info)
-
-# Register smart contract MCP tools
-mcp.tool()(analyze_smart_contract)
-mcp.tool()(get_contract_statistics)
-mcp.tool()(simulate_contract_execution)
-
-# Register MCP resources
-mcp.resource("ergo://address/{address}/balance")(get_address_balance_resource)
-mcp.resource("ergo://transaction/{tx_id}")(get_transaction_resource)
 
 # Helper API functions
 async def fetch_api(endpoint: str, params: Optional[Dict] = None) -> Dict:
@@ -101,6 +77,52 @@ async def search_tokens(query: str) -> Dict:
     """Search for tokens by ID or symbol."""
     params = {"query": query}
     return await fetch_api("tokens/search", params=params)
+
+# Resource handlers
+async def get_address_balance_resource(address: str) -> str:
+    """Resource handler for address balance."""
+    try:
+        balance = await fetch_balance(address)
+        erg_amount = balance.get("nanoErgs", 0) / 1_000_000_000
+        
+        result = f"Balance for {address}:\n"
+        result += f"• {erg_amount:.9f} ERG\n"
+        
+        tokens = balance.get("tokens", [])
+        if tokens:
+            result += "\nTokens:\n"
+            for token in tokens:
+                token_amount = token.get("amount", 0)
+                token_name = token.get("name", "Unknown Token")
+                token_id = token.get("tokenId", "")
+                token_decimals = token.get("decimals", 0)
+                
+                if token_decimals > 0:
+                    token_formatted_amount = token_amount / (10 ** token_decimals)
+                    result += f"• {token_formatted_amount} {token_name} (ID: {token_id[:8]}...)\n"
+                else:
+                    result += f"• {token_amount} {token_name} (ID: {token_id[:8]}...)\n"
+        
+        return result
+    except Exception as e:
+        return f"Error fetching balance: {str(e)}"
+
+async def get_transaction_resource(tx_id: str) -> str:
+    """Resource handler for transaction analysis."""
+    try:
+        tx = await fetch_transaction(tx_id)
+        result = f"Transaction: {tx_id}\n"
+        result += f"Block: {tx.get('blockId', 'Unknown')[:8]}...\n"
+        result += f"Height: {tx.get('inclusionHeight', 'Unknown')}\n"
+        result += f"Timestamp: {tx.get('timestamp', 0)}\n"
+        result += f"Confirmations: {tx.get('numConfirmations', 0)}\n"
+        return result
+    except Exception as e:
+        return f"Error analyzing transaction: {str(e)}"
+
+# Register MCP resources after their definitions
+mcp.resource("ergo://address/{address}/balance")(get_address_balance_resource)
+mcp.resource("ergo://transaction/{tx_id}")(get_transaction_resource)
 
 # MCP Tools
 @mcp.tool()
@@ -461,16 +483,6 @@ async def get_network_status() -> str:
         return result
     except Exception as e:
         return f"Error fetching network status: {str(e)}"
-
-@mcp.resource("ergo://address/{address}/balance")
-async def get_address_balance_resource(address: str) -> str:
-    """Resource handler for address balance."""
-    return await get_address_balance(address)
-
-@mcp.resource("ergo://transaction/{tx_id}")
-async def get_transaction_resource(tx_id: str) -> str:
-    """Resource handler for transaction analysis."""
-    return await analyze_transaction(tx_id)
 
 @mcp.prompt()
 def check_balance_prompt(address: str) -> str:
