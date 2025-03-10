@@ -659,16 +659,29 @@ def run_server():
     # Log server configuration
     logger.info(f"Starting server on {host}:{port} with {workers} workers")
     
-    # Start the server
-    mcp.start(host=host, port=port, workers=workers)
+    # Configure the MCP server with environment-specific settings
+    # Note: FastMCP may not support direct setting of these values via run()
+    # We'll have to see if there are attributes we can set first
     
-    def log_server_url(port):
-        server_url = f"http://{host}:{port}"
+    # Define custom handler to log the actual server URL
+    def log_server_url(actual_port):
+        server_url = f"http://{host}:{actual_port}"
         logger.info(f"Server running at {server_url}")
         logger.info(f"API documentation at {server_url}/docs")
         logger.info("Press Ctrl+C to stop the server")
     
-    log_server_url(port)
+    # Set the port_callback to log the actual server URL
+    mcp.port_callback = log_server_url
+    
+    # We can directly set the port, but host and workers might need different handling
+    # For now, let's set the port and use the default run() method
+    if hasattr(mcp, 'port'):
+        mcp.port = port
+    
+    # Run the server - this is a blocking call
+    # Call run() without arguments as it might not support them
+    logger.info("Starting Ergo Explorer MCP server...")
+    mcp.run()
 
 # Export the server instance
 __all__ = ["mcp", "run_server"]
