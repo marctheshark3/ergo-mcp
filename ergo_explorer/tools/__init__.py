@@ -24,7 +24,9 @@ from ergo_explorer.tools.block import (
 
 # Network tools
 from ergo_explorer.tools.network import (
-    get_blockchain_stats
+    get_blockchain_stats,
+    get_network_hashrate,
+    get_mining_difficulty
 )
 
 # ErgoWatch tools
@@ -84,6 +86,8 @@ __all__ = [
     
     # Network tools
     'get_blockchain_stats',
+    'get_network_hashrate',
+    'get_mining_difficulty',
     
     # ErgoWatch tools
     'get_address_balance_history',

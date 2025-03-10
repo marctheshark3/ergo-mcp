@@ -31,7 +31,11 @@ from ergo_explorer.tools.block import (
 )
 from ergo_explorer.tools.network import (
     get_blockchain_stats as fetch_blockchain_stats,
-    format_blockchain_stats
+    get_network_hashrate as fetch_network_hashrate,
+    get_mining_difficulty as fetch_mining_difficulty,
+    format_blockchain_stats,
+    format_network_hashrate,
+    format_mining_difficulty
 )
 
 # Set up logging
@@ -592,6 +596,26 @@ async def get_blockchain_stats() -> str:
     logger.info("MCP Tool - Get blockchain statistics")
     stats_data = await fetch_blockchain_stats()
     return await format_blockchain_stats(stats_data)
+
+@mcp.tool()
+async def get_network_hashrate() -> str:
+    """Get the current estimated network hashrate of the Ergo blockchain.
+    
+    The hashrate is calculated based on the current network difficulty.
+    """
+    logger.info("MCP Tool - Get network hashrate")
+    hashrate_data = await fetch_network_hashrate()
+    return await format_network_hashrate(hashrate_data)
+
+@mcp.tool()
+async def get_mining_difficulty() -> str:
+    """Get the current mining difficulty of the Ergo blockchain.
+    
+    Includes information about recent difficulty adjustments and target block time.
+    """
+    logger.info("MCP Tool - Get mining difficulty")
+    difficulty_data = await fetch_mining_difficulty()
+    return await format_mining_difficulty(difficulty_data)
 
 def run_server():
     """Run the MCP server."""

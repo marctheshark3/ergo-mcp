@@ -44,6 +44,107 @@ async def get_blockchain_stats() -> Dict:
         logger.error(f"Error fetching blockchain statistics: {str(e)}")
         return {"error": f"Error fetching blockchain statistics: {str(e)}"}
 
+async def get_network_hashrate() -> Dict:
+    """
+    Estimate the current network hashrate of the Ergo blockchain.
+    
+    The hashrate is estimated based on the current difficulty.
+    
+    Returns:
+        A dictionary containing the estimated hashrate in different units
+    """
+    try:
+        logger.info("Fetching network hashrate")
+        # Get the network state, which includes difficulty
+        network_state = await fetch_network_state()
+        
+        # Extract difficulty
+        difficulty = network_state.get("difficulty", 0)
+        
+        # Calculate hashrate from the difficulty
+        # Ergo hashrate estimate: difficulty / 8192 * 2^32 / 120
+        estimated_hashrate = difficulty * (2**32) / (8192 * 120) if difficulty else 0
+        
+        # Convert to different units
+        hashrate_h = estimated_hashrate  # Hashes per second
+        hashrate_kh = estimated_hashrate / 1000  # KH/s
+        hashrate_mh = estimated_hashrate / 1000000  # MH/s
+        hashrate_gh = estimated_hashrate / 1000000000  # GH/s
+        hashrate_th = estimated_hashrate / 1000000000000  # TH/s
+        hashrate_ph = estimated_hashrate / 1000000000000000  # PH/s
+        
+        # Prepare result
+        hashrate_data = {
+            "difficulty": difficulty,
+            "estimatedHashrate": hashrate_h,
+            "hashrateH": hashrate_h,
+            "hashrateKH": hashrate_kh,
+            "hashrateMH": hashrate_mh,
+            "hashrateGH": hashrate_gh,
+            "hashrateTH": hashrate_th,
+            "hashratePH": hashrate_ph,
+            "timestamp": datetime.now().timestamp() * 1000  # current time in milliseconds
+        }
+        
+        return hashrate_data
+    except Exception as e:
+        logger.error(f"Error estimating network hashrate: {str(e)}")
+        return {"error": f"Error estimating network hashrate: {str(e)}"}
+
+async def get_mining_difficulty() -> Dict:
+    """
+    Fetch the current mining difficulty of the Ergo blockchain.
+    
+    Returns:
+        A dictionary containing the mining difficulty and related data
+    """
+    try:
+        logger.info("Fetching mining difficulty")
+        # Get the network state, which includes difficulty
+        network_state = await fetch_network_state()
+        
+        # Extract relevant information
+        difficulty = network_state.get("difficulty", 0)
+        
+        # Get additional info from /info endpoint to get block time target
+        additional_info = await fetch_api("info")
+        
+        # Extract useful information
+        if "parameters" in additional_info:
+            block_time_target = additional_info.get("parameters", {}).get("blockInterval", 120)  # in seconds
+        else:
+            block_time_target = 120  # default is 120 seconds
+            
+        # Get last blocks for difficulty adjustment info
+        last_blocks = network_state.get("lastBlocks", [])
+        difficulty_change = None
+        
+        if len(last_blocks) >= 2:
+            # Calculate difficulty change between last two blocks
+            current_diff = last_blocks[0].get("difficulty", 0)
+            previous_diff = last_blocks[1].get("difficulty", 0)
+            
+            if previous_diff > 0:
+                difficulty_change_pct = (current_diff - previous_diff) / previous_diff * 100
+                difficulty_change = {
+                    "previousDifficulty": previous_diff,
+                    "currentDifficulty": current_diff,
+                    "changePercent": difficulty_change_pct
+                }
+        
+        # Prepare result
+        difficulty_data = {
+            "difficulty": difficulty,
+            "blockTimeTarget": block_time_target,
+            "difficultyChange": difficulty_change,
+            "timestamp": datetime.now().timestamp() * 1000  # current time in milliseconds
+        }
+        
+        return difficulty_data
+    except Exception as e:
+        logger.error(f"Error fetching mining difficulty: {str(e)}")
+        return {"error": f"Error fetching mining difficulty: {str(e)}"}
+
 async def format_blockchain_stats(stats_data: Dict) -> str:
     """
     Format blockchain statistics into a readable string.
@@ -116,6 +217,114 @@ async def format_blockchain_stats(stats_data: Dict) -> str:
 ### Block Statistics
 - **Average Block Size**: {block_size:,} bytes
 - **Average Transactions Per Block**: {avg_tx_per_block:.2f}
+"""
+    
+    return formatted_output
+
+async def format_network_hashrate(hashrate_data: Dict) -> str:
+    """
+    Format network hashrate data into a readable string.
+    
+    Args:
+        hashrate_data: The hashrate data to format
+        
+    Returns:
+        A formatted string representation of the network hashrate
+    """
+    if "error" in hashrate_data:
+        return hashrate_data["error"]
+    
+    # Extract relevant information
+    difficulty = hashrate_data.get("difficulty", 0)
+    hashrate_th = hashrate_data.get("hashrateTH", 0)
+    hashrate_ph = hashrate_data.get("hashratePH", 0)
+    
+    # Format timestamp
+    if "timestamp" in hashrate_data:
+        timestamp = datetime.fromtimestamp(hashrate_data["timestamp"] / 1000)
+        formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+    else:
+        formatted_timestamp = "Unknown"
+    
+    # Create a formatted string
+    formatted_output = f"""
+## Ergo Network Hashrate
+
+- **Estimated Hashrate**: {hashrate_th:.2f} TH/s ({hashrate_ph:.6f} PH/s)
+- **Current Difficulty**: {difficulty:,}
+- **Timestamp**: {formatted_timestamp}
+
+### Hashrate Explanation
+
+The hashrate is an estimate calculated from the current network difficulty.
+Formula used: `hashrate = difficulty * 2^32 / (8192 * 120)`
+
+### Note
+
+The actual network hashrate may fluctuate based on several factors including:
+- Number of active miners
+- Mining hardware efficiency
+- Network difficulty adjustments
+"""
+    
+    return formatted_output
+
+async def format_mining_difficulty(difficulty_data: Dict) -> str:
+    """
+    Format mining difficulty data into a readable string.
+    
+    Args:
+        difficulty_data: The difficulty data to format
+        
+    Returns:
+        A formatted string representation of the mining difficulty
+    """
+    if "error" in difficulty_data:
+        return difficulty_data["error"]
+    
+    # Extract relevant information
+    difficulty = difficulty_data.get("difficulty", 0)
+    block_time_target = difficulty_data.get("blockTimeTarget", 120)
+    difficulty_change = difficulty_data.get("difficultyChange", None)
+    
+    # Format timestamp
+    if "timestamp" in difficulty_data:
+        timestamp = datetime.fromtimestamp(difficulty_data["timestamp"] / 1000)
+        formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+    else:
+        formatted_timestamp = "Unknown"
+    
+    # Create a formatted string
+    formatted_output = f"""
+## Ergo Mining Difficulty
+
+- **Current Difficulty**: {difficulty:,}
+- **Target Block Time**: {block_time_target} seconds
+- **Timestamp**: {formatted_timestamp}
+"""
+    
+    # Add difficulty change information if available
+    if difficulty_change:
+        prev_diff = difficulty_change.get("previousDifficulty", 0)
+        change_pct = difficulty_change.get("changePercent", 0)
+        change_direction = "increase" if change_pct >= 0 else "decrease"
+        
+        formatted_output += f"""
+### Recent Difficulty Adjustment
+
+- **Previous Difficulty**: {prev_diff:,}
+- **Change**: {abs(change_pct):.2f}% {change_direction}
+"""
+    
+    # Add explanation
+    formatted_output += """
+### Difficulty Explanation
+
+The mining difficulty automatically adjusts to maintain the target block time.
+- If blocks are found too quickly, difficulty increases
+- If blocks are found too slowly, difficulty decreases
+
+This mechanism ensures that blocks are found approximately every 2 minutes, regardless of the total network hashrate.
 """
     
     return formatted_output 
