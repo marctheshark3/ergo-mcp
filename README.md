@@ -11,7 +11,25 @@ A Machine-in-the-Middle Communication Protocol (MCP) server for interacting with
 
 ## Installation
 
-### Using pip
+### Using a Virtual Environment (Recommended)
+
+We strongly recommend using a virtual environment to isolate dependencies:
+
+```bash
+# Create a virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
+# On Linux/Mac:
+source .venv/bin/activate
+# On Windows:
+# .venv\Scripts\activate
+
+# Install the package
+pip install ergo-mcp
+```
+
+### Using pip (System-wide)
 
 ```bash
 pip install ergo-mcp
@@ -22,6 +40,12 @@ pip install ergo-mcp
 ```bash
 git clone https://github.com/marctheshark3/ergo-mcp.git
 cd ergo-mcp
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install the package
 pip install .
 ```
 
@@ -29,16 +53,21 @@ pip install .
 
 ### As a Module
 
-Run the MCP server as a Python module:
+Run the MCP server as a Python module from your virtual environment:
 
 ```bash
+# Make sure your virtual environment is activated, or use the full path to Python
+# Using the full path (recommended to ensure the correct Python is used):
+/path/to/your/project/.venv/bin/python -m ergo_explorer
+
+# Or with activated virtual environment:
 python -m ergo_explorer
 ```
 
 With custom configuration:
 
 ```bash
-python -m ergo_explorer --port 3002 --env-file .env.local --debug
+/path/to/your/project/.venv/bin/python -m ergo_explorer --port 3002 --env-file .env.local --debug
 ```
 
 ### As a Command-line Tool
@@ -46,13 +75,17 @@ python -m ergo_explorer --port 3002 --env-file .env.local --debug
 After installation, you can run the server directly from the command line:
 
 ```bash
+# Using the full path to the virtual environment:
+/path/to/your/project/.venv/bin/ergo-mcp
+
+# Or with activated virtual environment:
 ergo-mcp
 ```
 
 With custom configuration:
 
 ```bash
-ergo-mcp --port 3002 --env-file .env.local --debug
+/path/to/your/project/.venv/bin/ergo-mcp --port 3002 --env-file .env.local --debug
 ```
 
 ### Environment Variables
@@ -67,23 +100,23 @@ The server can be configured using environment variables in a `.env` file:
 
 ### Configure for Claude.app
 
-Add to your Claude settings:
+Add to your Claude settings, making sure to use the full path to your virtual environment's Python:
 
 ```json
 "mcpServers": {
   "ergo": {
-    "command": "python",
+    "command": "/path/to/your/project/.venv/bin/python",
     "args": ["-m", "ergo_explorer"]
   }
 }
 ```
 
-Or if installed via pip:
+Or if installed via pip in your virtual environment:
 
 ```json
 "mcpServers": {
   "ergo": {
-    "command": "ergo-mcp",
+    "command": "/path/to/your/project/.venv/bin/ergo-mcp",
     "args": []
   }
 }
@@ -104,14 +137,15 @@ http://localhost:3001/docs
 ```bash
 git clone https://github.com/marctheshark3/ergo-mcp.git
 cd ergo-mcp
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 ```
 
 ### Running Tests
 
 ```bash
+# Make sure your virtual environment is activated
 pytest
 ```
 
