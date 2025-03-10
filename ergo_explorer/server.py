@@ -14,7 +14,19 @@ from ergo_explorer.tools.node import (
     get_transaction_history_from_node,
     get_network_status_from_node,
     search_for_token_from_node,
+<<<<<<< HEAD
     get_node_wallet_info
+=======
+    # Tokenomics tools
+    get_token_price_info,
+    get_token_price_chart,
+    get_liquidity_pool_info,
+    get_token_swap_info,
+    # Smart contract tools
+    analyze_smart_contract,
+    get_contract_statistics,
+    simulate_contract_execution
+>>>>>>> main
 )
 from ergo_explorer.api.explorer import (
     fetch_box as get_box_by_id_explorer,
@@ -29,7 +41,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Create MCP server
+<<<<<<< HEAD
 mcp = FastMCP("Ergo Explorer", dependencies=["httpx"])
+=======
+mcp = FastMCP(SERVER_NAME, dependencies=SERVER_DEPENDENCIES)
+>>>>>>> main
 
 # Log server initialization
 logger.info("Initializing Ergo Explorer MCP server...")
@@ -38,6 +54,7 @@ logger.info("Initializing Ergo Explorer MCP server...")
 ERGO_EXPLORER_API = "https://api.ergoplatform.com/api/v1"
 USER_AGENT = "ErgoMCPServer/1.0"
 
+<<<<<<< HEAD
 # Helper API functions
 async def fetch_api(endpoint: str, params: Optional[Dict] = None) -> Dict:
     """Make a request to the Ergo Explorer API."""
@@ -47,6 +64,22 @@ async def fetch_api(endpoint: str, params: Optional[Dict] = None) -> Dict:
         response = await client.get(url, headers=headers, params=params, timeout=30.0)
         response.raise_for_status()
         return response.json()
+=======
+# Register tokenomics MCP tools
+mcp.tool()(get_token_price_info)
+mcp.tool()(get_token_price_chart)
+mcp.tool()(get_liquidity_pool_info)
+mcp.tool()(get_token_swap_info)
+
+# Register smart contract MCP tools
+mcp.tool()(analyze_smart_contract)
+mcp.tool()(get_contract_statistics)
+mcp.tool()(simulate_contract_execution)
+
+# Register MCP resources
+mcp.resource("ergo://address/{address}/balance")(get_address_balance_resource)
+mcp.resource("ergo://transaction/{tx_id}")(get_transaction_resource)
+>>>>>>> main
 
 async def fetch_balance(address: str) -> Dict:
     """Fetch the confirmed balance for an address."""
