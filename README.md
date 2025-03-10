@@ -26,7 +26,23 @@ An MCP (Model Control Protocol) server for exploring and analyzing the Ergo bloc
 
 ## Installation
 
-### Option 1: Install from source
+### Option 1: Quick Installation from Source
+
+The fastest way to install is using our installation script:
+
+```bash
+# Clone the repository
+git clone https://github.com/marctheshark3/ergo-mcp.git
+cd ergo-mcp
+
+# Run the installation script
+python install.py
+
+# Or with a virtual environment
+python install.py --venv
+```
+
+### Option 2: Manual Installation from Source
 
 1. Clone this repository:
 ```bash
@@ -39,11 +55,13 @@ cd ergo-mcp
 pip install -e .
 ```
 
-### Option 2: Install with pip
+### Option 3: Install via PyPI (Coming Soon)
 
 ```bash
-pip install ergo-mcp
+pip install ergo_mcp
 ```
+
+**Note:** This option will be available once the package is published to PyPI.
 
 ## Usage
 
@@ -121,6 +139,26 @@ Alternatively:
   }
 }
 ```
+
+## Troubleshooting
+
+### Installation Issues
+
+If you encounter issues with installation:
+
+1. Make sure you're in the project directory when running `pip install -e .`
+2. Try running the install script with the `--venv` option to create a fresh virtual environment
+3. Check that you have the required Python version (3.8+)
+4. If importing fails, ensure the package is installed and accessible in your Python path
+
+### Running Issues
+
+If the server fails to start:
+
+1. Check that MCP and its dependencies are properly installed
+2. Verify that required environment variables are set (either in `.env` file or directly)
+3. Check for port conflicts and try specifying a different port with `--port`
+4. Run with `--debug` flag for more detailed logging
 
 ## Available Tools
 

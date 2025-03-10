@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """
-Setup script for ergo-mcp package.
+Setup script for ergo_mcp package.
 """
 
 from setuptools import setup, find_packages
 
 setup(
-    name="ergo-mcp",
+    name="ergo_mcp",
     version="0.1.0",
     packages=find_packages(),
     include_package_data=True,
