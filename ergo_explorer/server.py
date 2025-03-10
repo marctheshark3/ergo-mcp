@@ -478,7 +478,24 @@ async def get_node_wallet() -> str:
 
 def run_server():
     """Run the MCP server."""
+    from ergo_explorer.config import SERVER_PORT
+    
+    # Log pre-startup information
+    logger.info(f"Configured server port in settings: {SERVER_PORT}")
+    
+    # Add a custom handler to log the actual server URL
+    def log_server_url(port):
+        logger.info(f"MCP server is accessible at: http://localhost:{port}/mcp")
+        
+    # Set the port_callback to log the actual server URL
+    mcp.port_callback = log_server_url
+    
+    # Run the server - this is a blocking call
+    logger.info("Starting Ergo Explorer...")
     mcp.run()
+    
+    # Note: The logging after this point won't execute normally as mcp.run() is blocking
+    # The actual port being used can be seen in the MCP server logs ("Server running on port: XXXXX")
 
 # Export the server instance
 __all__ = ["mcp", "run_server"]

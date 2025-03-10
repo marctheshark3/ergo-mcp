@@ -16,9 +16,23 @@ from ergo_explorer.api.explorer import (
     get_box_by_id as get_box_by_id_explorer,
     get_token_by_id as get_token_by_id_explorer
 )
+import logging
 
 # Create MCP server
 mcp = FastMCP("Ergo Explorer", dependencies=["httpx"], port=3001)
+
+# Log the server URL
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("logs/mcp_server.log")
+    ]
+)
+logger = logging.getLogger(__name__)
+logger.info("MCP Server configured with port: 3001")
+logger.info("Access the MCP at: http://localhost:3001/mcp")
 
 # Constants
 ERGO_EXPLORER_API = "https://api.ergoplatform.com/api/v1"
