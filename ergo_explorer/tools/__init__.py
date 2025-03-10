@@ -14,6 +14,14 @@ from ergo_explorer.tools.transaction import (
     analyze_transaction
 )
 
+# Block tools
+from ergo_explorer.tools.block import (
+    get_block_by_height,
+    get_block_by_hash,
+    get_latest_blocks,
+    get_block_transactions
+)
+
 # ErgoWatch tools
 from ergo_explorer.tools.ergowatch import (
     get_address_balance_history,
@@ -62,6 +70,12 @@ __all__ = [
     
     # Transaction tools
     'analyze_transaction',
+    
+    # Block tools
+    'get_block_by_height',
+    'get_block_by_hash',
+    'get_latest_blocks',
+    'get_block_transactions',
     
     # ErgoWatch tools
     'get_address_balance_history',

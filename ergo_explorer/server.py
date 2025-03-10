@@ -20,6 +20,15 @@ from ergo_explorer.api.explorer import (
     fetch_box as get_box_by_id_explorer,
     search_tokens as get_token_by_id_explorer
 )
+from ergo_explorer.tools.block import (
+    get_block_by_height as fetch_block_by_height,
+    get_block_by_hash as fetch_block_by_hash,
+    get_latest_blocks as fetch_latest_blocks,
+    get_block_transactions as fetch_block_transactions,
+    format_block_data,
+    format_latest_blocks,
+    format_block_transactions
+)
 
 # Set up logging
 logging.basicConfig(
@@ -511,6 +520,63 @@ async def get_node_wallet() -> str:
         return await get_node_wallet_info()
     except Exception as e:
         return f"Error fetching node wallet info: {str(e)}"
+
+@mcp.tool()
+async def get_block_by_height(height: int) -> str:
+    """Retrieve block data by height from the Ergo blockchain.
+    
+    Args:
+        height: The height of the block to retrieve
+    """
+    logger.info(f"MCP Tool - Get block by height: {height}")
+    block_data = await fetch_block_by_height(height)
+    return await format_block_data(block_data)
+
+@mcp.tool()
+async def get_block_by_hash(block_hash: str) -> str:
+    """Retrieve block data by hash from the Ergo blockchain.
+    
+    Args:
+        block_hash: The hash (ID) of the block to retrieve
+    """
+    logger.info(f"MCP Tool - Get block by hash: {block_hash}")
+    block_data = await fetch_block_by_hash(block_hash)
+    return await format_block_data(block_data)
+
+@mcp.tool()
+async def get_latest_blocks(limit: int = 10) -> str:
+    """Get the most recent blocks from the Ergo blockchain with pagination.
+    
+    Args:
+        limit: Maximum number of blocks to retrieve (default: 10)
+    """
+    logger.info(f"MCP Tool - Get latest blocks, limit: {limit}")
+    blocks_data = await fetch_latest_blocks(limit)
+    return await format_latest_blocks(blocks_data)
+
+@mcp.tool()
+async def get_block_transactions(block_id: str, limit: int = 100) -> str:
+    """Get all transactions in a specific block.
+    
+    Args:
+        block_id: The ID of the block
+        limit: Maximum number of transactions to retrieve (default: 100)
+    """
+    logger.info(f"MCP Tool - Get block transactions for block: {block_id}, limit: {limit}")
+    tx_data = await fetch_block_transactions(block_id, limit)
+    return await format_block_transactions(tx_data, block_id)
+
+@mcp.prompt()
+def block_info_prompt(height_or_hash: str) -> str:
+    """Prompt for getting information about a block by height or hash."""
+    return f"""
+    Analyze the Ergo blockchain block with height or hash {height_or_hash}.
+    Provide a summary of the block's key properties, including:
+    - Block height and ID
+    - Timestamp and difficulty
+    - Miner information and reward
+    - Number of transactions
+    """
 
 def run_server():
     """Run the MCP server."""
