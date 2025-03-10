@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """
-Setup script for ergo_mcp package.
+Setup script for ergo-mcp package.
 """
 
 from setuptools import setup, find_packages
 
 setup(
-    name="ergo_mcp",
+    name="ergo-mcp",
     version="0.1.0",
     packages=find_packages(),
     include_package_data=True,
@@ -14,10 +14,11 @@ setup(
         "mcp>=0.5.0",
         "httpx",
         "python-dotenv",
+        "argparse",
     ],
     entry_points={
         "console_scripts": [
-            "ergo-mcp=ergo_explorer.cli:main",
+            "ergo-mcp=ergo_explorer.__main__:main",
         ],
     },
     author="Ergo MCP Team",
@@ -35,5 +36,5 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    python_requires='>=3.8',
+    python_requires=">=3.8",
 ) 
