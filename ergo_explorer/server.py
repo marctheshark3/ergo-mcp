@@ -648,23 +648,33 @@ async def get_token_price(token_id: str) -> str:
     price_data = await fetch_token_price(token_id)
     return await format_token_price(price_data)
 
-def run_server():
-    """Run the MCP server."""
+def run_server(host: str = "0.0.0.0", port: int = None):
+    """
+    Run the MCP server.
+    
+    Args:
+        host: Host to run the server on (default: 0.0.0.0)
+        port: Port to run the server on (default: from config.SERVER_PORT)
+    """
     from ergo_explorer.config import SERVER_PORT
     
+    # Use the provided port or fallback to the configured port
+    actual_port = port if port is not None else SERVER_PORT
+    
     # Log pre-startup information
-    logger.info(f"Configured server port in settings: {SERVER_PORT}")
+    logger.info(f"Starting server on {host}:{actual_port}")
     
     # Add a custom handler to log the actual server URL
-    def log_server_url(port):
-        logger.info(f"MCP server is accessible at: http://localhost:{port}/mcp")
+    def log_server_url(assigned_port):
+        # The actual port may differ if the requested port is not available
+        logger.info(f"MCP server is accessible at: http://{host if host != '0.0.0.0' else 'localhost'}:{assigned_port}/mcp")
         
     # Set the port_callback to log the actual server URL
     mcp.port_callback = log_server_url
     
     # Run the server - this is a blocking call
     logger.info("Starting Ergo Explorer...")
-    mcp.run()
+    mcp.run(host=host, port=actual_port)
     
     # Note: The logging after this point won't execute normally as mcp.run() is blocking
     # The actual port being used can be seen in the MCP server logs ("Server running on port: XXXXX")

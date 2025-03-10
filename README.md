@@ -1,4 +1,4 @@
-# Ergo Explorer MCP Server
+# Ergo MCP Server
 
 An MCP (Model Control Protocol) server for exploring and analyzing the Ergo blockchain.
 
@@ -12,6 +12,10 @@ An MCP (Model Control Protocol) server for exploring and analyzing the Ergo bloc
 - Monitor network status
 - Direct node connection support
 - ErgoWatch analytics integration
+- Block information retrieval 
+- Mining statistics
+- Mempool monitoring
+- Token price information
 
 ## Prerequisites
 
@@ -22,74 +26,98 @@ An MCP (Model Control Protocol) server for exploring and analyzing the Ergo bloc
 
 ## Installation
 
+### Option 1: Install from source
+
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/ergo-explorer-mcp.git
-cd ergo-explorer-mcp
+git clone https://github.com/marctheshark3/ergo-mcp.git
+cd ergo-mcp
 ```
 
-2. Set up a virtual environment (recommended):
+2. Install the package in development mode:
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
+pip install -e .
 ```
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-4. Configure your environment:
-```bash
-cp .env.example .env
-```
-Then edit the `.env` file with your specific settings.
-
-## Configuration
-
-### Environment Variables
-
-The server can be configured through environment variables in the `.env` file:
-
-- `ERGO_EXPLORER_API`: URL of the Ergo Explorer API (default: https://api.ergoplatform.com/api/v1)
-- `ERGO_NODE_API`: URL of your Ergo Node API (default: http://localhost:9053)
-- `ERGO_NODE_API_KEY`: Your Ergo Node API key, if required
-- `SERVER_PORT`: Port to run the MCP server on (default: 3001)
-
-### Using with Cursor
-
-To use this MCP server with Cursor:
-
-1. Open Cursor and go to Settings (gear icon)
-2. Navigate to "AI" → "Claude" → "MCP Settings"
-3. Click "Add MCP Server"
-4. Configure with the following command:
+### Option 2: Install with pip
 
 ```bash
-/path/to/venv/python /path/to/ergo-explorer-mcp/run_server.py
+pip install ergo-mcp
 ```
 
-Replace `/path/to/venv/python` with your virtual environment Python path and `/path/to/ergo-explorer-mcp` with the actual path where you cloned the repository.
+## Usage
 
-### Using with Claude Desktop
+### Running as a module
 
-To use this MCP server with Claude Desktop, add the following to your `claude_desktop_config.json`:
+```bash
+python -m ergo_explorer
+```
+
+### Running as a command-line application
+
+```bash
+ergo-mcp
+```
+
+### Command-line options
+
+```bash
+# Display help
+ergo-mcp --help
+
+# Use a specific .env file
+ergo-mcp --env-file /path/to/.env
+
+# Set a custom port
+ergo-mcp --port 5000
+
+# Run in debug mode
+ergo-mcp --debug
+```
+
+## Environment Configuration
+
+Create a `.env` file with your configuration:
+
+```
+# Node API Settings
+ERGO_NODE_API=http://localhost:9053
+ERGO_NODE_API_KEY=your_api_key_here
+
+# ErgoWatch API Settings
+ERGOWATCH_API_URL=https://api.ergo.watch
+
+# Server Settings
+SERVER_PORT=3001
+SERVER_HOST=0.0.0.0
+```
+
+You can specify the path to your .env file using the `--env-file` command-line option:
+
+```bash
+ergo-mcp --env-file /path/to/your/.env
+```
+
+## Configure for Claude.app
+
+Add to your Claude settings:
 
 ```json
-{
-  "mcpServers": {
-    "ergo-explorer": {
-      "command": "python",
-      "args": [
-        "/path/to/ergo-explorer-mcp/run_server.py"
-      ],
-      "env": {
-        "ERGO_EXPLORER_API": "https://api.ergoplatform.com/api/v1",
-        "ERGO_NODE_API": "http://localhost:9053",
-        "ERGO_NODE_API_KEY": "your-api-key",
-        "SERVER_PORT": "3001"
-      }
-    }
+"mcpServers": {
+  "ergo": {
+    "command": "python",
+    "args": ["-m", "ergo_explorer"]
+  }
+}
+```
+
+Alternatively:
+
+```json
+"mcpServers": {
+  "ergo": {
+    "command": "ergo-mcp",
+    "args": []
   }
 }
 ```
