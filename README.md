@@ -26,36 +26,59 @@ An MCP (Model Control Protocol) server for exploring and analyzing the Ergo bloc
 
 ## Installation
 
-### Option 1: Quick Installation from Source
+### Option 1: Simple One-Step Installation (Recommended)
 
-The fastest way to install is using our installation script:
+Use our simple installer that automatically handles common installation issues:
 
 ```bash
 # Clone the repository
 git clone https://github.com/marctheshark3/ergo-mcp.git
 cd ergo-mcp
 
-# Run the installation script
-python install.py
-
-# Or with a virtual environment
-python install.py --venv
+# Run the simple installer
+python simple_install.py
 ```
 
-### Option 2: Manual Installation from Source
+This script will:
+- Create a fresh virtual environment
+- Install pip if it's missing
+- Install all dependencies
+- Install the package in development mode
+- Verify the installation
 
-1. Clone this repository:
+### Option 2: Installation with Options
+
+For more control over the installation process:
+
 ```bash
+# Clone the repository
 git clone https://github.com/marctheshark3/ergo-mcp.git
 cd ergo-mcp
+
+# Run the installer with options
+python install.py --venv  # Install in a virtual environment
+python install.py --venv --force  # Overwrite existing virtual environment
+python install.py --no-interactive  # Run without prompts
 ```
 
-2. Install the package in development mode:
+### Option 3: Manual Installation
+
+For direct installation:
+
 ```bash
+# Clone the repository
+git clone https://github.com/marctheshark3/ergo-mcp.git
+cd ergo-mcp
+
+# Create and activate a virtual environment (recommended)
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install in development mode
 pip install -e .
 ```
 
-### Option 3: Install via PyPI (Coming Soon)
+### Option 4: Install via PyPI (Coming Soon)
 
 ```bash
 pip install ergo_mcp
@@ -146,10 +169,24 @@ Alternatively:
 
 If you encounter issues with installation:
 
-1. Make sure you're in the project directory when running `pip install -e .`
-2. Try running the install script with the `--venv` option to create a fresh virtual environment
-3. Check that you have the required Python version (3.8+)
-4. If importing fails, ensure the package is installed and accessible in your Python path
+1. **Missing pip in virtual environment**: 
+   - Use the `simple_install.py` script which handles pip installation automatically
+   - Or manually install pip: `curl https://bootstrap.pypa.io/get-pip.py | python`
+
+2. **Permission issues**:
+   - On Unix/Linux: `sudo pip install -e .`
+   - On Windows: Run as administrator
+
+3. **Python path issues**:
+   - Ensure you're using the correct Python: `which python` or `where python`
+   - Check Python version: `python --version`
+
+4. **Package not found after installation**:
+   - Verify installation in the right environment: `pip list | grep ergo`
+   - Try installing with absolute path: `pip install -e /full/path/to/ergo-mcp`
+
+5. **Dependency issues**:
+   - Install dependencies manually: `pip install mcp httpx python-dotenv`
 
 ### Running Issues
 
@@ -159,6 +196,16 @@ If the server fails to start:
 2. Verify that required environment variables are set (either in `.env` file or directly)
 3. Check for port conflicts and try specifying a different port with `--port`
 4. Run with `--debug` flag for more detailed logging
+
+## Testing Installation
+
+To verify if your installation is working correctly, run:
+
+```bash
+python test_install.py
+```
+
+This will check for proper module imports and command availability.
 
 ## Available Tools
 
