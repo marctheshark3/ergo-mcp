@@ -29,6 +29,10 @@ from ergo_explorer.tools.block import (
     format_latest_blocks,
     format_block_transactions
 )
+from ergo_explorer.tools.network import (
+    get_blockchain_stats as fetch_blockchain_stats,
+    format_blockchain_stats
+)
 
 # Set up logging
 logging.basicConfig(
@@ -577,6 +581,17 @@ def block_info_prompt(height_or_hash: str) -> str:
     - Miner information and reward
     - Number of transactions
     """
+
+@mcp.tool()
+async def get_blockchain_stats() -> str:
+    """Get overall blockchain statistics from the Ergo network.
+    
+    Provides information about blockchain height, difficulty, 
+    hashrate, supply, and transaction statistics.
+    """
+    logger.info("MCP Tool - Get blockchain statistics")
+    stats_data = await fetch_blockchain_stats()
+    return await format_blockchain_stats(stats_data)
 
 def run_server():
     """Run the MCP server."""

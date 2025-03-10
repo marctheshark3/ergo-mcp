@@ -22,6 +22,11 @@ from ergo_explorer.tools.block import (
     get_block_transactions
 )
 
+# Network tools
+from ergo_explorer.tools.network import (
+    get_blockchain_stats
+)
+
 # ErgoWatch tools
 from ergo_explorer.tools.ergowatch import (
     get_address_balance_history,
@@ -76,6 +81,9 @@ __all__ = [
     'get_block_by_hash',
     'get_latest_blocks',
     'get_block_transactions',
+    
+    # Network tools
+    'get_blockchain_stats',
     
     # ErgoWatch tools
     'get_address_balance_history',

@@ -14,7 +14,7 @@ This document outlines planned features and enhancements for the Ergo MCP Server
 | `get_block_transactions` | Get all transactions in a block | Ergo Explorer API | Completed |
 | `get_network_hashrate` | Get current network hashrate | Ergo Explorer API | To Do |
 | `get_mining_difficulty` | Get current mining difficulty | Ergo Explorer API | To Do |
-| `get_blockchain_stats` | Get overall blockchain statistics | Ergo Explorer API | To Do |
+| `get_blockchain_stats` | Get overall blockchain statistics | Ergo Explorer API | Completed |
 | `get_mempool_info` | Get current mempool status and pending transactions | Node API | To Do |
 | `get_token_price` | Get current price of a token | DEX APIs | To Do |
 
