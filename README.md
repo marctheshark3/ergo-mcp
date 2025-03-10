@@ -1,5 +1,4 @@
 # Ergo Explorer MCP Server
-[![MCP Server](https://glama.ai/mcp/servers/ergo-explorer/badge)](https://glama.ai/mcp/servers/ergo-explorer)
 
 An MCP (Model Control Protocol) server for exploring and analyzing the Ergo blockchain.
 
