@@ -14,6 +14,11 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 
 from ergo_explorer.api.explorer import fetch_api, fetch_network_state
+from ergo_explorer.api.node import (
+    get_mempool_transactions_node,
+    get_mempool_size_node,
+    get_mempool_statistics_node
+)
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -327,4 +332,163 @@ The mining difficulty automatically adjusts to maintain the target block time.
 This mechanism ensures that blocks are found approximately every 2 minutes, regardless of the total network hashrate.
 """
     
-    return formatted_output 
+    return formatted_output
+
+async def get_mempool_info() -> Dict:
+    """
+    Fetch information about the current mempool state.
+    
+    This function requires direct connection to an Ergo node.
+    
+    Returns:
+        A dictionary containing mempool statistics and transactions
+    """
+    try:
+        logger.info("Fetching mempool information")
+        
+        # Get mempool statistics from the node
+        mempool_data = await get_mempool_statistics_node()
+        
+        # Extract and calculate additional statistics
+        transactions = mempool_data.get("transactions", [])
+        if isinstance(transactions, list):
+            tx_count = len(transactions)
+        else:
+            # If the transactions are paginated
+            tx_count = transactions.get("size", 0)
+            transactions = transactions.get("items", [])
+        
+        # Calculate total size in bytes
+        total_bytes = sum([tx.get("size", 0) for tx in transactions]) if transactions else 0
+        
+        # Calculate total value in nanoERG
+        total_value = 0
+        for tx in transactions:
+            outputs = tx.get("outputs", [])
+            tx_value = sum([output.get("value", 0) for output in outputs])
+            total_value += tx_value
+        
+        # Convert to ERG
+        total_value_erg = total_value / 1000000000
+        
+        # Calculate average transaction size and value
+        avg_size = total_bytes / tx_count if tx_count > 0 else 0
+        avg_value_erg = total_value_erg / tx_count if tx_count > 0 else 0
+        
+        # Calculate fee statistics
+        fees = []
+        for tx in transactions:
+            # Fee calculation is simplified here - in a real implementation,
+            # you would need to account for input values minus output values
+            fee = tx.get("fee", 0)
+            fees.append(fee)
+        
+        # Calculate fee statistics
+        if fees:
+            avg_fee = sum(fees) / len(fees)
+            min_fee = min(fees) if fees else 0
+            max_fee = max(fees) if fees else 0
+        else:
+            avg_fee = min_fee = max_fee = 0
+        
+        # Convert fees to ERG
+        avg_fee_erg = avg_fee / 1000000000
+        min_fee_erg = min_fee / 1000000000
+        max_fee_erg = max_fee / 1000000000
+        
+        # Combine all statistics
+        mempool_stats = {
+            "timestamp": datetime.now().timestamp() * 1000,  # current time in milliseconds
+            "size": mempool_data.get("size", 0),
+            "transactionCount": tx_count,
+            "totalBytes": total_bytes,
+            "totalValue": total_value,
+            "totalValueERG": total_value_erg,
+            "averageSize": avg_size,
+            "averageValueERG": avg_value_erg,
+            "feeStats": {
+                "averageFee": avg_fee,
+                "averageFeeERG": avg_fee_erg,
+                "minFee": min_fee,
+                "minFeeERG": min_fee_erg,
+                "maxFee": max_fee,
+                "maxFeeERG": max_fee_erg
+            },
+            "transactions": transactions[:10]  # Include only first 10 transactions for brevity
+        }
+        
+        return mempool_stats
+    except Exception as e:
+        logger.error(f"Error fetching mempool information: {str(e)}")
+        return {"error": f"Error fetching mempool information: {str(e)}"}
+
+async def format_mempool_info(mempool_data: Dict) -> str:
+    """
+    Format mempool information into a readable string.
+    
+    Args:
+        mempool_data: The mempool data to format
+        
+    Returns:
+        A formatted string representation of the mempool information
+    """
+    if "error" in mempool_data:
+        return mempool_data["error"]
+    
+    # Format timestamp
+    if "timestamp" in mempool_data:
+        timestamp = datetime.fromtimestamp(mempool_data["timestamp"] / 1000)
+        formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+    else:
+        formatted_timestamp = "Unknown"
+    
+    # Extract statistics
+    tx_count = mempool_data.get("transactionCount", 0)
+    size = mempool_data.get("size", 0)
+    total_bytes = mempool_data.get("totalBytes", 0)
+    total_value_erg = mempool_data.get("totalValueERG", 0)
+    avg_size = mempool_data.get("averageSize", 0)
+    avg_value_erg = mempool_data.get("averageValueERG", 0)
+    
+    # Fee statistics
+    fee_stats = mempool_data.get("feeStats", {})
+    avg_fee_erg = fee_stats.get("averageFeeERG", 0)
+    min_fee_erg = fee_stats.get("minFeeERG", 0)
+    max_fee_erg = fee_stats.get("maxFeeERG", 0)
+    
+    # Create a formatted string
+    formatted_output = f"""
+## Ergo Mempool Status
+
+- **Timestamp**: {formatted_timestamp}
+- **Pending Transactions**: {tx_count:,}
+- **Mempool Size**: {size:,}
+- **Total Size**: {total_bytes:,} bytes
+
+### Transaction Statistics
+- **Total Value**: {total_value_erg:,.2f} ERG
+- **Average Transaction Size**: {avg_size:.2f} bytes
+- **Average Transaction Value**: {avg_value_erg:.6f} ERG
+
+### Fee Statistics
+- **Average Fee**: {avg_fee_erg:.6f} ERG
+- **Minimum Fee**: {min_fee_erg:.6f} ERG
+- **Maximum Fee**: {max_fee_erg:.6f} ERG
+"""
+    
+    # Add recent transaction list if available
+    transactions = mempool_data.get("transactions", [])
+    if transactions:
+        formatted_output += "\n### Recent Pending Transactions\n"
+        
+        for i, tx in enumerate(transactions[:5], 1):  # Show only first 5 transactions
+            tx_id = tx.get("id", "Unknown")
+            tx_size = tx.get("size", 0)
+            tx_fee = tx.get("fee", 0) / 1000000000  # Convert to ERG
+            
+            formatted_output += f"""
+**Transaction {i}**
+- ID: {tx_id}
+- Size: {tx_size:,} bytes
+- Fee: {tx_fee:.6f} ERG
+""" 

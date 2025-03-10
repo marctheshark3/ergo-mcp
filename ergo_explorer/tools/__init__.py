@@ -26,7 +26,13 @@ from ergo_explorer.tools.block import (
 from ergo_explorer.tools.network import (
     get_blockchain_stats,
     get_network_hashrate,
-    get_mining_difficulty
+    get_mining_difficulty,
+    get_mempool_info
+)
+
+# Token tools
+from ergo_explorer.tools.token import (
+    get_token_price
 )
 
 # ErgoWatch tools
@@ -88,6 +94,10 @@ __all__ = [
     'get_blockchain_stats',
     'get_network_hashrate',
     'get_mining_difficulty',
+    'get_mempool_info',
+    
+    # Token tools
+    'get_token_price',
     
     # ErgoWatch tools
     'get_address_balance_history',

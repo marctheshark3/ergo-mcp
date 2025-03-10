@@ -33,9 +33,15 @@ from ergo_explorer.tools.network import (
     get_blockchain_stats as fetch_blockchain_stats,
     get_network_hashrate as fetch_network_hashrate,
     get_mining_difficulty as fetch_mining_difficulty,
+    get_mempool_info as fetch_mempool_info,
     format_blockchain_stats,
     format_network_hashrate,
-    format_mining_difficulty
+    format_mining_difficulty,
+    format_mempool_info
+)
+from ergo_explorer.tools.token import (
+    get_token_price as fetch_token_price,
+    format_token_price
 )
 
 # Set up logging
@@ -616,6 +622,31 @@ async def get_mining_difficulty() -> str:
     logger.info("MCP Tool - Get mining difficulty")
     difficulty_data = await fetch_mining_difficulty()
     return await format_mining_difficulty(difficulty_data)
+
+@mcp.tool()
+async def get_mempool_info() -> str:
+    """Get current mempool status and pending transactions.
+    
+    This tool provides information about unconfirmed transactions waiting to be included in blocks.
+    Requires a direct connection to an Ergo node.
+    """
+    logger.info("MCP Tool - Get mempool information")
+    mempool_data = await fetch_mempool_info()
+    return await format_mempool_info(mempool_data)
+
+@mcp.tool()
+async def get_token_price(token_id: str) -> str:
+    """Get the current price of a token on the Ergo blockchain.
+    
+    Args:
+        token_id: The token ID to check
+        
+    Returns information about the token's price in ERG and USD,
+    along with liquidity data from supported DEXes.
+    """
+    logger.info(f"MCP Tool - Get token price: {token_id}")
+    price_data = await fetch_token_price(token_id)
+    return await format_token_price(price_data)
 
 def run_server():
     """Run the MCP server."""
