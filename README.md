@@ -28,12 +28,23 @@ git clone https://github.com/yourusername/ergo-mcp.git
 cd ergo-mcp
 ```
 
-2. Install dependencies:
+2. Set up a virtual environment (recommended):
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+   
+   Or install dependencies manually:
 ```bash
 pip install "mcp>=0.5.0" httpx python-dotenv
 ```
 
-3. Configure your environment:
+4. Configure your environment:
 ```bash
 cp .env.example .env
 ```
@@ -56,6 +67,13 @@ Start the server using the run script:
 python run_server.py
 ```
 
+If you're using a virtual environment, make sure it's activated before running the server:
+
+```bash
+source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
+python run_server.py
+```
+
 The server will run on port 3001 by default.
 
 ## Using with Cursor and Claude Desktop
@@ -72,12 +90,20 @@ To use this MCP server with Cursor:
 4. Configure with the following information:
    - Name: Ergo Explorer
    - Type: command (select from dropdown)
-   - Command: [Path to your Python interpreter] [Path to the run_server.py script]
+   - Command: [Path to your Python interpreter in the virtual environment] [Path to the run_server.py script]
    
-   Example:
+   Example using virtual environment (recommended):
    ```
-   /home/username/bin/python /home/username/Documents/ergo/ergo-explorer-mcp/run_server.py
+   /home/username/path/to/ergo-mcp/.venv/bin/python /home/username/path/to/ergo-mcp/run_server.py
    ```
+   
+   You can get the exact path to your Python interpreter in the virtual environment with:
+   ```bash
+   which python  # On Linux/Mac while the venv is activated
+   # or
+   where python  # On Windows while the venv is activated
+   ```
+
 5. Click Save
 
 With this command-based approach, Cursor will automatically start the MCP server when needed and stop it when not in use.

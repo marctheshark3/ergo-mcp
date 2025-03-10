@@ -76,6 +76,14 @@ from ergo_explorer.api.node import (
     get_network_info_node
 )
 
+# ErgoDEX API functions
+from ergo_explorer.api.ergodex import (
+    get_token_price,
+    get_erg_price_usd,
+    get_liquidity_pools,
+    get_price_history
+)
+
 __all__ = [
     # Explorer API
     'fetch_api',
@@ -97,5 +105,11 @@ __all__ = [
     'get_unspent_boxes_by_address_node',
     'get_token_by_id_node',
     'search_for_token_node',
-    'get_network_info_node'
+    'get_network_info_node',
+    
+    # ErgoDEX API
+    'get_token_price',
+    'get_erg_price_usd',
+    'get_liquidity_pools',
+    'get_price_history'
 ]

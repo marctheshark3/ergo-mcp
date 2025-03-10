@@ -1,0 +1,113 @@
+{
+  "timestamp": "2025-03-07T14:29:18.829092",
+  "summary": {
+    "total_tests": 17,
+    "successful_tests": 17,
+    "failed_tests": 0,
+    "success_rate": 1.0
+  },
+  "results": [
+    {
+      "name": "Get price info for ERG",
+      "success": true,
+      "result": "Found token ERG20 (ID: 1b285217...), but error fetching token price: server error '526 ' for url 'https://api.ergodex.io/v1/amm/pools'\nfor more information check: https://developer.mozilla.org/en-us/docs/web/http/status/526",
+      "elapsed_seconds": 1.296829
+    },
+    {
+      "name": "Get price info for SigUSD",
+      "success": true,
+      "result": "Found token SigUSD (ID: 03faf2cb...), but error fetching token price: server error '526 <none>' for url 'https://api.ergodex.io/v1/amm/pools'\nfor more information check: https://developer.mozilla.org/en-us/docs/web/http/status/526",
+      "elapsed_seconds": 0.816594
+    },
+    {
+      "name": "Get price info for SigRSV",
+      "success": true,
+      "result": "Found token SigRSV (ID: 003bd19d...), but error fetching token price: server error '526 ' for url 'https://api.ergodex.io/v1/amm/pools'\nfor more information check: https://developer.mozilla.org/en-us/docs/web/http/status/526",
+      "elapsed_seconds": 1.224635
+    },
+    {
+      "name": "Get price info for NETA",
+      "success": true,
+      "result": "Found token NETA (ID: 472c3d4e...), but error fetching token price: server error '526 ' for url 'https://api.ergodex.io/v1/amm/pools'\nfor more information check: https://developer.mozilla.org/en-us/docs/web/http/status/526",
+      "elapsed_seconds": 1.244047
+    },
+    {
+      "name": "Get price info for ergopad",
+      "success": true,
+      "result": "Found token ergopad (ID: d71693c4...), but error fetching token price: server error '526 ' for url 'https://api.ergodex.io/v1/amm/pools'\nfor more information check: https://developer.mozilla.org/en-us/docs/web/http/status/526",
+      "elapsed_seconds": 1.242139
+    },
+    {
+      "name": "Get price chart for SigUSD (7 days)",
+      "success": true,
+      "result": "Found token SigUSD_SigRSV (ID: b1c92c58...), but error fetching token price: server error '526 <none>' for url 'https://api.ergodex.io/v1/amm/pools'\nfor more information check: https://developer.mozilla.org/en-us/docs/web/http/status/526",
+      "elapsed_seconds": 1.088679
+    },
+    {
+      "name": "Get all liquidity pools",
+      "success": true,
+      "result": "Error: Error fetching liquidity pools: Server error '526 ' for url 'https://api.ergodex.io/v1/amm/pools'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/526",
+      "elapsed_seconds": 0.397882
+    },
+    {
+      "name": "Get liquidity pools for SigUSD",
+      "success": true,
+      "result": "Error: Error fetching liquidity pools: Server error '526 ' for url 'https://api.ergodex.io/v1/amm/pools'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/526",
+      "elapsed_seconds": 1.081299
+    },
+    {
+      "name": "Get swap info (ERG to SigUSD, 10 ERG)",
+      "success": true,
+      "result": "No liquidity pools found connecting ERG20 and SigUSD_SigRSV.",
+      "elapsed_seconds": 1.261769
+    },
+    {
+      "name": "Get swap info (SigUSD to NETA, 50 SigUSD)",
+      "success": true,
+      "result": "No liquidity pools found connecting SigUSD_SigRSV and NETA.",
+      "elapsed_seconds": 1.057436
+    },
+    {
+      "name": "Analyze contract 9hXmgvzndt...",
+      "success": true,
+      "result": "Error analyzing smart contract: Client error '400 Bad Request' for url 'http://localhost:9053/blockchain/box/unspent/byAddress?offset=0&limit=20'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "elapsed_seconds": 0.029413
+    },
+    {
+      "name": "Analyze contract 2k6J5ocjeE...",
+      "success": true,
+      "result": "Error analyzing smart contract: Client error '400 Bad Request' for url 'http://localhost:9053/blockchain/box/unspent/byAddress?offset=0&limit=20'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "elapsed_seconds": 0.013559
+    },
+    {
+      "name": "Analyze contract 2mhKdna5Jb...",
+      "success": true,
+      "result": "Error analyzing smart contract: Client error '400 Bad Request' for url 'http://localhost:9053/blockchain/box/unspent/byAddress?offset=0&limit=20'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "elapsed_seconds": 0.013101
+    },
+    {
+      "name": "Analyze contract 2kUW5HKLdG...",
+      "success": true,
+      "result": "Error analyzing smart contract: Client error '400 Bad Request' for url 'http://localhost:9053/blockchain/box/unspent/byAddress?offset=0&limit=20'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "elapsed_seconds": 0.009327
+    },
+    {
+      "name": "Analyze contract NTkuk55Ndw...",
+      "success": true,
+      "result": "Error analyzing smart contract: Client error '400 Bad Request' for url 'http://localhost:9053/blockchain/box/unspent/byAddress?offset=0&limit=20'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "elapsed_seconds": 0.0088
+    },
+    {
+      "name": "Get contract statistics",
+      "success": true,
+      "result": "Smart Contract Statistics on Ergo Blockchain\n==========================================\n\nTotal Contracts: 15,000\nActive Contracts: 8,500\nTotal Value Locked: 350,000.00 ERG\n\nContract Type Distribution:\n\u2022 P2PK: 12,000 (80.0%)\n\u2022 DEX: 1,500 (10.0%)\n\u2022 Oracle: 200 (1.3%)\n\u2022 NFT: 800 (5.3%)\n\u2022 Other: 500 (3.4%)\n",
+      "elapsed_seconds": 1.6e-05
+    },
+    {
+      "name": "Simulate contract execution",
+      "success": true,
+      "result": "Contract Simulation for 9hXmgvzndtakdSAgJ92fQ8ZjuKirYEPnQZ2KumygbrJao1rr5ko\n================================\n\nInput Parameters:\n\u2022 recipient: 9hHDQb26AjnJUXxcqriqY1mnhpLuUeC81C4pggtK7tupr92Ea1K\n\u2022 amount: 1.0\n\u2022 token_id: None\n\nSimulation Result: SUCCESS\nExpected Outputs:\n\u2022 Output Box 1: 1.0 ERG to recipient\n\u2022 Output Box 2: 0.1 ERG (change) back to sender\n\u2022 Fee: 0.001 ERG\n",
+      "elapsed_seconds": 8e-06
+    }
+  ]
+}

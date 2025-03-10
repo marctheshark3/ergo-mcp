@@ -90,114 +90,124 @@ async def analyze_transaction_from_node(tx_id: str) -> str:
         result += f"Confirmations: {tx.get('numConfirmations', 0)}\n"
         result += f"Size: {tx.get('size', 0)} bytes\n\n"
         
-        # Analyze inputs
-        inputs = tx.get("inputs", [])
-        total_input_value = sum(input.get("value", 0) for input in inputs)
-        input_erg = total_input_value / 1_000_000_000
-        
-        result += f"Inputs: {len(inputs)}\n"
-        result += f"Total Input Value: {input_erg:.9f} ERG\n"
-        
-        # Input addresses
-        input_addresses = set()
-        for input in inputs:
-            addr = input.get("address")
-            if addr:
-                input_addresses.add(addr)
-        
-        if input_addresses:
-            result += f"Input Addresses: {', '.join(list(input_addresses)[:3])}"
-            if len(input_addresses) > 3:
-                result += f" and {len(input_addresses) - 3} more"
-            result += "\n\n"
-        
-        # Analyze outputs
-        outputs = tx.get("outputs", [])
-        total_output_value = sum(output.get("value", 0) for output in outputs)
-        output_erg = total_output_value / 1_000_000_000
-        
-        result += f"Outputs: {len(outputs)}\n"
-        result += f"Total Output Value: {output_erg:.9f} ERG\n"
-        
-        # Output addresses
-        output_addresses = set()
-        for output in outputs:
-            addr = output.get("address")
-            if addr:
-                output_addresses.add(addr)
-        
-        if output_addresses:
-            result += f"Output Addresses: {', '.join(list(output_addresses)[:3])}"
-            if len(output_addresses) > 3:
-                result += f" and {len(output_addresses) - 3} more"
-            result += "\n\n"
-        
-        # Fee calculation
-        fee = total_input_value - total_output_value
-        fee_erg = fee / 1_000_000_000
-        result += f"Fee: {fee_erg:.9f} ERG\n"
-        
-        # Token transfers
-        input_tokens = {}
-        for input in inputs:
-            for asset in input.get("assets", []):
-                token_id = asset.get("tokenId")
-                token_amount = asset.get("amount", 0)
-                token_name = asset.get("name", "Unknown")
-                
-                if token_id in input_tokens:
-                    input_tokens[token_id]["amount"] += token_amount
-                else:
-                    input_tokens[token_id] = {
-                        "amount": token_amount,
-                        "name": token_name,
-                        "decimals": asset.get("decimals", 0)
-                    }
-        
-        output_tokens = {}
-        for output in outputs:
-            for asset in output.get("assets", []):
-                token_id = asset.get("tokenId")
-                token_amount = asset.get("amount", 0)
-                token_name = asset.get("name", "Unknown")
-                
-                if token_id in output_tokens:
-                    output_tokens[token_id]["amount"] += token_amount
-                else:
-                    output_tokens[token_id] = {
-                        "amount": token_amount,
-                        "name": token_name,
-                        "decimals": asset.get("decimals", 0)
-                    }
-        
-        if input_tokens or output_tokens:
-            result += "\nToken Transfers:\n"
+        # Wrap the rest in a try-except to catch comparison errors
+        try:
+            # Analyze inputs
+            inputs = tx.get("inputs", [])
+            total_input_value = sum(input.get("value", 0) for input in inputs)
+            input_erg = total_input_value / 1_000_000_000
             
-            all_token_ids = set(list(input_tokens.keys()) + list(output_tokens.keys()))
-            for token_id in all_token_ids:
-                input_amount = input_tokens.get(token_id, {}).get("amount", 0)
-                output_amount = output_tokens.get(token_id, {}).get("amount", 0)
-                token_name = input_tokens.get(token_id, output_tokens.get(token_id))["name"]
-                decimals = input_tokens.get(token_id, output_tokens.get(token_id)).get("decimals", 0)
+            result += f"Inputs: {len(inputs)}\n"
+            result += f"Total Input Value: {input_erg:.9f} ERG\n"
+            
+            # Input addresses
+            input_addresses = set()
+            for input in inputs:
+                addr = input.get("address")
+                if addr:
+                    input_addresses.add(addr)
+            
+            if input_addresses:
+                result += f"Input Addresses: {', '.join(list(input_addresses)[:3])}"
+                if len(input_addresses) > 3:
+                    result += f" and {len(input_addresses) - 3} more"
+                result += "\n\n"
+            
+            # Analyze outputs
+            outputs = tx.get("outputs", [])
+            total_output_value = sum(output.get("value", 0) for output in outputs)
+            output_erg = total_output_value / 1_000_000_000
+            
+            result += f"Outputs: {len(outputs)}\n"
+            result += f"Total Output Value: {output_erg:.9f} ERG\n"
+            
+            # Output addresses
+            output_addresses = set()
+            for output in outputs:
+                addr = output.get("address")
+                if addr:
+                    output_addresses.add(addr)
+            
+            if output_addresses:
+                result += f"Output Addresses: {', '.join(list(output_addresses)[:3])}"
+                if len(output_addresses) > 3:
+                    result += f" and {len(output_addresses) - 3} more"
+                result += "\n\n"
+            
+            # Fee calculation
+            fee = total_input_value - total_output_value
+            fee_erg = fee / 1_000_000_000
+            result += f"Fee: {fee_erg:.9f} ERG\n"
+            
+            # Token transfers
+            input_tokens = {}
+            for input in inputs:
+                for asset in input.get("assets", []):
+                    token_id = asset.get("tokenId")
+                    token_amount = asset.get("amount", 0) or 0  # Handle None value
+                    token_name = asset.get("name", "Unknown")
+                    
+                    if token_id in input_tokens:
+                        input_tokens[token_id]["amount"] += token_amount
+                    else:
+                        input_tokens[token_id] = {
+                            "amount": token_amount,
+                            "name": token_name,
+                            "decimals": asset.get("decimals", 0) or 0  # Handle None value
+                        }
+            
+            output_tokens = {}
+            for output in outputs:
+                for asset in output.get("assets", []):
+                    token_id = asset.get("tokenId")
+                    token_amount = asset.get("amount", 0) or 0  # Handle None value
+                    token_name = asset.get("name", "Unknown")
+                    
+                    if token_id in output_tokens:
+                        output_tokens[token_id]["amount"] += token_amount
+                    else:
+                        output_tokens[token_id] = {
+                            "amount": token_amount,
+                            "name": token_name,
+                            "decimals": asset.get("decimals", 0) or 0  # Handle None value
+                        }
+            
+            if input_tokens or output_tokens:
+                result += "\nToken Transfers:\n"
                 
-                # Format the amounts according to decimals
-                if decimals > 0:
-                    input_formatted = input_amount / (10 ** decimals)
-                    output_formatted = output_amount / (10 ** decimals)
-                    difference = output_formatted - input_formatted
-                else:
-                    input_formatted = input_amount
-                    output_formatted = output_amount
-                    difference = output_formatted - input_formatted
-                
-                result += f"• {token_name} (ID: {token_id[:8]}...): "
-                if difference > 0:
-                    result += f"Minted {difference}\n"
-                elif difference < 0:
-                    result += f"Burned {abs(difference)}\n"
-                else:
-                    result += f"Transferred {input_formatted}\n"
-        
+                all_token_ids = set(list(input_tokens.keys()) + list(output_tokens.keys()))
+                for token_id in all_token_ids:
+                    input_amount = input_tokens.get(token_id, {}).get("amount", 0) or 0  # Handle None value
+                    output_amount = output_tokens.get(token_id, {}).get("amount", 0) or 0  # Handle None value
+                    
+                    # Safely get token_name and decimals
+                    input_token = input_tokens.get(token_id, {})
+                    output_token = output_tokens.get(token_id, {})
+                    token_info = input_token if token_id in input_tokens else output_token
+                    
+                    token_name = token_info.get("name", "Unknown")
+                    decimals = token_info.get("decimals", 0) or 0  # Handle None value
+                    
+                    # Format the amounts according to decimals
+                    if decimals > 0:
+                        input_formatted = input_amount / (10 ** decimals)
+                        output_formatted = output_amount / (10 ** decimals)
+                        difference = output_formatted - input_formatted
+                    else:
+                        input_formatted = input_amount
+                        output_formatted = output_amount
+                        difference = output_formatted - input_formatted
+                    
+                    result += f"• {token_name} (ID: {token_id[:8]}...): "
+                    if difference > 0:
+                        result += f"Minted {difference}\n"
+                    elif difference < 0:
+                        result += f"Burned {abs(difference)}\n"
+                    else:
+                        result += f"Transferred {input_formatted}\n"
+        except Exception as inner_e:
+            return f"Error in transaction node analysis details: {str(inner_e)} (partial result so far: {result})"
+            
         return result
     except Exception as e:
         return f"Error analyzing transaction from node: {str(e)}"
