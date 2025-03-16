@@ -1,6 +1,6 @@
 # Ergo MCP
 
-A Machine-in-the-Middle Communication Protocol (MCP) server for interacting with the Ergo blockchain. This package provides a set of tools for exploring blocks, transactions, addresses, and other aspects of the Ergo blockchain.
+A Model Context Protocol (MCP) server for interacting with the Ergo blockchain. This package provides a set of tools for exploring blocks, transactions, addresses, and other aspects of the Ergo blockchain.
 
 ## Features
 
