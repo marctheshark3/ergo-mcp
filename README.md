@@ -144,10 +144,40 @@ pip install -e ".[dev]"
 
 ### Running Tests
 
-```bash
-# Make sure your virtual environment is activated
-pytest
-```
+The project includes a comprehensive test suite to ensure all MCP tools work as expected. To run the tests:
+
+1. Make sure you have all the test dependencies installed:
+   ```bash
+   pip install -e ".[test]"
+   # or
+   pip install -r requirements.txt
+   ```
+
+2. Run the tests using pytest:
+   ```bash
+   # Run all tests
+   python -m pytest
+   
+   # Run tests with coverage report
+   python -m pytest --cov=ergo_explorer
+   
+   # Run specific test files
+   python -m pytest tests/unit/test_address_tools.py
+   ```
+
+3. Alternatively, use the provided test runner script:
+   ```bash
+   python tests/run_tests.py
+   ```
+
+The test suite includes unit tests for all MCP tools, including:
+- Address tools
+- Transaction tools
+- Block tools
+- Network tools
+- Token tools
+- Node tools
+- Server implementation
 
 ## License
 

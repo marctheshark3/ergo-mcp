@@ -469,14 +469,28 @@ async def search_for_token(query: str) -> str:
         query: Token ID or name to search for
     """
     try:
+        # Add logging for debugging
+        logging.info(f"Searching for token with query: {query}")
+        
         tokens = await search_tokens(query)
         
-        if not tokens:
+        # Add type checking and response validation
+        if not isinstance(tokens, dict):
+            logging.error(f"Unexpected response type: {type(tokens)}")
+            return f"Error: Received unexpected response format from API"
+            
+        # Check if we have items in the response
+        items = tokens.get("items", [])
+        if not items:
             return f"No tokens found matching '{query}'"
         
         result = f"Token Search Results for '{query}':\n\n"
         
-        for token in tokens:
+        for token in items:
+            if not isinstance(token, dict):
+                logging.warning(f"Skipping invalid token entry: {token}")
+                continue
+                
             token_id = token.get("id", "Unknown")
             name = token.get("name", "Unknown Token")
             description = token.get("description", "No description")
@@ -489,6 +503,7 @@ async def search_for_token(query: str) -> str:
         
         return result
     except Exception as e:
+        logging.error(f"Error in search_for_token: {str(e)}", exc_info=True)
         return f"Error searching for token: {str(e)}"
 
 @mcp.tool()

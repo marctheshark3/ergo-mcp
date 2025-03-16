@@ -16,6 +16,20 @@ setup(
         "python-dotenv",
         "argparse",
     ],
+    extras_require={
+        "test": [
+            "pytest>=7.0.0",
+            "pytest-asyncio>=0.18.0",
+            "pytest-cov>=3.0.0",
+            "pytest-mock>=3.7.0",
+        ],
+        "dev": [
+            "black",
+            "flake8",
+            "isort",
+            "mypy",
+        ],
+    },
     entry_points={
         "console_scripts": [
             "ergo-mcp=ergo_explorer.__main__:main",
