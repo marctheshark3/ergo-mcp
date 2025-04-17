@@ -17,7 +17,8 @@ from ergo_explorer.api.explorer import fetch_api, fetch_network_state
 from ergo_explorer.api.node import (
     get_mempool_transactions_node,
     get_mempool_size_node,
-    get_mempool_statistics_node
+    get_mempool_statistics_node,
+    fetch_node_api
 )
 
 # Set up logging
@@ -105,43 +106,39 @@ async def get_mining_difficulty() -> Dict:
     """
     try:
         logger.info("Fetching mining difficulty")
-        # Get the network state, which includes difficulty
-        network_state = await fetch_network_state()
         
-        # Extract relevant information
-        difficulty = network_state.get("difficulty", 0)
+        # Get data directly from the node's /info endpoint
+        node_info = await fetch_node_api("info")
         
-        # Get additional info from /info endpoint to get block time target
-        additional_info = await fetch_api("info")
+        # Extract the difficulty from the node info
+        difficulty = node_info.get("difficulty", 0)
         
-        # Extract useful information
-        if "parameters" in additional_info:
-            block_time_target = additional_info.get("parameters", {}).get("blockInterval", 120)  # in seconds
-        else:
-            block_time_target = 120  # default is 120 seconds
-            
-        # Get last blocks for difficulty adjustment info
-        last_blocks = network_state.get("lastBlocks", [])
-        difficulty_change = None
+        # Get the state type (utxo, digest, etc.)
+        state_type = node_info.get("stateType", "Unknown")
         
-        if len(last_blocks) >= 2:
-            # Calculate difficulty change between last two blocks
-            current_diff = last_blocks[0].get("difficulty", 0)
-            previous_diff = last_blocks[1].get("difficulty", 0)
-            
-            if previous_diff > 0:
-                difficulty_change_pct = (current_diff - previous_diff) / previous_diff * 100
-                difficulty_change = {
-                    "previousDifficulty": previous_diff,
-                    "currentDifficulty": current_diff,
-                    "changePercent": difficulty_change_pct
-                }
+        # Get additional block-related information
+        best_header_id = node_info.get("bestHeaderId", "Unknown")
+        full_height = node_info.get("fullHeight", 0)
+        headers_height = node_info.get("headersHeight", 0)
+        
+        # Get parameters which include block interval
+        params = node_info.get("parameters", {})
+        block_version = params.get("blockVersion", 3)
+        block_interval = 120  # Default Ergo block time in seconds
+        
+        # Format difficulty in a more readable format
+        readable_difficulty = format_readable_difficulty(difficulty)
         
         # Prepare result
         difficulty_data = {
             "difficulty": difficulty,
-            "blockTimeTarget": block_time_target,
-            "difficultyChange": difficulty_change,
+            "readableDifficulty": readable_difficulty,
+            "stateType": state_type,
+            "bestHeaderId": best_header_id,
+            "fullHeight": full_height,
+            "headersHeight": headers_height,
+            "blockVersion": block_version,
+            "blockTimeTarget": block_interval,
             "timestamp": datetime.now().timestamp() * 1000  # current time in milliseconds
         }
         
@@ -149,6 +146,39 @@ async def get_mining_difficulty() -> Dict:
     except Exception as e:
         logger.error(f"Error fetching mining difficulty: {str(e)}")
         return {"error": f"Error fetching mining difficulty: {str(e)}"}
+
+def format_readable_difficulty(difficulty: int) -> str:
+    """
+    Format the difficulty value into a human-readable form.
+    
+    Args:
+        difficulty: Raw difficulty value
+        
+    Returns:
+        Formatted difficulty string with appropriate unit
+    """
+    if difficulty == 0:
+        return "0"
+    
+    # Define units and thresholds
+    units = ['', 'K', 'M', 'G', 'T', 'P', 'E']
+    unit_index = 0
+    
+    # Convert to appropriate unit
+    value = float(difficulty)
+    while value >= 1000 and unit_index < len(units) - 1:
+        value /= 1000
+        unit_index += 1
+    
+    # Format with appropriate precision
+    if value < 10:
+        formatted = f"{value:.2f}"
+    elif value < 100:
+        formatted = f"{value:.1f}"
+    else:
+        formatted = f"{int(value)}"
+    
+    return f"{formatted} {units[unit_index]}"
 
 async def format_blockchain_stats(stats_data: Dict) -> str:
     """
@@ -288,9 +318,12 @@ async def format_mining_difficulty(difficulty_data: Dict) -> str:
         return difficulty_data["error"]
     
     # Extract relevant information
-    difficulty = difficulty_data.get("difficulty", 0)
-    block_time_target = difficulty_data.get("blockTimeTarget", 120)
-    difficulty_change = difficulty_data.get("difficultyChange", None)
+    raw_difficulty = difficulty_data.get("difficulty", 0)
+    readable_difficulty = difficulty_data.get("readableDifficulty", "Unknown")
+    block_time_target = difficulty_data.get("blockTimeTarget", 120)  # in seconds
+    state_type = difficulty_data.get("stateType", "Unknown")
+    full_height = difficulty_data.get("fullHeight", 0)
+    headers_height = difficulty_data.get("headersHeight", 0)
     
     # Format timestamp
     if "timestamp" in difficulty_data:
@@ -299,37 +332,23 @@ async def format_mining_difficulty(difficulty_data: Dict) -> str:
     else:
         formatted_timestamp = "Unknown"
     
+    # Calculate estimated hashrate
+    # Ergo hashrate estimate: difficulty / 8192 * 2^32 / 120
+    estimated_hashrate = raw_difficulty * (2**32) / (8192 * block_time_target) if raw_difficulty else 0
+    hashrate_th = estimated_hashrate / 1000000000000  # TH/s
+    
     # Create a formatted string
     formatted_output = f"""
 ## Ergo Mining Difficulty
 
-- **Current Difficulty**: {difficulty:,}
-- **Target Block Time**: {block_time_target} seconds
+- **Raw Difficulty**: {raw_difficulty:,}
+- **Readable Difficulty**: {readable_difficulty}
+- **Block Time Target**: {block_time_target} seconds
+- **State Type**: {state_type}
+- **Current Height**: {full_height:,}
+- **Headers Height**: {headers_height:,}
+- **Estimated Hashrate**: {hashrate_th:.2f} TH/s
 - **Timestamp**: {formatted_timestamp}
-"""
-    
-    # Add difficulty change information if available
-    if difficulty_change:
-        prev_diff = difficulty_change.get("previousDifficulty", 0)
-        change_pct = difficulty_change.get("changePercent", 0)
-        change_direction = "increase" if change_pct >= 0 else "decrease"
-        
-        formatted_output += f"""
-### Recent Difficulty Adjustment
-
-- **Previous Difficulty**: {prev_diff:,}
-- **Change**: {abs(change_pct):.2f}% {change_direction}
-"""
-    
-    # Add explanation
-    formatted_output += """
-### Difficulty Explanation
-
-The mining difficulty automatically adjusts to maintain the target block time.
-- If blocks are found too quickly, difficulty increases
-- If blocks are found too slowly, difficulty decreases
-
-This mechanism ensures that blocks are found approximately every 2 minutes, regardless of the total network hashrate.
 """
     
     return formatted_output

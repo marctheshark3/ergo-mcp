@@ -47,8 +47,7 @@ from ergo_explorer.tools.ergowatch import (
 
 # Misc tools
 from ergo_explorer.tools.misc import (
-    search_for_token,
-    get_network_status
+    search_for_token
 )
 
 # Node tools
@@ -109,7 +108,6 @@ __all__ = [
     
     # Misc tools
     'search_for_token',
-    'get_network_status',
     
     # Node tools
     'get_address_balance_from_node',
