@@ -59,7 +59,8 @@ from ergo_explorer.api.explorer import (
     fetch_block,
     fetch_network_state,
     fetch_box,
-    search_tokens
+    search_tokens,
+    fetch_address_book
 )
 
 # Node API functions
@@ -93,6 +94,7 @@ __all__ = [
     'fetch_network_state',
     'fetch_box',
     'search_tokens',
+    'fetch_address_book',
     
     # Node API
     'get_address_balance_node',

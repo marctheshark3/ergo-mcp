@@ -1,0 +1,62 @@
+{
+    "items": [
+        {
+            "address": "9fyeEQBXvJzRYpRmrNy2eaB2kDqQGDk3KoSQGUB62db3tVDw2Z1",
+            "name": "$BASS",
+            "url": "https://basstoken.io",
+            "type": "Service",
+            "urltype": "Pond",
+            "addressmd5": "1bcd82626a3f80ff10a86599e3258153"
+        },
+        {
+            "address": "88dhgzEuTXaRQTX5KNdnaWTTX7fEZVEQRn6qP4MJotPuRnS3QpoJxYpSaXoU1y7SHp8ZXMp92TH22DBY",
+            "name": "2miners",
+            "url": "https://2miners.com",
+            "type": "Mining pool",
+            "urltype": "",
+            "addressmd5": "eab17b7ca66b872a5bd31254cf0ec072"
+        },
+        {
+            "address": "88dhgzEuTXaU9uJYAV8HTNzQL5pZrf7DovupdeBVm6msBjzLQjor8cp8DXaruQvyrAij6YxZAzzmbj8n",
+            "name": "666 Pool",
+            "url": "https://www.666pool.com",
+            "type": "Mining pool",
+            "urltype": "",
+            "addressmd5": "12ecaa831d46b2ca723fc0b55a39a991"
+        },
+        {
+            "address": "9hkrzEE9TgWBjJn8oNG5FXP5bh5SjaDE6892QkwCfwP3hbXFmnw",
+            "name": "Grand Gambit",
+            "url": "https://www.grandgambit.io",
+            "type": "Service",
+            "urltype": "",
+            "addressmd5": "c89288420e4718ff93cb322c114872ba"
+        },
+        {
+            "address": "9hcnbxtxNqnqKrpUvPBGcNamABYj1Jca2kMdQX6fpXNGqfpDYnT",
+            "name": "GreasyCEX",
+            "url": "https://greasycex.com",
+            "type": "Service",
+            "urltype": "Treasury",
+            "addressmd5": "57aebb143e456b0c276ab07f93f968b0"
+        }
+    ],
+    "total": 5,
+    "tokens": [
+        {
+            "addressname": "Duckpools",
+            "tokenname": "QUACKS",
+            "id": "089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f"
+        },
+        {
+            "addressname": "Ergopad",
+            "tokenname": "ergopad",
+            "id": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413"
+        },
+        {
+            "addressname": "$BASS",
+            "tokenname": "$BASS",
+            "id": "ba553573f83c61be880d79db0f4068177fa75ab7c250ce3543f7e7aeb471a9d2"
+        }
+    ]
+} 

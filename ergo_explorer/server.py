@@ -48,6 +48,12 @@ __all__ = [
     # Node tools
     "get_node_wallet",
     
+    # Address book tools
+    "get_address_book",
+    "get_address_book_by_type",
+    "search_address_book",
+    "get_address_details",
+    
     # Deprecated functions - these will be removed in a future version
     "get_address_txs",
     "get_address_balance",
