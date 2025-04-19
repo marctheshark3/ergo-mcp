@@ -66,6 +66,31 @@ docker run -p 3001:3001 \
   mcp/ergo-explorer
 ```
 
+### Using the Container Manager
+
+For development and easier management, use the provided container management script:
+
+```bash
+# Make the script executable
+chmod +x manage_mcp.sh
+
+# Build the image and start a container
+./manage_mcp.sh reload
+
+# Other commands:
+./manage_mcp.sh start    # Start the container
+./manage_mcp.sh stop     # Stop the container
+./manage_mcp.sh restart  # Restart the container
+./manage_mcp.sh status   # Show container status
+./manage_mcp.sh logs     # Show container logs
+./manage_mcp.sh debug    # Run with interactive shell
+./manage_mcp.sh clean    # Remove stopped containers
+```
+
+The manager ensures only one container runs at a time and provides a consistent environment. See `mcp_config.md` for detailed documentation.
+
+### Configure for Cursor
+
 To use with Cursor, update your MCP configuration:
 
 ```json
@@ -76,10 +101,10 @@ To use with Cursor, update your MCP configuration:
       "run", 
       "-i", 
       "--rm", 
-      "-p", "3001:3001",
-      "-e", "ERGO_NODE_API=http://your-node-url:9053",
+      "--add-host=host.docker.internal:host-gateway",
+      "-e", "ERGO_NODE_API=http://host.docker.internal:9053",
       "-e", "ERGO_NODE_API_KEY=your-api-key", 
-      "mcp/ergo-explorer"
+      "ergo-explorer-mcp:latest"
     ]
   }
 }
