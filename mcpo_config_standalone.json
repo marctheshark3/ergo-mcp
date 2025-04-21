@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "ergo": {
+      "command": "python",
+      "args": ["-m", "ergo_explorer", "--port", "3001"],
+      "workingDir": "/home/whaleshark/Documents/ergo/ergo-explorer-mcp"
+    }
+  },
+  "auth": {
+    "apiKey": "135c3db0bcf9bec51456c47374709912"
+  },
+  "port": 8001,
+  "host": "0.0.0.0",
+  "cors": {
+    "allowOrigins": ["*"],
+    "allowMethods": ["GET", "POST"],
+    "allowHeaders": ["*"]
+  }
+}

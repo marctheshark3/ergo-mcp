@@ -8,6 +8,7 @@ A Model Context Protocol (MCP) server for interacting with the Ergo blockchain. 
 - Network statistics: blockchain stats, hashrate, mining difficulty, etc.
 - Mempool information: pending transactions status and statistics
 - Token price information: get token prices from DEXes
+- **NEW**: OpenAPI integration with Open WebUI via MCPO
 
 ## Installation
 
@@ -454,3 +455,73 @@ The module uses the following environment variables:
 - `ERGO_NODE_API`: URL of the Ergo Node API (default: http://localhost:9053)
 - `ERGO_NODE_API_KEY`: API key for the Ergo Node
 - `ERGO_EXPLORER_API`: URL of the Ergo Explorer API (default: https://api.ergoplatform.com/api/v1)
+
+## MCPO Integration with Open WebUI
+
+This package now includes integration with [MCPO](https://github.com/open-webui/mcpo) (Model Context Protocol to OpenAPI) to enable seamless interaction with [Open WebUI](https://github.com/open-webui/open-webui).
+
+### Quick Start with MCPO
+
+Run the integrated setup script to configure and start both the Ergo MCP server and MCPO proxy:
+
+```bash
+# Make the script executable
+chmod +x start_ergo_openwebui.sh
+
+# Run in standalone mode
+./start_ergo_openwebui.sh
+
+# Or run with Docker Compose
+./start_ergo_openwebui.sh --mode docker
+```
+
+The script will:
+1. Install MCPO if needed
+2. Generate a secure API key
+3. Create configuration files
+4. Start both the Ergo MCP server and MCPO proxy
+5. Provide instructions for connecting to Open WebUI
+
+### Manual MCPO Setup
+
+If you prefer to set up MCPO manually:
+
+```bash
+# Install MCPO
+pip install mcpo
+
+# Create a configuration file (mcpo_config.json)
+{
+  "mcpServers": {
+    "ergo": {
+      "command": "python",
+      "args": ["-m", "ergo_explorer", "--port", "3001"],
+      "workingDir": "$(pwd)"
+    }
+  },
+  "auth": {
+    "apiKey": "your-api-key-here"
+  },
+  "port": 8000,
+  "host": "0.0.0.0"
+}
+
+# Run MCPO
+mcpo --config mcpo_config.json
+```
+
+### Connecting to Open WebUI
+
+After starting the MCPO proxy:
+
+1. Go to Open WebUI's Models section
+2. Click "Add New Model"
+3. Select "API" as the model type
+4. Configure with:
+   - Name: Ergo Explorer
+   - Endpoint URL: http://your-server-ip:8000
+   - API Key: The API key from your MCPO configuration
+   - API Type: OpenAI Compatible
+5. Save the configuration
+
+For detailed instructions, see [OPENWEBUI_INTEGRATION.md](OPENWEBUI_INTEGRATION.md).
