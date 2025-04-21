@@ -7,17 +7,19 @@ services:
       dockerfile: Dockerfile
     container_name: ergo-mcp
     environment:
-      - ERGO_NODE_API=${ERGO_NODE_API:-http://host.docker.internal:9053}
-      - ERGO_NODE_API_KEY=${ERGO_NODE_API_KEY:-hashcream}
-      - SERVER_PORT=3001
-      - SERVER_HOST=0.0.0.0
+      - ERGO_EXPLORER_API=${ERGO_EXPLORER_API}
+      - ERGO_NODE_API=${ERGO_NODE_API}
+      - ERGO_NODE_API_KEY=${ERGO_NODE_API_KEY}
+      - ERGOWATCH_API_URL=${ERGOWATCH_API_URL}
+      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_HOST=${SERVER_HOST}
     ports:
-      - "3001:3001"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     volumes:
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,7 +31,7 @@ services:
     depends_on:
       - ergo-mcp
     environment:
-      - API_KEY=${MCPO_API_KEY:-$(openssl rand -hex 16)}
+      - API_KEY=${MCPO_API_KEY}
     ports:
       - "8001:8001"
     volumes:
