@@ -20,11 +20,18 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-# Check if Docker Compose is installed
-if ! command -v docker-compose &> /dev/null; then
+# Check if Docker Compose is installed (either standalone or as plugin)
+DOCKER_COMPOSE_CMD=""
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker-compose"
+elif docker compose version &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker compose"
+else
     echo -e "${RED}Docker Compose is required but not installed. Please install Docker Compose and try again.${NC}"
     exit 1
 fi
+
+echo -e "${GREEN}Using Docker Compose command: ${DOCKER_COMPOSE_CMD}${NC}"
 
 # Check if .env file exists, if not create it from example
 if [ ! -f .env ]; then
@@ -45,10 +52,11 @@ fi
 
 # Start the Docker containers
 echo -e "${YELLOW}Starting Ergo Explorer and MCPO with Docker Compose...${NC}"
-docker-compose up -d
+$DOCKER_COMPOSE_CMD up -d
 
 # Get the MCPO API key from the .env file
 MCPO_API_KEY=$(grep MCPO_API_KEY .env | cut -d'=' -f2)
+SERVER_PORT=$(grep SERVER_PORT .env | cut -d'=' -f2)
 
 echo -e "${GREEN}Services started successfully!${NC}"
 echo -e "${YELLOW}=====================================================${NC}"
@@ -66,6 +74,6 @@ echo -e "   - API Type: ${GREEN}OpenAI Compatible${NC}"
 echo -e "5. Save the configuration"
 echo -e "${YELLOW}=====================================================${NC}"
 
-echo -e "${YELLOW}Ergo Explorer MCP server:${NC} http://localhost:3001"
+echo -e "${YELLOW}Ergo Explorer MCP server:${NC} http://localhost:${SERVER_PORT}"
 echo -e "${YELLOW}MCPO proxy (OpenAPI):${NC} http://localhost:8001"
 echo -e "${YELLOW}OpenAPI documentation:${NC} http://localhost:8001/docs" 

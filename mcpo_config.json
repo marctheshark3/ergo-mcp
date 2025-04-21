@@ -2,7 +2,7 @@
   "mcpServers": {
     "ergo": {
       "command": "curl",
-      "args": ["-s", "http://ergo-mcp:3001/mcp"],
+      "args": ["-s", "http://ergo-mcp:3002/mcp"],
       "useStdio": true
     }
   },
