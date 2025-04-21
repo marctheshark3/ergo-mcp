@@ -7,7 +7,7 @@
     }
   },
   "auth": {
-    "apiKey": "135c3db0bcf9bec51456c47374709912"
+    "apiKey": "${MCPO_API_KEY}"
   },
   "port": 8001,
   "host": "0.0.0.0",
