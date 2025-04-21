@@ -61,4 +61,8 @@ __all__ = [
     "get_mining_difficulty",
     "get_info",
     "get_info_raw",
+    
+    # EIP resources
+    "list_resources",
+    "read_resource",
 ]
