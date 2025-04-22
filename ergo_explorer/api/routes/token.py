@@ -5,8 +5,8 @@ Token-related API routes for Ergo Explorer MCP.
 from mcp.server.fastmcp import Context
 from ergo_explorer.logging_config import get_logger
 from ergo_explorer.tools.blockchain import get_token_info
-from ergo_explorer.tools.token_holders import (
-    get_token_holders as get_token_holders_impl,
+from ergo_explorer.tools.token_holders.holders import get_token_holders as get_token_holders_impl
+from ergo_explorer.tools.token_holders.collections import (
     search_collections as search_collections_impl,
     get_collection_holders as get_collection_holders_impl
 )

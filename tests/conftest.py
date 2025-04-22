@@ -4,11 +4,37 @@ Common test configuration and fixtures for Ergo Explorer MCP tests.
 
 import pytest
 import os
-from unittest.mock import AsyncMock, MagicMock
+import logging
+from unittest.mock import AsyncMock, MagicMock, patch
 # Import needed for the test_mcp fixture
 from ergo_explorer.server_config import create_server
 # Import needed for mock_context fixture
 from mcp.server.fastmcp import Context
+
+# Patch the logging configuration to prevent permission errors
+@pytest.fixture(autouse=True, scope="session")
+def mock_logging():
+    """
+    Mock logging to prevent permission errors during tests.
+    This fixture runs automatically for all tests.
+    """
+    log_dir = os.path.join(os.path.dirname(__file__), "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Configure basic logging to the test logs directory
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.FileHandler(os.path.join(log_dir, "test.log")),
+            logging.StreamHandler()
+        ]
+    )
+    
+    # Patch get_logger to return a standard logger rather than setting up file handlers
+    with patch("ergo_explorer.logging_config.get_logger", return_value=logging.getLogger("test")), \
+         patch("ergo_explorer.logging_config.configure_logging", return_value=logging.getLogger("test")):
+        yield
 
 # Skip these test files temporarily until we update the imports to match the new code structure
 collect_ignore = [

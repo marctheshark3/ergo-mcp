@@ -11,7 +11,7 @@ import sys
 import json
 import asyncio
 from datetime import datetime
-from ergo_explorer.tools.token_holders import get_token_holders
+from ergo_explorer.tools.token_holders.holders import get_token_holders
 
 async def export_token_holders(token_id, output_dir=None):
     """Export token holders data to a JSON file."""
