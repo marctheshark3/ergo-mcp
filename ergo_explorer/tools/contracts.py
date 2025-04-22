@@ -9,7 +9,6 @@ import base64
 from ergo_explorer.api import (
     fetch_api,
     get_box_by_id_node,
-    get_box_by_address_node,
     get_unspent_boxes_by_address_node
 )
 

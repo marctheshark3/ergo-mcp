@@ -59,7 +59,8 @@ from ergo_explorer.api.explorer import (
     fetch_block,
     fetch_network_state,
     fetch_box,
-    search_tokens
+    search_tokens,
+    fetch_address_book
 )
 
 # Node API functions
@@ -69,7 +70,6 @@ from ergo_explorer.api.node import (
     get_transaction_by_address_node,
     submit_transaction_node,
     get_box_by_id_node,
-    get_box_by_address_node,
     get_unspent_boxes_by_address_node,
     get_token_by_id_node,
     search_for_token_node,
@@ -94,6 +94,7 @@ __all__ = [
     'fetch_network_state',
     'fetch_box',
     'search_tokens',
+    'fetch_address_book',
     
     # Node API
     'get_address_balance_node',
@@ -101,7 +102,6 @@ __all__ = [
     'get_transaction_by_address_node',
     'submit_transaction_node',
     'get_box_by_id_node',
-    'get_box_by_address_node',
     'get_unspent_boxes_by_address_node',
     'get_token_by_id_node',
     'search_for_token_node',

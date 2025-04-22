@@ -427,4 +427,147 @@ async def get_node_wallet_info() -> str:
         
         return output
     except Exception as e:
-        return f"Error getting node wallet information: {str(e)}" 
+        return f"Error getting node wallet information: {str(e)}"
+
+async def get_node_info() -> Dict:
+    """
+    Get complete information about the Ergo node and network.
+    
+    Returns:
+        A dictionary containing all node information including:
+        - Network status
+        - Current difficulty
+        - Block heights
+        - Node version
+        - Mempool status
+        - Network parameters
+    """
+    try:
+        logger.info("Fetching node info")
+        node_info = await fetch_node_api("info")
+        
+        # Format some values for better readability
+        if "difficulty" in node_info:
+            raw_difficulty = node_info["difficulty"]
+            # Format difficulty in a more readable format
+            readable_difficulty = format_readable_value(raw_difficulty)
+            node_info["readableDifficulty"] = readable_difficulty
+        
+        return node_info
+    except Exception as e:
+        logger.error(f"Error fetching node info: {str(e)}")
+        return {"error": f"Error fetching node info: {str(e)}"}
+
+def format_readable_value(value: int) -> str:
+    """
+    Format a large number value into a human-readable form with appropriate units.
+    
+    Args:
+        value: Raw numerical value
+        
+    Returns:
+        Formatted string with appropriate unit
+    """
+    if value == 0:
+        return "0"
+    
+    # Define units and thresholds
+    units = ['', 'K', 'M', 'G', 'T', 'P', 'E']
+    unit_index = 0
+    
+    # Convert to appropriate unit
+    value_float = float(value)
+    while value_float >= 1000 and unit_index < len(units) - 1:
+        value_float /= 1000
+        unit_index += 1
+    
+    # Format with appropriate precision
+    if value_float < 10:
+        formatted = f"{value_float:.2f}"
+    elif value_float < 100:
+        formatted = f"{value_float:.1f}"
+    else:
+        formatted = f"{int(value_float)}"
+    
+    return f"{formatted} {units[unit_index]}"
+
+async def format_node_info(node_info: Dict) -> str:
+    """
+    Format node information into a readable string.
+    
+    Args:
+        node_info: The node info data to format
+        
+    Returns:
+        A formatted string representation of the node information
+    """
+    if "error" in node_info:
+        return node_info["error"]
+    
+    # Extract key information
+    network = node_info.get("network", "Unknown")
+    name = node_info.get("name", "Unknown")
+    state_type = node_info.get("stateType", "Unknown")
+    
+    # Difficulty
+    raw_difficulty = node_info.get("difficulty", 0)
+    readable_difficulty = node_info.get("readableDifficulty", "Unknown")
+    
+    # Heights
+    full_height = node_info.get("fullHeight", 0)
+    headers_height = node_info.get("headersHeight", 0)
+    
+    # Version and state
+    app_version = node_info.get("appVersion", "Unknown")
+    is_explorer = node_info.get("isExplorer", False)
+    is_mining = node_info.get("isMining", False)
+    
+    # Peers and mempool
+    peers_count = node_info.get("peersCount", 0)
+    unconfirmed_count = node_info.get("unconfirmedCount", 0)
+    
+    # Parameters
+    params = node_info.get("parameters", {})
+    block_version = params.get("blockVersion", 0)
+    max_block_size = params.get("maxBlockSize", 0)
+    max_block_cost = params.get("maxBlockCost", 0)
+    
+    # Calculate estimated hashrate from difficulty (if available)
+    estimated_hashrate = 0
+    if raw_difficulty:
+        # Ergo hashrate estimate: difficulty / 8192 * 2^32 / 120
+        estimated_hashrate = raw_difficulty * (2**32) / (8192 * 120)
+        hashrate_th = estimated_hashrate / 1000000000000  # Convert to TH/s
+    else:
+        hashrate_th = 0
+    
+    # Create a formatted string
+    formatted_output = f"""
+## Ergo Node Status
+
+### Network Information
+- **Network**: {network}
+- **Node Name**: {name}
+- **Version**: {app_version}
+- **State Type**: {state_type}
+- **Explorer Mode**: {'Yes' if is_explorer else 'No'}
+- **Mining Active**: {'Yes' if is_mining else 'No'}
+
+### Blockchain Status
+- **Current Height**: {full_height:,}
+- **Headers Height**: {headers_height:,}
+- **Peers Connected**: {peers_count}
+- **Unconfirmed Transactions**: {unconfirmed_count}
+
+### Mining Information
+- **Raw Difficulty**: {raw_difficulty:,}
+- **Readable Difficulty**: {readable_difficulty}
+- **Estimated Hashrate**: {hashrate_th:.2f} TH/s
+
+### Block Parameters
+- **Block Version**: {block_version}
+- **Max Block Size**: {max_block_size:,} bytes
+- **Max Block Cost**: {max_block_cost:,}
+"""
+    
+    return formatted_output 

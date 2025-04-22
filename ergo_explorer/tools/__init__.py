@@ -14,6 +14,27 @@ from ergo_explorer.tools.transaction import (
     analyze_transaction
 )
 
+# Block tools
+from ergo_explorer.tools.block import (
+    get_block_by_height,
+    get_block_by_hash,
+    get_latest_blocks,
+    get_block_transactions
+)
+
+# Network tools
+from ergo_explorer.tools.network import (
+    get_blockchain_stats,
+    get_network_hashrate,
+    get_mining_difficulty,
+    get_mempool_info
+)
+
+# Token tools
+from ergo_explorer.tools.token import (
+    get_token_price
+)
+
 # ErgoWatch tools
 from ergo_explorer.tools.ergowatch import (
     get_address_balance_history,
@@ -26,8 +47,7 @@ from ergo_explorer.tools.ergowatch import (
 
 # Misc tools
 from ergo_explorer.tools.misc import (
-    search_for_token,
-    get_network_status
+    search_for_token
 )
 
 # Node tools
@@ -63,6 +83,21 @@ __all__ = [
     # Transaction tools
     'analyze_transaction',
     
+    # Block tools
+    'get_block_by_height',
+    'get_block_by_hash',
+    'get_latest_blocks',
+    'get_block_transactions',
+    
+    # Network tools
+    'get_blockchain_stats',
+    'get_network_hashrate',
+    'get_mining_difficulty',
+    'get_mempool_info',
+    
+    # Token tools
+    'get_token_price',
+    
     # ErgoWatch tools
     'get_address_balance_history',
     'get_address_balance_at_height',
@@ -73,7 +108,6 @@ __all__ = [
     
     # Misc tools
     'search_for_token',
-    'get_network_status',
     
     # Node tools
     'get_address_balance_from_node',
