@@ -4,7 +4,8 @@ Tests for NFT collection functionality.
 
 import asyncio
 from ergo_explorer.logging_config import get_logger
-from ergo_explorer.tools.token_holders import (
+# Update imports to use the new modular structure
+from ergo_explorer.tools.token_holders.collections import (
     get_collection_metadata,
     get_collection_nfts,
     get_collection_holders,

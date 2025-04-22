@@ -7,12 +7,10 @@ import json
 from unittest.mock import AsyncMock, patch, MagicMock
 import httpx
 
-# Imports for new package structure
-from ergo_explorer.tools.token_holders import (
-    get_token_holders,
-    get_token_by_id,
-    get_unspent_boxes_by_token_id
-)
+# Update imports to use the new modular structure directly
+from ergo_explorer.tools.token_holders.holders import get_token_holders
+from ergo_explorer.tools.token_holders.tokens import get_token_by_id
+from ergo_explorer.tools.token_holders.boxes import get_unspent_boxes_by_token_id
 
 # Path updates for imports in the test file
 TOKENS_MODULE_PATH = 'ergo_explorer.tools.token_holders.tokens'

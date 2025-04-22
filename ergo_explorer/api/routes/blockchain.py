@@ -49,6 +49,36 @@ def register_blockchain_routes(mcp):
     """
 
     @mcp.tool()
+    async def blockchain_address_info(ctx: Context, address: str, include_transactions: bool = True, tx_limit: int = 10) -> str:
+        """
+        Get comprehensive address information including balance, tokens, and recent transactions.
+        
+        Args:
+            address: Ergo blockchain address to analyze
+            include_transactions: Whether to include transaction history
+            tx_limit: Maximum number of transactions to include in the response
+        
+        Returns:
+            Comprehensive information about the address including balance and transaction history
+        """
+        logger.info(f"Getting comprehensive address information for {address}")
+        
+        # Import these inside the function to avoid circular imports
+        from ergo_explorer.tools.address import get_address_balance, get_transaction_history
+        
+        # Get balance information
+        balance_info = await get_address_balance(address)
+        
+        # If transactions are requested, get transaction history
+        if include_transactions:
+            tx_history = await get_transaction_history(address, limit=tx_limit)
+            result = f"{balance_info}\n\n## Recent Transactions\n{tx_history}"
+        else:
+            result = balance_info
+            
+        return result
+
+    @mcp.tool()
     async def mempool_status(ctx: Context) -> str:
         """
         Get current mempool state including pending transactions,
