@@ -2,165 +2,99 @@
 
 This document outlines the steps needed to remove deprecated functionality and clean up the codebase to improve maintainability and reduce errors.
 
+**Current Status (as of last update):** Proceeding with Phase 4 - Removal of Deprecated Components. Internal code references have been checked and updated where necessary. Deprecation warnings are in place. Ready to remove the deprecated file and associated registration.
+
 ## Overview of Deprecated Components
 
-1. **Deprecated API Routes** (`ergo_explorer/api/routes/deprecated.py`)
-   - Several outdated API endpoints that redirect to newer implementations
-   - Some implementations contain errors (like the address balance function)
+1. **Deprecated API Routes** (`ergo_explorer/api/routes/deprecated.py`) - **TARGET FOR REMOVAL**
+   - Several outdated API endpoints that redirect to newer implementations or have updated logic.
+   - Contained errors (e.g., address balance function, import issues) which have been addressed.
 
-2. **Monolithic Token Holders Implementation** (`ergo_explorer/tools/token_holders.py`)
-   - Legacy file acting as a compatibility layer
-   - The implementation has been moved to `ergo_explorer/tools/token_holders/` package
+2. **Monolithic Token Holders Implementation** (`ergo_explorer/tools/token_holders.py`) - **TARGET FOR REMOVAL**
+   - Legacy file acting as a compatibility layer.
+   - The implementation has been moved to `ergo_explorer/tools/token_holders/` package.
 
-3. **Import References** 
-   - Many files still import from deprecated paths
-   - These should be updated to import from the new module structure
+3. **Import References**
+   - Many files previously imported from deprecated paths.
+   - These have been checked and updated to use the new module structure where necessary.
 
 ## Migration Plan
 
-### Phase 1: Fix Immediate Issues
+### Phase 1: Fix Immediate Issues - COMPLETE
 
-1. **Fix Address Balance Implementation**
-   - Current Issue: `get_address_balance` in deprecated.py incorrectly redirects to token holders function
-   - Correct implementation:
-   ```python
-   @mcp.tool()
-   async def get_address_balance(ctx: Context, address: str) -> str:
-       """Get the confirmed balance for an Ergo address."""
-       logger.warning("get_address_balance is deprecated; use blockchain_address_info instead")
-       from ergo_explorer.tools.address import get_address_balance
-       return await get_address_balance(address)
-   ```
+1. **Fix Address Balance Implementation** - **DONE**
+   - Corrected `get_address_balance` in `deprecated.py` to use the proper underlying function before removal.
+   - Fixed import errors for `get_info`, `get_mining_difficulty`, `get_network_hashrate`.
 
-2. **Create a New Address Info Tool**
-   - Create a comprehensive blockchain_address_info tool in blockchain.py that combines balance and transaction data
-   - This will be the recommended replacement for get_address_balance
+2. **Create a New Address Info Tool** - **DONE**
+   - Comprehensive `blockchain_address_info` tool created in `blockchain.py`.
+   - `blockchain_status` tool created for network/node info.
 
-### Phase 2: Update Import References
+### Phase 2: Update Import References - COMPLETE
 
-1. **Inventory Import References**
-   - Run `grep -r "from ergo_explorer.tools.token_holders import" --include="*.py" .`
-   - Update each reference to use the new modular imports
+1. **Inventory Import References** - **DONE**
+   - Codebase scanned (`grep -r "from ergo_explorer.tools.token_holders import"`, `grep` for deprecated tool calls).
+   - Internal references checked and confirmed to be using newer implementations (e.g., `blockchain.py` uses `tools.address.get_address_balance`).
 
-2. **Update Documentation**
-   - Update README.md and other documentation to reference new functions 
-   - Add migration notes for users
+2. **Update Documentation** - **PENDING (Manual Step)**
+   - README.md and other documentation need final updates to remove references to deleted tools and confirm replacements.
 
-### Phase 3: Add Proper Deprecation Warnings
+### Phase 3: Add Proper Deprecation Warnings - COMPLETE
 
-1. **Modify Deprecated Functions**
-   - Add clear deprecation warnings with deprecation timeline
-   - Example:
-   ```python
-   import warnings
-   
-   def deprecated_function():
-       warnings.warn(
-           "This function will be removed in version X.Y. "
-           "Use new_function() instead.",
-           DeprecationWarning,
-           stacklevel=2
-       )
-       return new_function()
-   ```
+1. **Modify Deprecated Functions** - **DONE**
+   - Clear deprecation warnings (`warnings.warn`) added to all functions in `deprecated.py`.
+   - Logging warnings added.
 
-### Phase 4: Remove Deprecated Components
+### Phase 4: Remove Deprecated Components - IN PROGRESS
 
-1. **Create a Cleanup Branch**
-   - Branch name: `cleanup/remove-deprecated-components`
+1. **Create a Cleanup Branch** - **ASSUMED (User's current branch)**
+   - Recommended branch name: `cleanup/remove-deprecated-components`
 
-2. **Remove deprecated.py**
-   - Delete the file after updating all references
+2. **Verify No Internal Usage** - **DONE**
+   - Confirmed that no internal code calls the deprecated tool functions directly.
 
-3. **Remove token_holders.py**
-   - Delete the legacy file after ensuring all imports use the new structure
+3. **Remove Deprecated Route Registration** - **DONE**
+   - Located the call to `register_deprecated_routes` in `ergo_explorer/api/routes/__init__.py`.
+   - Removed the import and the function call.
+   - Deleted the associated test file `tests/api/test_deprecated_routes.py`.
 
-4. **Update and Test Documentation**
-   - Ensure all documentation is updated to reflect the new structure
+4. **Remove `deprecated.py`** - **DONE**
+   - Deleted the file `ergo_explorer/api/routes/deprecated.py`.
 
-## Specific Fixes
+5. **Remove `token_holders.py`** - **DONE**
+   - Verified no remaining imports from `ergo_explorer.tools.token_holders`.
+   - Deleted the legacy file `ergo_explorer/tools/token_holders.py`.
 
-### Address Balance Issue Fix
+6. **Update and Test Documentation** - **PENDING (Manual Step)**
+   - Ensure all documentation (e.g., README.md) is updated to reflect the removal and points to the new tools.
+   - Manual testing recommended post-migration.
 
-The current implementation incorrectly directs `get_address_balance` to the token holders module:
+## Specific Fixes - RESOLVED
 
-```python
-@mcp.tool()
-async def get_address_balance(ctx: Context, address: str) -> str:
-    """
-    DEPRECATED: Use get_token_holders instead.
-    Get the confirmed balance for an Ergo address.
-    """
-    logger.warning("get_address_balance is deprecated; use get_token_holders instead")
-    from ergo_explorer.tools.token_holders.holders import get_token_holders as get_token_holders_impl
-    return await get_token_holders_impl(address, include_raw=False, include_analysis=True)
-```
+_(Details omitted for brevity - issues addressed in Phase 1)_
 
-This is incorrect as `get_token_holders` expects a token ID, not an address. The correct implementation should use `get_address_balance` from the address module:
+## New Recommended API Structure - Implemented
 
-```python
-@mcp.tool()
-async def get_address_balance(ctx: Context, address: str) -> str:
-    """
-    DEPRECATED: Use blockchain_address_info instead.
-    Get the confirmed balance for an Ergo address.
-    """
-    logger.warning("get_address_balance is deprecated; use blockchain_address_info instead")
-    from ergo_explorer.tools.address import get_address_balance
-    return await get_address_balance(address)
-```
+_(Details omitted for brevity - structure reflects current state)_
 
-### New Recommended API Structure
+## Testing Recommendations - Apply Post-Migration
 
-For better API organization, we recommend the following structure:
+_(Details omitted for brevity - standard testing advice)_
 
-- **blockchain.py**: Core blockchain data including blocks, transactions, and network status
-- **address.py**: Address-specific functions (balance, transactions, analysis)
-- **token.py**: Token-specific functions (info, holders)
-- **collections.py**: NFT collection functionality
+## Migration Timeline - Updated
 
-## Testing Recommendations
+1. **Immediate (Current Version)** - **DONE**
+   - Fix critical issues (address balance lookup, import errors).
+   - Update documentation (partially done, final pass needed).
 
-1. **Unit Tests**
-   - Create/update unit tests for all migrated functions
-   - Ensure coverage of edge cases
+2. **Next Minor Release** - **DONE**
+   - Add proper deprecation warnings.
+   - Update import references.
 
-2. **Integration Tests**
-   - Test with real blockchain data
-   - Verify API responses match expectations
+3. **Next Major Release (Current Action)**
+   - Remove all deprecated components (`deprecated.py`, `token_holders.py`).
+   - Complete API cleanup.
 
-3. **Regression Testing**
-   - Test common use cases to ensure no functionality is broken
-   - Create automated tests for critical paths
+## Additional Recommendations - Consider Post-Migration
 
-## Migration Timeline
-
-1. **Immediate (Current Version)**
-   - Fix critical issues (address balance lookup)
-   - Update documentation
-
-2. **Next Minor Release**
-   - Add proper deprecation warnings
-   - Begin updating import references
-
-3. **Next Major Release**
-   - Remove all deprecated components
-   - Complete API cleanup
-
-## Additional Recommendations
-
-1. **API Versioning**
-   - Consider implementing API versioning for future changes
-   - Example: `/api/v1/...` and `/api/v2/...`
-
-2. **Consistent Error Handling**
-   - Implement consistent error handling across all API endpoints
-   - Return structured error responses
-
-3. **Documentation Generation**
-   - Set up automatic documentation generation
-   - Keep API documentation in sync with code
-
-4. **Monitoring**
-   - Add telemetry to track usage of deprecated functions
-   - Inform users of upcoming removals 
+_(Details omitted for brevity - future improvements)_ 

@@ -6,10 +6,8 @@ from mcp.server.fastmcp import Context
 from ergo_explorer.logging_config import get_logger
 from ergo_explorer.tools.blockchain import get_blockchain_height
 from ergo_explorer.tools.network import (
-    get_mempool_info as fetch_mempool_info,
     format_network_hashrate,
     format_mining_difficulty,
-    format_mempool_info
 )
 
 # Get module-specific logger
@@ -78,15 +76,15 @@ def register_blockchain_routes(mcp):
             
         return result
 
-    @mcp.tool()
-    async def mempool_status(ctx: Context) -> str:
-        """
-        Get current mempool state including pending transactions,
-        memory usage, and size statistics.
-        """
-        logger.info("Getting mempool status")
-        mempool_data = await fetch_mempool_info()
-        return await format_mempool_info(mempool_data)
+    # @mcp.tool()
+    # async def mempool_status(ctx: Context) -> str:
+    #     \"\"\"
+    #     Get current mempool state including pending transactions,
+    #     memory usage, and size statistics.
+    #     \"\"\"
+    #     logger.info(\"Getting mempool status\")
+    #     mempool_data = await fetch_mempool_info()
+    #     return await format_mempool_info(mempool_data)
 
     # These functions need to be imported locally since they're 
     # defined in the same function scope as their use

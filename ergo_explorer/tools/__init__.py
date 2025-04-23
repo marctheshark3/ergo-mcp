@@ -27,7 +27,6 @@ from ergo_explorer.tools.network import (
     get_blockchain_stats,
     get_network_hashrate,
     get_mining_difficulty,
-    get_mempool_info
 )
 
 # Token tools
@@ -93,7 +92,6 @@ __all__ = [
     'get_blockchain_stats',
     'get_network_hashrate',
     'get_mining_difficulty',
-    'get_mempool_info',
     
     # Token tools
     'get_token_price',

@@ -5,9 +5,10 @@ import httpx
 import logging
 from typing import Dict, List, Any, Optional, Union
 from ergo_explorer.config import ERGO_NODE_API, ERGO_NODE_API_KEY, USER_AGENT
+from ergo_explorer.logging_config import get_logger
 
-# Configure logger
-logger = logging.getLogger(__name__)
+# Configure logger - Ensure DEBUG level to capture detailed logs
+logger = get_logger(__name__, log_level='DEBUG')
 
 async def fetch_node_api(endpoint: str, params: Optional[Dict] = None, method: str = "GET", json_data: Optional[Dict] = None) -> Dict:
     """Make a request to the Ergo Node API."""
@@ -22,15 +23,44 @@ async def fetch_node_api(endpoint: str, params: Optional[Dict] = None, method: s
         if ERGO_NODE_API_KEY:
             headers["api_key"] = ERGO_NODE_API_KEY
             
-        if method == "GET":
-            response = await client.get(url, headers=headers, params=params, timeout=30.0)
-        elif method == "POST":
-            response = await client.post(url, headers=headers, params=params, json=json_data, timeout=30.0)
-        else:
-            raise ValueError(f"Unsupported HTTP method: {method}")
+        # Log request details before sending
+        logger.debug(f"Node API Request: Method={method}, URL={url}, Params={params}, JSON={json_data}, Headers={headers}")
+        
+        response = None
+        try:
+            if method == "GET":
+                response = await client.get(url, headers=headers, params=params, timeout=30.0)
+            elif method == "POST":
+                response = await client.post(url, headers=headers, params=params, json=json_data, timeout=30.0)
+            else:
+                logger.error(f"Unsupported HTTP method: {method}")
+                raise ValueError(f"Unsupported HTTP method: {method}")
+
+            # Log raw response details before processing
+            response_text = await response.aread() # Read content efficiently
+            logger.debug(f"Node API Response: Status={response.status_code}, Headers={response.headers}, Raw Body='{response_text.decode('utf-8', errors='replace')}'")
             
-        response.raise_for_status()
-        return response.json()
+            response.raise_for_status()
+            # Attempt to parse JSON *after* logging raw response and checking status
+            return response.json()
+        
+        except httpx.RequestError as exc:
+            logger.error(f"An error occurred while requesting {exc.request.url!r}: {exc}")
+            # Re-raise or handle as appropriate for the application
+            raise 
+        except httpx.HTTPStatusError as exc:
+            logger.error(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}: {exc}")
+            # Log the response body that caused the error, which we already captured
+            # Re-raise or handle as appropriate
+            raise
+        except Exception as exc:
+            # Catch potential JSONDecodeError or other unexpected errors
+            logger.error(f"An unexpected error occurred during Node API call to {url}: {exc}", exc_info=True)
+            # Log response details if available
+            if response:
+                 logger.error(f"Response details on error: Status={response.status_code}, Headers={response.headers}")
+                 # Raw body already logged in DEBUG level
+            raise
 
 # Blockchain API endpoints
 
@@ -173,47 +203,13 @@ async def get_network_info_node() -> Dict:
     """Legacy function for getting network info."""
     return await fetch_node_api("info")
 
-# Mempool-related endpoints
-async def get_mempool_transactions_node(offset: int = 0, limit: int = 100) -> Dict:
-    """
-    Get transactions currently in the mempool.
-    
-    Args:
-        offset: Number of transactions to skip
-        limit: Maximum number of transactions to return
-        
-    Returns:
-        A dictionary containing mempool transactions
-    """
-    return await fetch_node_api("transactions/unconfirmed", params={"offset": offset, "limit": limit})
-
-async def get_mempool_size_node() -> Dict:
-    """
-    Get the current size of the mempool.
-    
-    Returns:
-        A dictionary containing the mempool size
-    """
-    return await fetch_node_api("transactions/unconfirmed/size")
-
-async def get_mempool_statistics_node() -> Dict:
-    """
-    Get detailed statistics about the mempool.
-    
-    Returns:
-        A dictionary containing mempool statistics
-    """
-    # Fetch both the mempool transactions and size
-    transactions = await get_mempool_transactions_node(limit=1000)  # Get up to 1000 transactions
-    size = await get_mempool_size_node()
-    
-    # Combine the data
-    mempool_data = {
-        "size": size.get("size", 0),
-        "transactions": transactions
-    }
-    
-    return mempool_data
+# Mempool-related endpoints - REMOVED
+# async def get_mempool_transactions_node(offset: int = 0, limit: int = 100) -> Dict:
+#     ...
+# async def get_mempool_size_node() -> Dict:
+#     ...
+# async def get_mempool_statistics_node() -> Dict:
+#     ...
 
 async def submit_transaction_node(tx_data: Dict) -> Dict:
     """Submit a transaction to the node."""
