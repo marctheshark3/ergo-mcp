@@ -10,7 +10,7 @@ import sys
 import os
 import logging
 import argparse
-from ergo_explorer import run_server
+from ergo_explorer.server import run_server
 from dotenv import load_dotenv
 
 # Set up logging

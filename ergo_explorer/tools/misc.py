@@ -56,39 +56,6 @@ async def search_for_token(query: str) -> str:
             
         return result
     except Exception as e:
-        return f"Error searching for tokens: {str(e)}"
+        return f"Error searching for token: {str(e)}"
 
-
-async def get_network_status() -> str:
-    """Get the current status of the Ergo blockchain network."""
-    try:
-        # Fetch network state
-        network = await fetch_network_state()
-        
-        # Extract relevant information
-        height = network.get("height", 0)
-        state_type = network.get("stateType", "Unknown")
-        last_header_id = network.get("lastHeaderId", "Unknown")
-        difficulty = network.get("difficulty", 0)
-        
-        # Calculate formatted difficulty in TH/s
-        difficulty_th = difficulty / 1_000_000_000_000
-        
-        # Get additional stats if available
-        # This includes things like total coins (supply), etc.
-        supply = network.get("totalCoinsInTransaction", 0) / 1_000_000_000  # Convert to ERG
-        
-        # Format the result
-        result = "Ergo Network Status\n"
-        result += "===================\n\n"
-        result += f"Current Height: {height}\n"
-        result += f"Network State Type: {state_type}\n"
-        result += f"Last Header ID: {last_header_id[:10]}...\n"
-        result += f"Difficulty: {difficulty_th:.2f} TH/s\n"
-        
-        if supply > 0:
-            result += f"Total ERG in Circulation: {supply:.2f} ERG\n"
-            
-        return result
-    except Exception as e:
-        return f"Error fetching network status: {str(e)}" 
+# The get_network_status function is removed as it's redundant with get_info 

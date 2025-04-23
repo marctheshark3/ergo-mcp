@@ -13,63 +13,74 @@ import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
-from ergo_explorer.api.explorer import (
-    fetch_api, 
-    fetch_block, 
-    fetch_blocks_at_height,
-    fetch_latest_blocks,
-    fetch_block_transactions
-)
+from ergo_explorer.api.node import fetch_node_api
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
 async def get_block_by_height(height: int) -> Dict:
     """
-    Fetch a block by its height from the Ergo blockchain.
+    Fetch a block by its height using the direct Node API.
     
     Args:
         height: The height of the block to fetch
         
     Returns:
-        A dictionary containing block data
+        A dictionary containing block data or an error message
     """
     try:
-        logger.info(f"Fetching block at height {height}")
-        # Use the at endpoint to get block at specific height
-        response = await fetch_blocks_at_height(height)
-        # The response contains an array of blocks at the specific height
-        # Normally there should be only one block at a given height
-        if response and isinstance(response, list) and len(response) > 0:
-            # Get the block ID from the response
-            block_id = response[0]["id"]
-            # Fetch the complete block data using the ID
-            block_data = await fetch_block(block_id)
-            return block_data
+        logger.info(f"Fetching block info at height {height} via Node API")
+        # Step 1: Get block header ID(s) using the /blocks/at/{height} endpoint
+        headers_response = await fetch_node_api(f"blocks/at/{height}")
+        
+        # Check if the response is valid and contains header IDs
+        if headers_response and isinstance(headers_response, list) and len(headers_response) > 0:
+            block_id = headers_response[0] # The API returns a list of header IDs (strings)
+            logger.info(f"Found block ID {block_id} at height {height}, fetching full block...")
+            
+            # Step 2: Fetch the complete block data using the /blocks/{block_id} endpoint
+            block_data = await fetch_node_api(f"blocks/{block_id}")
+            return block_data # Return the full block data
         else:
-            logger.warning(f"No block found at height {height}")
-            return {"error": f"No block found at height {height}"}
+            logger.warning(f"Node API did not return a valid block ID for height {height}. Response: {headers_response}")
+            # Check for specific error structure if the node returns one, otherwise generic error
+            if isinstance(headers_response, dict) and 'detail' in headers_response:
+                 error_detail = headers_response['detail']
+                 logger.warning(f"Node API error for height {height}: {error_detail}")
+                 # Handle 404 specifically if possible from detail
+                 if "404" in str(error_detail):
+                      return {"error": f"No block found at height {height}"}
+                 else:
+                      return {"error": f"Node API error: {error_detail}"}
+            else:
+                 # Assume block not found if response wasn't expected list or known error format
+                 return {"error": f"No block found at height {height}"}
+                 
     except Exception as e:
-        logger.error(f"Error fetching block at height {height}: {str(e)}")
-        return {"error": f"Error fetching block: {str(e)}"}
+        # Log the exception with traceback for debugging
+        logger.error(f"Error fetching block at height {height} via Node API: {e}", exc_info=True)
+        # Check if the error is due to HTTPStatusError (e.g., 404) which might have been caught by fetch_node_api logging
+        # Return a user-friendly error
+        return {"error": f"Failed to fetch block data from Node API: {str(e)}"}
 
 async def get_block_by_hash(block_hash: str) -> Dict:
     """
-    Fetch a block by its hash from the Ergo blockchain.
+    Fetch a block by its hash using the direct Node API.
     
     Args:
         block_hash: The hash (ID) of the block to fetch
         
     Returns:
-        A dictionary containing block data
+        A dictionary containing block data or an error message
     """
     try:
-        logger.info(f"Fetching block with hash {block_hash}")
-        block_data = await fetch_block(block_hash)
+        logger.info(f"Fetching block with hash {block_hash} via Node API")
+        # Directly use the /blocks/{block_hash} endpoint
+        block_data = await fetch_node_api(f"blocks/{block_hash}")
         return block_data
     except Exception as e:
-        logger.error(f"Error fetching block with hash {block_hash}: {str(e)}")
-        return {"error": f"Error fetching block: {str(e)}"}
+        logger.error(f"Error fetching block with hash {block_hash} via Node API: {e}", exc_info=True)
+        return {"error": f"Failed to fetch block data from Node API: {str(e)}"}
 
 async def get_latest_blocks(limit: int = 10) -> Dict:
     """
@@ -83,7 +94,7 @@ async def get_latest_blocks(limit: int = 10) -> Dict:
     """
     try:
         logger.info(f"Fetching latest {limit} blocks")
-        response = await fetch_latest_blocks(limit=limit)
+        response = await fetch_node_api(f"blocks/latest?limit={limit}")
         return response
     except Exception as e:
         logger.error(f"Error fetching latest blocks: {str(e)}")
@@ -102,7 +113,7 @@ async def get_block_transactions(block_id: str, limit: int = 100) -> Dict:
     """
     try:
         logger.info(f"Fetching transactions for block {block_id}")
-        response = await fetch_block_transactions(block_id, limit=limit)
+        response = await fetch_node_api(f"blocks/{block_id}/transactions?limit={limit}")
         return response
     except Exception as e:
         logger.error(f"Error fetching transactions for block {block_id}: {str(e)}")
@@ -110,42 +121,64 @@ async def get_block_transactions(block_id: str, limit: int = 100) -> Dict:
 
 async def format_block_data(block_data: Dict) -> str:
     """
-    Format block data into a readable string.
+    Format block data (received from Node API's /blocks/{id} endpoint) into a readable string.
     
     Args:
-        block_data: The block data to format
+        block_data: The block data dictionary to format
         
     Returns:
         A formatted string representation of the block data
     """
-    if "error" in block_data:
-        return block_data["error"]
-    
-    # Extract relevant information from the block data
+    if not block_data or isinstance(block_data, str) or "header" not in block_data:
+        # Handle cases where block_data might be an error string or missing the header
+        if isinstance(block_data, dict) and "error" in block_data:
+            return block_data["error"]
+        logger.warning(f"Invalid or incomplete block data received for formatting: {block_data}")
+        return "Error: Received invalid or incomplete block data for formatting."
+
+    header = block_data.get("header", {})
+    transactions_data = block_data.get("blockTransactions", {})
+    transactions = transactions_data.get("transactions", [])
+    block_size = block_data.get("size")
+
+    # Log the data just before creating block_info
+    logger.debug(f"Formatting block data. Header keys: {list(header.keys())}, TxData keys: {list(transactions_data.keys())}, Top-level keys: {list(block_data.keys())}")
+
+    # Extract relevant information using correct paths
+    # Remove fields not reliably available from Node API /blocks/{id}
     block_info = {
-        "height": block_data.get("height"),
-        "id": block_data.get("id"),
-        "timestamp": block_data.get("timestamp"),
-        "transactionsCount": block_data.get("transactionsCount"),
-        "size": block_data.get("size"),
-        "difficulty": block_data.get("difficulty"),
-        "miner": block_data.get("miner", {}).get("name", "Unknown"),
-        "minerAddress": block_data.get("miner", {}).get("address", "Unknown"),
-        "minerReward": block_data.get("minerReward") / 1000000000 if block_data.get("minerReward") else 0,
-        "blockTime": block_data.get("blockTime"),
-        "mainChain": block_data.get("mainChain", False),
+        "height": header.get("height"),
+        "id": header.get("id"),
+        "timestamp": header.get("timestamp"),
+        # Derive transaction count from the list
+        "transactionsCount": len(transactions),
+        "size": block_size,
+        "difficulty": header.get("difficulty"),
+        # Node API doesn't directly provide miner name/address/reward in /blocks/{id}
+        # "miner": "Unknown (Not in Node API /blocks/{id})",
+        # "minerAddress": "Unknown (Not in Node API /blocks/{id})",
+        # "minerReward": 0, # Set to 0 as it's not directly available
+        # "blockTime": header.get("blockTime"), # This might not exist either
+        # "mainChain": header.get("mainChain"), # This might not exist either
     }
+    
+    # Log after creating block_info
+    logger.debug(f"Created block_info dictionary: {block_info}")
     
     # Format timestamp
     if block_info["timestamp"]:
-        timestamp = datetime.fromtimestamp(block_info["timestamp"] / 1000)
-        formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+        try:
+            timestamp = datetime.fromtimestamp(block_info["timestamp"] / 1000)
+            formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+        except Exception as e:
+            logger.warning(f"Could not format timestamp {block_info['timestamp']}: {e}")
+            formatted_timestamp = "Invalid Timestamp"
     else:
         formatted_timestamp = "Unknown"
     
     # Create a formatted string
     formatted_output = f"""
-## Block Details
+## Block Details (from Node API)
 
 - **Height**: {block_info['height']}
 - **ID**: {block_info['id']}
@@ -153,11 +186,11 @@ async def format_block_data(block_data: Dict) -> str:
 - **Transactions**: {block_info['transactionsCount']}
 - **Size**: {block_info['size']} bytes
 - **Difficulty**: {block_info['difficulty']}
-- **Miner**: {block_info['miner']}
-- **Miner Address**: {block_info['minerAddress']}
-- **Miner Reward**: {block_info['minerReward']} ERG
-- **Block Time**: {block_info['blockTime']} ms
-- **Main Chain**: {block_info['mainChain']}
+# - **Miner**: {block_info['miner']}
+# - **Miner Address**: {block_info['minerAddress']}
+# - **Miner Reward**: {block_info['minerReward']} ERG
+# - **Block Time**: {block_info.get('blockTime', 'N/A')}
+# - **Main Chain**: {block_info.get('mainChain', 'N/A')}
 """
     return formatted_output
 

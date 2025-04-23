@@ -5,6 +5,8 @@ import httpx
 from typing import Dict, List, Any, Optional
 from ergo_explorer.config import ERGO_EXPLORER_API, USER_AGENT
 import logging
+import os
+import json
 
 async def fetch_api(endpoint: str, params: Optional[Dict] = None) -> Dict:
     """Make a request to the Ergo Explorer API."""
@@ -128,4 +130,97 @@ async def fetch_block_transactions(block_id: str, limit: int = 100, offset: int 
         A dictionary containing the block's transactions
     """
     params = {"limit": limit, "offset": offset}
-    return await fetch_api(f"blocks/{block_id}/transactions", params=params) 
+    return await fetch_api(f"blocks/{block_id}/transactions", params=params)
+
+async def fetch_address_book() -> Dict:
+    """
+    Fetch address book data from ergexplorer.com.
+    
+    This function retrieves a comprehensive list of known addresses
+    including services, exchanges, mining pools, and other notable addresses
+    in the Ergo ecosystem.
+    
+    Returns:
+        A dictionary containing address book entries and token information
+    """
+    try:
+        # This API is from a different domain than the standard explorer API
+        url = "https://api.ergexplorer.com/addressbook/getAddresses"
+        
+        logging.info(f"Fetching address book data from: {url}")
+        
+        async with httpx.AsyncClient() as client:
+            headers = {"User-Agent": USER_AGENT}
+            # Add longer timeout and more retries for external API
+            response = await client.get(url, headers=headers, timeout=60.0)
+            
+            # Log response status
+            logging.info(f"Address book API response status: {response.status_code}")
+            
+            # Check for error status codes
+            response.raise_for_status()
+            
+            # Try to parse JSON response
+            try:
+                data = response.json()
+                # Log success
+                logging.info(f"Successfully fetched address book data: {len(data.get('items', []))} items found")
+                return data
+            except ValueError as e:
+                logging.error(f"Failed to parse address book JSON response: {str(e)}")
+                return _load_fallback_address_book()
+                
+    except httpx.HTTPStatusError as e:
+        logging.error(f"HTTP error occurred in address book request: {str(e)}")
+        return _load_fallback_address_book()
+    except httpx.RequestError as e:
+        logging.error(f"Request error occurred in address book request: {str(e)}")
+        # Provide a more detailed error message and suggestions
+        error_message = str(e)
+        if "No address associated with hostname" in error_message:
+            logging.error("DNS resolution failed for api.ergexplorer.com. Check network connectivity or DNS settings.")
+            error_message = "Cannot resolve api.ergexplorer.com. Check network connectivity or DNS settings."
+        
+        # Use fallback data
+        logging.info("Using fallback address book data")
+        return _load_fallback_address_book()
+    except Exception as e:
+        logging.error(f"Unexpected error in fetch_address_book: {str(e)}", exc_info=True)
+        return _load_fallback_address_book()
+
+def _load_fallback_address_book() -> Dict:
+    """
+    Load fallback address book data from a local JSON file.
+    
+    This is used when the API is not reachable.
+    
+    Returns:
+        A dictionary containing the fallback address book data
+    """
+    try:
+        # Get the path to the fallback file
+        fallback_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "resources",
+            "address_book_fallback.json"
+        )
+        
+        logging.info(f"Loading fallback address book data from: {fallback_path}")
+        
+        with open(fallback_path, 'r') as f:
+            data = json.load(f)
+            
+        logging.info(f"Successfully loaded fallback address book data: {len(data.get('items', []))} items found")
+        
+        # Add a note that this is fallback data
+        data["note"] = "This is fallback data. The actual API could not be reached."
+        
+        return data
+    except Exception as e:
+        logging.error(f"Error loading fallback address book data: {str(e)}", exc_info=True)
+        return {
+            "items": [],
+            "total": 0,
+            "tokens": [],
+            "error": "Could not reach API and fallback data could not be loaded."
+        } 

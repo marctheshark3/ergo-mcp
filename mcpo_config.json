@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "ergo": {
+      "command": "curl",
+      "args": ["-s", "http://ergo-mcp:3001/mcp"],
+      "useStdio": true
+    }
+  },
+  "auth": {
+    "apiKey": "${API_KEY}"
+  },
+  "port": 8001,
+  "host": "0.0.0.0",
+  "cors": {
+    "allowOrigins": ["*"],
+    "allowMethods": ["GET", "POST"],
+    "allowHeaders": ["*"]
+  }
+} 

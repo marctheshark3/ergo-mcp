@@ -15,9 +15,7 @@ from datetime import datetime
 
 from ergo_explorer.api.explorer import fetch_api, fetch_network_state
 from ergo_explorer.api.node import (
-    get_mempool_transactions_node,
-    get_mempool_size_node,
-    get_mempool_statistics_node
+    fetch_node_api
 )
 
 # Set up logging
@@ -105,43 +103,39 @@ async def get_mining_difficulty() -> Dict:
     """
     try:
         logger.info("Fetching mining difficulty")
-        # Get the network state, which includes difficulty
-        network_state = await fetch_network_state()
         
-        # Extract relevant information
-        difficulty = network_state.get("difficulty", 0)
+        # Get data directly from the node's /info endpoint
+        node_info = await fetch_node_api("info")
         
-        # Get additional info from /info endpoint to get block time target
-        additional_info = await fetch_api("info")
+        # Extract the difficulty from the node info
+        difficulty = node_info.get("difficulty", 0)
         
-        # Extract useful information
-        if "parameters" in additional_info:
-            block_time_target = additional_info.get("parameters", {}).get("blockInterval", 120)  # in seconds
-        else:
-            block_time_target = 120  # default is 120 seconds
-            
-        # Get last blocks for difficulty adjustment info
-        last_blocks = network_state.get("lastBlocks", [])
-        difficulty_change = None
+        # Get the state type (utxo, digest, etc.)
+        state_type = node_info.get("stateType", "Unknown")
         
-        if len(last_blocks) >= 2:
-            # Calculate difficulty change between last two blocks
-            current_diff = last_blocks[0].get("difficulty", 0)
-            previous_diff = last_blocks[1].get("difficulty", 0)
-            
-            if previous_diff > 0:
-                difficulty_change_pct = (current_diff - previous_diff) / previous_diff * 100
-                difficulty_change = {
-                    "previousDifficulty": previous_diff,
-                    "currentDifficulty": current_diff,
-                    "changePercent": difficulty_change_pct
-                }
+        # Get additional block-related information
+        best_header_id = node_info.get("bestHeaderId", "Unknown")
+        full_height = node_info.get("fullHeight", 0)
+        headers_height = node_info.get("headersHeight", 0)
+        
+        # Get parameters which include block interval
+        params = node_info.get("parameters", {})
+        block_version = params.get("blockVersion", 3)
+        block_interval = 120  # Default Ergo block time in seconds
+        
+        # Format difficulty in a more readable format
+        readable_difficulty = format_readable_difficulty(difficulty)
         
         # Prepare result
         difficulty_data = {
             "difficulty": difficulty,
-            "blockTimeTarget": block_time_target,
-            "difficultyChange": difficulty_change,
+            "readableDifficulty": readable_difficulty,
+            "stateType": state_type,
+            "bestHeaderId": best_header_id,
+            "fullHeight": full_height,
+            "headersHeight": headers_height,
+            "blockVersion": block_version,
+            "blockTimeTarget": block_interval,
             "timestamp": datetime.now().timestamp() * 1000  # current time in milliseconds
         }
         
@@ -149,6 +143,39 @@ async def get_mining_difficulty() -> Dict:
     except Exception as e:
         logger.error(f"Error fetching mining difficulty: {str(e)}")
         return {"error": f"Error fetching mining difficulty: {str(e)}"}
+
+def format_readable_difficulty(difficulty: int) -> str:
+    """
+    Format the difficulty value into a human-readable form.
+    
+    Args:
+        difficulty: Raw difficulty value
+        
+    Returns:
+        Formatted difficulty string with appropriate unit
+    """
+    if difficulty == 0:
+        return "0"
+    
+    # Define units and thresholds
+    units = ['', 'K', 'M', 'G', 'T', 'P', 'E']
+    unit_index = 0
+    
+    # Convert to appropriate unit
+    value = float(difficulty)
+    while value >= 1000 and unit_index < len(units) - 1:
+        value /= 1000
+        unit_index += 1
+    
+    # Format with appropriate precision
+    if value < 10:
+        formatted = f"{value:.2f}"
+    elif value < 100:
+        formatted = f"{value:.1f}"
+    else:
+        formatted = f"{int(value)}"
+    
+    return f"{formatted} {units[unit_index]}"
 
 async def format_blockchain_stats(stats_data: Dict) -> str:
     """
@@ -288,9 +315,12 @@ async def format_mining_difficulty(difficulty_data: Dict) -> str:
         return difficulty_data["error"]
     
     # Extract relevant information
-    difficulty = difficulty_data.get("difficulty", 0)
-    block_time_target = difficulty_data.get("blockTimeTarget", 120)
-    difficulty_change = difficulty_data.get("difficultyChange", None)
+    raw_difficulty = difficulty_data.get("difficulty", 0)
+    readable_difficulty = difficulty_data.get("readableDifficulty", "Unknown")
+    block_time_target = difficulty_data.get("blockTimeTarget", 120)  # in seconds
+    state_type = difficulty_data.get("stateType", "Unknown")
+    full_height = difficulty_data.get("fullHeight", 0)
+    headers_height = difficulty_data.get("headersHeight", 0)
     
     # Format timestamp
     if "timestamp" in difficulty_data:
@@ -299,196 +329,36 @@ async def format_mining_difficulty(difficulty_data: Dict) -> str:
     else:
         formatted_timestamp = "Unknown"
     
+    # Calculate estimated hashrate
+    # Ergo hashrate estimate: difficulty / 8192 * 2^32 / 120
+    estimated_hashrate = raw_difficulty * (2**32) / (8192 * block_time_target) if raw_difficulty else 0
+    hashrate_th = estimated_hashrate / 1000000000000  # TH/s
+    
     # Create a formatted string
     formatted_output = f"""
 ## Ergo Mining Difficulty
 
-- **Current Difficulty**: {difficulty:,}
-- **Target Block Time**: {block_time_target} seconds
+- **Raw Difficulty**: {raw_difficulty:,}
+- **Readable Difficulty**: {readable_difficulty}
+- **Block Time Target**: {block_time_target} seconds
+- **State Type**: {state_type}
+- **Current Height**: {full_height:,}
+- **Headers Height**: {headers_height:,}
+- **Estimated Hashrate**: {hashrate_th:.2f} TH/s
 - **Timestamp**: {formatted_timestamp}
-"""
-    
-    # Add difficulty change information if available
-    if difficulty_change:
-        prev_diff = difficulty_change.get("previousDifficulty", 0)
-        change_pct = difficulty_change.get("changePercent", 0)
-        change_direction = "increase" if change_pct >= 0 else "decrease"
-        
-        formatted_output += f"""
-### Recent Difficulty Adjustment
-
-- **Previous Difficulty**: {prev_diff:,}
-- **Change**: {abs(change_pct):.2f}% {change_direction}
-"""
-    
-    # Add explanation
-    formatted_output += """
-### Difficulty Explanation
-
-The mining difficulty automatically adjusts to maintain the target block time.
-- If blocks are found too quickly, difficulty increases
-- If blocks are found too slowly, difficulty decreases
-
-This mechanism ensures that blocks are found approximately every 2 minutes, regardless of the total network hashrate.
 """
     
     return formatted_output
 
-async def get_mempool_info() -> Dict:
-    """
-    Fetch information about the current mempool state.
-    
-    This function requires direct connection to an Ergo node.
-    
-    Returns:
-        A dictionary containing mempool statistics and transactions
-    """
-    try:
-        logger.info("Fetching mempool information")
-        
-        # Get mempool statistics from the node
-        mempool_data = await get_mempool_statistics_node()
-        
-        # Extract and calculate additional statistics
-        transactions = mempool_data.get("transactions", [])
-        if isinstance(transactions, list):
-            tx_count = len(transactions)
-        else:
-            # If the transactions are paginated
-            tx_count = transactions.get("size", 0)
-            transactions = transactions.get("items", [])
-        
-        # Calculate total size in bytes
-        total_bytes = sum([tx.get("size", 0) for tx in transactions]) if transactions else 0
-        
-        # Calculate total value in nanoERG
-        total_value = 0
-        for tx in transactions:
-            outputs = tx.get("outputs", [])
-            tx_value = sum([output.get("value", 0) for output in outputs])
-            total_value += tx_value
-        
-        # Convert to ERG
-        total_value_erg = total_value / 1000000000
-        
-        # Calculate average transaction size and value
-        avg_size = total_bytes / tx_count if tx_count > 0 else 0
-        avg_value_erg = total_value_erg / tx_count if tx_count > 0 else 0
-        
-        # Calculate fee statistics
-        fees = []
-        for tx in transactions:
-            # Fee calculation is simplified here - in a real implementation,
-            # you would need to account for input values minus output values
-            fee = tx.get("fee", 0)
-            fees.append(fee)
-        
-        # Calculate fee statistics
-        if fees:
-            avg_fee = sum(fees) / len(fees)
-            min_fee = min(fees) if fees else 0
-            max_fee = max(fees) if fees else 0
-        else:
-            avg_fee = min_fee = max_fee = 0
-        
-        # Convert fees to ERG
-        avg_fee_erg = avg_fee / 1000000000
-        min_fee_erg = min_fee / 1000000000
-        max_fee_erg = max_fee / 1000000000
-        
-        # Combine all statistics
-        mempool_stats = {
-            "timestamp": datetime.now().timestamp() * 1000,  # current time in milliseconds
-            "size": mempool_data.get("size", 0),
-            "transactionCount": tx_count,
-            "totalBytes": total_bytes,
-            "totalValue": total_value,
-            "totalValueERG": total_value_erg,
-            "averageSize": avg_size,
-            "averageValueERG": avg_value_erg,
-            "feeStats": {
-                "averageFee": avg_fee,
-                "averageFeeERG": avg_fee_erg,
-                "minFee": min_fee,
-                "minFeeERG": min_fee_erg,
-                "maxFee": max_fee,
-                "maxFeeERG": max_fee_erg
-            },
-            "transactions": transactions[:10]  # Include only first 10 transactions for brevity
-        }
-        
-        return mempool_stats
-    except Exception as e:
-        logger.error(f"Error fetching mempool information: {str(e)}")
-        return {"error": f"Error fetching mempool information: {str(e)}"}
+# Remove get_mempool_info function
+# async def get_mempool_info() -> Dict:
+#     ...
 
-async def format_mempool_info(mempool_data: Dict) -> str:
-    """
-    Format mempool information into a readable string.
-    
-    Args:
-        mempool_data: The mempool data to format
-        
-    Returns:
-        A formatted string representation of the mempool information
-    """
-    if "error" in mempool_data:
-        return mempool_data["error"]
-    
-    # Format timestamp
-    if "timestamp" in mempool_data:
-        timestamp = datetime.fromtimestamp(mempool_data["timestamp"] / 1000)
-        formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
-    else:
-        formatted_timestamp = "Unknown"
-    
-    # Extract statistics
-    tx_count = mempool_data.get("transactionCount", 0)
-    size = mempool_data.get("size", 0)
-    total_bytes = mempool_data.get("totalBytes", 0)
-    total_value_erg = mempool_data.get("totalValueERG", 0)
-    avg_size = mempool_data.get("averageSize", 0)
-    avg_value_erg = mempool_data.get("averageValueERG", 0)
-    
-    # Fee statistics
-    fee_stats = mempool_data.get("feeStats", {})
-    avg_fee_erg = fee_stats.get("averageFeeERG", 0)
-    min_fee_erg = fee_stats.get("minFeeERG", 0)
-    max_fee_erg = fee_stats.get("maxFeeERG", 0)
-    
-    # Create a formatted string
-    formatted_output = f"""
-## Ergo Mempool Status
+# Remove format_mempool_info function
+# async def format_mempool_info(mempool_data: Dict) -> str:
+#     ...
 
-- **Timestamp**: {formatted_timestamp}
-- **Pending Transactions**: {tx_count:,}
-- **Mempool Size**: {size:,}
-- **Total Size**: {total_bytes:,} bytes
+# (Ensure no other code relies on these before full deletion)
+# The functions seem self-contained for the mempool tool, so removing them should be safe.
 
-### Transaction Statistics
-- **Total Value**: {total_value_erg:,.2f} ERG
-- **Average Transaction Size**: {avg_size:.2f} bytes
-- **Average Transaction Value**: {avg_value_erg:.6f} ERG
-
-### Fee Statistics
-- **Average Fee**: {avg_fee_erg:.6f} ERG
-- **Minimum Fee**: {min_fee_erg:.6f} ERG
-- **Maximum Fee**: {max_fee_erg:.6f} ERG
-"""
-    
-    # Add recent transaction list if available
-    transactions = mempool_data.get("transactions", [])
-    if transactions:
-        formatted_output += "\n### Recent Pending Transactions\n"
-        
-        for i, tx in enumerate(transactions[:5], 1):  # Show only first 5 transactions
-            tx_id = tx.get("id", "Unknown")
-            tx_size = tx.get("size", 0)
-            tx_fee = tx.get("fee", 0) / 1000000000  # Convert to ERG
-            
-            formatted_output += f"""
-**Transaction {i}**
-- ID: {tx_id}
-- Size: {tx_size:,} bytes
-- Fee: {tx_fee:.6f} ERG
-""" 
+# <<< End of file (implicitly) >>> 

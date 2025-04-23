@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  ergo-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ergo-mcp
+    environment:
+      - ERGO_NODE_API=${ERGO_NODE_API:-http://host.docker.internal:9053}
+      - ERGO_NODE_API_KEY=${ERGO_NODE_API_KEY:-hashcream}
+      - SERVER_PORT=3001
+      - SERVER_HOST=0.0.0.0
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  mcpo:
+    image: python:3.12-slim
+    container_name: ergo-mcpo
+    depends_on:
+      - ergo-mcp
+    environment:
+      - API_KEY=${MCPO_API_KEY:-$(openssl rand -hex 16)}
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./mcpo_config.json:/app/mcpo_config.json
+    command: >
+      bash -c "pip install mcpo && mcpo --config /app/mcpo_config.json"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: ergo-network
+    driver: bridge 
