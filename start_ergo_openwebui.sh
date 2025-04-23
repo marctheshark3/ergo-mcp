@@ -14,6 +14,18 @@ if [ -f .env ]; then
     set +o allexport
 fi
 
+# Check for python3 or python
+PYTHON_CMD=""
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+else
+    echo -e "${RED}Error: Neither python3 nor python command found. Please install Python 3.${NC}"
+    exit 1
+fi
+echo -e "${GREEN}Using Python command: ${PYTHON_CMD}${NC}"
+
 # Map .env variables to script variables and set defaults
 # Note the variable names in the .env file vs what the script expects
 MCP_PATH=${MCP_PATH:-"$(pwd)"}  # Default to current directory
@@ -36,7 +48,7 @@ sleep 1
 
 # Start Ergo Explorer MCP server
 echo -e "${YELLOW}Starting Ergo Explorer MCP server on port ${MCP_PORT}...${NC}"
-python -m ergo_explorer --port ${MCP_PORT} > ergo_explorer.log 2>&1 &
+${PYTHON_CMD} -m ergo_explorer --port ${MCP_PORT} > ergo_explorer.log 2>&1 &
 ERGO_PID=$!
 
 # Wait for Ergo Explorer to start
@@ -45,7 +57,7 @@ sleep 3
 # Start MCPO with subprocess configuration
 echo -e "${YELLOW}Starting MCPO on port ${MCPO_PORT}...${NC}"
 # Use the current directory instead of trying to cd to a non-existent path
-mcpo --port ${MCPO_PORT} --api-key "${MCPO_API_KEY}" -- python -m ergo_explorer --port ${MCPO_SUBPROCESS_PORT} > mcpo.log 2>&1 &
+mcpo --port ${MCPO_PORT} --api-key "${MCPO_API_KEY}" -- ${PYTHON_CMD} -m ergo_explorer --port ${MCPO_SUBPROCESS_PORT} > mcpo.log 2>&1 &
 MCPO_PID=$!
 
 # Create a script to stop MCPO and Ergo Explorer
