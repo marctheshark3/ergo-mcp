@@ -10,7 +10,7 @@ This module provides high-level tools for interacting with the Ergo blockchain:
 """
 
 import logging
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any, Tuple
 from datetime import datetime
 
 from ergo_explorer.api.node import (
@@ -34,9 +34,14 @@ from ergo_explorer.api.node import (
     get_all_token_holders
 )
 
+# Import response standardization utilities
+from ergo_explorer.response_format import standardize_response, smart_limit
+from ergo_explorer.response_config import ResponseConfig
+
 # Set up logging
 logger = logging.getLogger(__name__)
 
+# Original function kept for backward compatibility
 async def get_blockchain_height() -> str:
     """
     Get the current blockchain height and indexing status.
@@ -60,6 +65,40 @@ async def get_blockchain_height() -> str:
         logger.error(f"Error getting blockchain height: {str(e)}")
         return f"Error getting blockchain height: {str(e)}"
 
+@standardize_response
+async def blockchain_status(random_string: str = None) -> Dict[str, Any]:
+    """
+    Get comprehensive blockchain status information.
+    
+    Returns:
+        Dictionary with blockchain status data
+    """
+    try:
+        height_data = await get_indexed_height()
+        
+        indexed_height = height_data.get("indexedHeight", 0)
+        full_height = height_data.get("fullHeight", 0)
+        blocks_behind = full_height - indexed_height
+        
+        # Calculate difficulty metrics if available
+        difficulty = height_data.get("difficulty", 0)
+        hashrate = difficulty / 120 if difficulty else 0  # Rough estimate: difficulty / block time
+        
+        # Create standardized response
+        return {
+            "height": indexed_height,
+            "fullHeight": full_height,
+            "blocksBehind": blocks_behind,
+            "difficulty": difficulty,
+            "hashRate": hashrate,
+            "lastBlockTime": height_data.get("lastBlockTimestamp", 0),
+            "lastDifficultyAdjustment": height_data.get("lastDifficultyAdjustment", 0)
+        }
+    except Exception as e:
+        logger.error(f"Error getting blockchain status: {str(e)}")
+        raise Exception(f"Error retrieving blockchain status: {str(e)}")
+
+# Original function kept for backward compatibility
 async def get_transaction_info(identifier: Union[str, int], by_index: bool = False) -> str:
     """
     Get detailed information about a transaction.

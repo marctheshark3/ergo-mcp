@@ -1,0 +1,201 @@
+{
+    "blockchain_endpoints": {
+        "get_block_by_height": {
+            "valid_params": [
+                {"height": 1000000}
+            ],
+            "invalid_params": [
+                {"height": -1}, 
+                {"height": "not_a_number"}
+            ],
+            "expected_fields": ["height", "id", "timestamp", "transactions", "miner"]
+        },
+        "get_block_by_hash": {
+            "valid_params": [
+                {"block_hash": "b28a36ee7882142e6d6d7aab9b50c1c1dfdd0efe98fd97348b19e16ab18c660f"}
+            ],
+            "invalid_params": [
+                {"block_hash": "invalid_hash"},
+                {"block_hash": ""}
+            ],
+            "expected_fields": ["height", "id", "timestamp", "transactions", "miner"]
+        },
+        "get_latest_blocks": {
+            "valid_params": [
+                {"limit": 5},
+                {}
+            ],
+            "invalid_params": [
+                {"limit": -1},
+                {"limit": "not_a_number"}
+            ],
+            "expected_fields": ["height", "id", "timestamp", "transactions", "miner"]
+        },
+        "get_block_transactions": {
+            "valid_params": [
+                {"block_id": "b28a36ee7882142e6d6d7aab9b50c1c1dfdd0efe98fd97348b19e16ab18c660f"}
+            ],
+            "invalid_params": [
+                {"block_id": "invalid_id"},
+                {"block_id": ""}
+            ],
+            "expected_fields": ["id", "inputs", "outputs", "timestamp"]
+        },
+        "blockchain_status": {
+            "valid_params": [
+                {}
+            ],
+            "invalid_params": [],
+            "expected_fields": ["height", "difficulty", "hashRate"]
+        },
+        "mempool_status": {
+            "valid_params": [
+                {}
+            ],
+            "invalid_params": [],
+            "expected_fields": ["size", "transactions"]
+        }
+    },
+    "transaction_endpoints": {
+        "get_transaction": {
+            "valid_params": [
+                {"tx_id": "e050a3af38241ce444c34eb25c7c0d6c0702d275162a3769d44bf3c4e22c0895"}
+            ],
+            "invalid_params": [
+                {"tx_id": "invalid_id"},
+                {"tx_id": ""}
+            ],
+            "expected_fields": ["id", "inputs", "outputs", "timestamp"]
+        },
+        "get_box": {
+            "valid_params": [
+                {"box_id": "9hHDQb26AjnJUXxcqriqY1mnhpLuUeC81C4pggtK7tupr92Ea1K"}
+            ],
+            "invalid_params": [
+                {"box_id": "invalid_id"},
+                {"box_id": ""}
+            ],
+            "expected_fields": ["id", "value", "assets", "creationHeight"]
+        }
+    },
+    "token_endpoints": {
+        "get_token": {
+            "valid_params": [
+                {"token_id": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413"}
+            ],
+            "invalid_params": [
+                {"token_id": "invalid_id"},
+                {"token_id": ""}
+            ],
+            "expected_fields": ["id", "name", "description", "decimals"]
+        },
+        "search_token": {
+            "valid_params": [
+                {"query": "ERG"},
+                {"query": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413"}
+            ],
+            "invalid_params": [
+                {"query": ""}
+            ],
+            "expected_fields": ["id", "name"]
+        },
+        "get_token_holders": {
+            "valid_params": [
+                {"token_id": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413"}
+            ],
+            "invalid_params": [
+                {"token_id": "invalid_id"},
+                {"token_id": ""}
+            ],
+            "expected_fields": ["holders"]
+        },
+        "get_collection_holders": {
+            "valid_params": [
+                {"token_id": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413"}
+            ],
+            "invalid_params": [
+                {"token_id": "invalid_id"},
+                {"token_id": ""}
+            ],
+            "expected_fields": ["collection", "holders"]
+        },
+        "search_collections": {
+            "valid_params": [
+                {"query": "Ergo"}
+            ],
+            "invalid_params": [
+                {"query": ""}
+            ],
+            "expected_fields": ["name", "id"]
+        }
+    },
+    "address_endpoints": {
+        "blockchain_address_info": {
+            "valid_params": [
+                {"address": "9hHDQb26AjnJUXxcqriqY1mnhpLuUeC81C4pggtK7tupr92Ea1K"},
+                {"address": "9hHDQb26AjnJUXxcqriqY1mnhpLuUeC81C4pggtK7tupr92Ea1K", "include_transactions": true, "tx_limit": 5}
+            ],
+            "invalid_params": [
+                {"address": "invalid_address"},
+                {"address": ""}
+            ],
+            "expected_fields": ["address", "balance"]
+        },
+        "get_address_book": {
+            "valid_params": [
+                {}
+            ],
+            "invalid_params": [],
+            "expected_fields": ["addresses"]
+        },
+        "get_address_book_by_type": {
+            "valid_params": [
+                {"type_filter": "Exchange"},
+                {"type_filter": "Mining pool"}
+            ],
+            "invalid_params": [
+                {"type_filter": ""}
+            ],
+            "expected_fields": ["addresses"]
+        },
+        "search_address_book": {
+            "valid_params": [
+                {"query": "Exchange"}
+            ],
+            "invalid_params": [
+                {"query": ""}
+            ],
+            "expected_fields": ["addresses"]
+        },
+        "get_address_details": {
+            "valid_params": [
+                {"address": "9hHDQb26AjnJUXxcqriqY1mnhpLuUeC81C4pggtK7tupr92Ea1K"}
+            ],
+            "invalid_params": [
+                {"address": "invalid_address"},
+                {"address": ""}
+            ],
+            "expected_fields": ["address", "name"]
+        }
+    },
+    "eip_endpoints": {
+        "list_eips": {
+            "valid_params": [
+                {}
+            ],
+            "invalid_params": [],
+            "expected_fields": ["eips"]
+        },
+        "get_eip": {
+            "valid_params": [
+                {"eip_number": 1},
+                {"eip_number": 4}
+            ],
+            "invalid_params": [
+                {"eip_number": -1},
+                {"eip_number": "not_a_number"}
+            ],
+            "expected_fields": ["number", "title", "status"]
+        }
+    }
+} 
