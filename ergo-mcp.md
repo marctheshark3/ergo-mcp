@@ -128,7 +128,6 @@ To become the definitive interface between AI assistants and the Ergo blockchain
 - Core blockchain data retrieval (blocks, transactions, addresses)
 - Basic network statistics (hashrate, difficulty)
 - Token information and search
-- Mempool monitoring
 - OpenAPI integration via MCPO
 
 ### Phase 2 (Current Development)
