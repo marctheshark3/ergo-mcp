@@ -53,12 +53,12 @@ collect_ignore = [
 @pytest.fixture
 def sample_address():
     """Sample Ergo address for tests."""
-    return "9fRAWhdxEsTcdb8PhGNrZfwqa65zfkuYHAMmkQLcic1gdLSV5vA"
+    return "9fE5o7913CKKe6wvNgM11vULjTuKiopPcvCaj7t2zcJWXM2gcLu"
 
 @pytest.fixture
 def sample_token_id():
     """Sample token ID for tests."""
-    return "03faf2cb329f2e90d6d23b58d91bbb6c046aa143261cc21f52fbe2824bfcbf04"
+    return "52f4544ce8a420d484ece16f9b984d81c23e46971ef5e37c29382ac50f80d5bd"
 
 @pytest.fixture
 def mock_httpx_client():
@@ -96,17 +96,17 @@ def mock_explorer_response():
 @pytest.fixture
 def sample_transaction_id():
     """Sample Ergo transaction ID for testing."""
-    return "9148408c04c2e38a6402a7950d6157730fa7d49e9ab3b9cadec481d7769918e9"
+    return "9a35191fcb3e485e95f79cfa21364def40168b5c25b772be28926b6c7fc44fc6"
 
 @pytest.fixture
 def sample_block_id():
     """Sample Ergo block ID for testing."""
-    return "b732d0ac7a5cdfa9c2c5d94f06542f867c4cf80d607b8625b9d5ae19be19c9b7"
+    return "b490c792336c962fd0ae57ea8e56da8f6a234e4a83f12e43901aa0eb66bb172e"
 
 @pytest.fixture
 def sample_block_height():
     """Sample Ergo block height for testing."""
-    return 1000000
+    return 1200000
 
 # New fixture for the test MCP server
 @pytest.fixture(scope="session") # Scope session might be better if server creation is slow

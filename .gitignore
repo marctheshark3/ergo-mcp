@@ -172,3 +172,5 @@ cython_debug/
 
 # Configuration files with sensitive data
 mcpo_config_standalone.json
+
+mcp-env/

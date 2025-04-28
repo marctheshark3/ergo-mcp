@@ -33,6 +33,7 @@ To become the definitive interface between AI assistants and the Ergo blockchain
    - Track historical balance changes
    - Identify common transaction partners
    - Address clustering analysis
+   - **NEW**: Comprehensive address information with token details and transaction analysis
 
 3. **Token Analysis**
    - Search and retrieve token information by ID or name
@@ -119,25 +120,50 @@ To become the definitive interface between AI assistants and the Ergo blockchain
    - "Show me the money flow trends for token X over the last 30 days"
    - "How many listings and sales for NFT collection Y in the past week?"
 
-## Phase Implementation Plan
+## Standardized Response Formats
 
-### Phase 1 (Initial Release)
+All API responses follow a standardized format to ensure consistency and ease of integration:
 
-**Status: Completed**
+```json
+{
+  "status": "success", // or "error"
+  "data": {
+    // Endpoint-specific structured data
+  },
+  "metadata": {
+    "execution_time_ms": 123,
+    "result_size_bytes": 456,
+    "is_truncated": false,
+    "token_estimate": 789
+  }
+}
+```
 
-- Core blockchain data retrieval (blocks, transactions, addresses)
-- Basic network statistics (hashrate, difficulty)
-- Token information and search
-- OpenAPI integration via MCPO
+## Implementation Timeline
+
+### Phase 1 (Core Features)
+
+**Status: Implemented**
+
+- Basic blockchain exploration capabilities
+- Address balance and transaction lookups
+- Token information retrieval
+- Basic system statistics
+- Standardized response wrappers for all endpoints
+- Docker containerization
 
 ### Phase 2 (Current Development)
 
 **Status: In Progress**
 
-- **Data Efficiency Optimizations**
-  - Refined vs. verbose tooling response options
-  - Smart result size limiting to reduce LLM context usage
-  - Response format standardization and compression
+- **Enhanced Address Analysis**
+  - **Comprehensive blockchain_address_info endpoint**
+  - **Detailed token balance information**
+  - **Transaction categorization and analysis**
+  - **Support for both JSON and markdown output formats**
+  - Common address interaction detection
+  - Address clustering for entity identification
+  - Transaction pattern analysis between multiple addresses
 
 - **Enhanced Token Analytics**
   - Token name-based search capabilities
@@ -147,11 +173,6 @@ To become the definitive interface between AI assistants and the Ergo blockchain
   - Liquidity pool analysis (balance, % locked, holder distribution)
   - Token money flow trend analysis (inflow/outflow)
   - Advanced token metrics calculation (RSI, momentum indicators)
-
-- **Advanced Address Intelligence**
-  - Common address interaction detection
-  - Address clustering for entity identification
-  - Transaction pattern analysis between multiple addresses
 
 - **Infrastructure Improvements**
   - Comprehensive automated testing suite for all MCP endpoints
@@ -211,63 +232,50 @@ cache/
       └── by_id/          # Indexed by token ID
 ```
 
-## Technical Architecture
+## Key Components and APIs
 
-### Component Diagram
+### Core MCP Functions
 
+#### Blockchain Status
+
+```python
+@standardize_response
+def blockchain_status() -> dict:
+    """Get comprehensive blockchain status including height, difficulty metrics, and network hashrate."""
+    # Implementation details
 ```
-[User/AI Assistant] → [MCP Client]
-                            ↓
-[Ergo Explorer MCP Server] ← [Cache Layer]
-          ↓           ↓           ↓
-    [Explorer API] [Node API] [3rd Party APIs]
-          ↓           ↓           ↓
-    [Explorer Node] [Ergo Node] [External Services]
+
+#### Address Information (New)
+
+```python
+@standardize_response
+def blockchain_address_info(
+    address: str, 
+    include_transactions: bool = True,
+    tx_limit: int = 10
+) -> Dict[str, Any]:
+    """
+    Get comprehensive address information including balance, tokens, and recent transactions.
+    
+    Args:
+        address: Ergo blockchain address to analyze
+        include_transactions: Whether to include transaction history
+        tx_limit: Maximum number of transactions to include in the response
+        
+    Returns:
+        Standardized JSON response with comprehensive address information
+    """
+    # Implementation details
 ```
 
-### Service Architecture
+#### Token Information
 
-1. **Core Server**
-   - MCP protocol implementation
-   - Request handling and routing
-   - Response formatting
-
-2. **API Integration Layer**
-   - Explorer API client
-   - Node API client
-   - Third-party API clients
-
-3. **Tool Implementation Layer**
-   - Blockchain tools
-   - Address tools
-   - Transaction tools
-   - Token tools
-   - Contract tools
-
-4. **Cache Layer**
-   - Response caching
-   - Rate limiting
-   - Request deduplication
-
-## Metrics and Success Criteria
-
-1. **Usage Metrics**
-   - Number of active users/installations
-   - Queries per day
-   - Unique tool usage distribution
-   - Average response time
-
-2. **Quality Metrics**
-   - Response accuracy
-   - System uptime
-   - Error rate
-   - Cache hit ratio
-
-3. **Success Criteria**
-   - Successful integration with multiple AI assistant platforms
-   - Positive user feedback (> 4.5/5 average rating)
-   - Growing monthly active users
-   - Expanding tool set coverage
+```python
+@standardize_response
+def get_token(token_id: str) -> dict:
+    """Get detailed information about a token."""
+    # Implementation details
+```
 
 ## Limitations and Constraints
 

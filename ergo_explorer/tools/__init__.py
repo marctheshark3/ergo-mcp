@@ -9,6 +9,12 @@ from ergo_explorer.tools.address import (
     analyze_address
 )
 
+# Comprehensive address info
+from ergo_explorer.tools.blockchain_address_info import (
+    blockchain_address_info,
+    blockchain_address_info_markdown
+)
+
 # Transaction tools
 from ergo_explorer.tools.transaction import (
     analyze_transaction

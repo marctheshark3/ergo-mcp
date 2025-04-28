@@ -33,7 +33,7 @@
         },
         "get_block_transactions": {
             "valid_params": [
-                {"block_id": "b28a36ee7882142e6d6d7aab9b50c1c1dfdd0efe98fd97348b19e16ab18c660f"}
+                {"block_id": "fffef98a416257b8785bffbec164b13f83c433ee602292766650b3bbe459140b"}
             ],
             "invalid_params": [
                 {"block_id": "invalid_id"},
@@ -59,7 +59,7 @@
     "transaction_endpoints": {
         "get_transaction": {
             "valid_params": [
-                {"tx_id": "e050a3af38241ce444c34eb25c7c0d6c0702d275162a3769d44bf3c4e22c0895"}
+                {"tx_id": "ff9b418e98074562f337d3ece5bfabbe78c3e7f38c6536cc382827caf15c6890"}
             ],
             "invalid_params": [
                 {"tx_id": "invalid_id"},
@@ -69,7 +69,7 @@
         },
         "get_box": {
             "valid_params": [
-                {"box_id": "9hHDQb26AjnJUXxcqriqY1mnhpLuUeC81C4pggtK7tupr92Ea1K"}
+                {"box_id": "00e9dceb28aa5939209c3b2e984689b505c129a611c706eb25783811e7fa9d05"}
             ],
             "invalid_params": [
                 {"box_id": "invalid_id"},

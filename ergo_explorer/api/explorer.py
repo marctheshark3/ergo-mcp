@@ -71,6 +71,10 @@ async def fetch_box(box_id: str) -> Dict:
     """Fetch details for a specific box (UTXO)."""
     return await fetch_api(f"boxes/{box_id}")
 
+async def get_token_by_id(token_id: str) -> Dict:
+    """Fetch details for a specific token by ID."""
+    return await fetch_api(f"tokens/{token_id}")
+
 async def search_tokens(query: str) -> Dict:
     """Search for tokens by ID or symbol."""
     try:

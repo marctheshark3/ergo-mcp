@@ -6,8 +6,12 @@ from typing import Dict, Set, List, Any
 from datetime import datetime
 
 from ergo_explorer.api import fetch_balance, fetch_address_transactions
+from ergo_explorer.response_format import standardize_response, smart_limit
+import logging
 
+logger = logging.getLogger(__name__)
 
+# Original function kept for backward compatibility
 async def get_address_balance(address: str) -> str:
     """Get the confirmed balance for an Ergo address.
     
@@ -46,7 +50,60 @@ async def get_address_balance(address: str) -> str:
     except Exception as e:
         return f"Error fetching balance: {str(e)}"
 
+@standardize_response
+async def get_address_balance_json(address: str) -> Dict[str, Any]:
+    """Get the confirmed balance for an Ergo address in standardized JSON format.
+    
+    Args:
+        address: Ergo blockchain address
+        
+    Returns:
+        Structured data containing address balance information
+    """
+    try:
+        logger.info(f"Fetching balance for address: {address}")
+        balance = await fetch_balance(address)
+        
+        # Format ERG amount
+        erg_amount = balance.get("nanoErgs", 0) / 1_000_000_000
+        
+        # Format token balances
+        formatted_tokens = []
+        for token in balance.get("tokens", []):
+            token_amount = token.get("amount", 0)
+            token_name = token.get("name", "Unknown Token")
+            token_id = token.get("tokenId", "")
+            token_decimals = token.get("decimals", 0)
+            
+            # Format decimal amount correctly
+            if token_decimals > 0:
+                token_formatted_amount = token_amount / (10 ** token_decimals)
+            else:
+                token_formatted_amount = token_amount
+                
+            formatted_tokens.append({
+                "id": token_id,
+                "name": token_name,
+                "amount": token_amount,
+                "formatted_amount": token_formatted_amount,
+                "decimals": token_decimals
+            })
+            
+        # Create structured response
+        return {
+            "address": address,
+            "balance": {
+                "nanoErgs": balance.get("nanoErgs", 0),
+                "erg": erg_amount
+            },
+            "tokens": formatted_tokens,
+            "token_count": len(formatted_tokens)
+        }
+    except Exception as e:
+        logger.error(f"Error fetching balance for {address}: {str(e)}")
+        raise Exception(f"Error retrieving address balance: {str(e)}")
 
+# Original function kept for backward compatibility
 async def get_transaction_history(address: str, limit: int = 20) -> str:
     """Get the transaction history for an Ergo address.
     
@@ -126,6 +183,99 @@ async def get_transaction_history(address: str, limit: int = 20) -> str:
     except Exception as e:
         return f"Error fetching transaction history: {str(e)}"
 
+@standardize_response
+async def get_transaction_history_json(address: str, limit: int = 20) -> Dict[str, Any]:
+    """Get the transaction history for an Ergo address in standardized JSON format.
+    
+    Args:
+        address: Ergo blockchain address
+        limit: Maximum number of transactions to retrieve (default: 20)
+        
+    Returns:
+        Structured data containing transaction history
+    """
+    try:
+        logger.info(f"Fetching transaction history for address: {address} (limit: {limit})")
+        tx_data = await fetch_address_transactions(address, limit=limit)
+        
+        # Extract basic statistics
+        total = tx_data.get("total", 0)
+        items = tx_data.get("items", [])
+        
+        formatted_transactions = []
+        for tx in items:
+            tx_id = tx.get("id", "Unknown")
+            timestamp = tx.get("timestamp", 0)
+            date_time = datetime.fromtimestamp(timestamp/1000).strftime('%Y-%m-%d %H:%M:%S UTC')
+            
+            # Calculate value change for this address
+            value_in = 0
+            value_out = 0
+            
+            # Process inputs
+            for inp in tx.get("inputs", []):
+                if inp.get("address") == address:
+                    value_in += inp.get("value", 0)
+            
+            # Process outputs
+            for out in tx.get("outputs", []):
+                if out.get("address") == address:
+                    value_out += out.get("value", 0)
+            
+            # Calculate net change
+            net_change = value_out - value_in
+            net_change_erg = net_change / 1_000_000_000
+            
+            # Check token transfers
+            in_tokens = []
+            out_tokens = []
+            
+            # Process input tokens
+            for inp in tx.get("inputs", []):
+                if inp.get("address") == address:
+                    for token in inp.get("assets", []):
+                        in_tokens.append({
+                            "tokenId": token.get("tokenId", ""),
+                            "amount": token.get("amount", 0)
+                        })
+            
+            # Process output tokens
+            for out in tx.get("outputs", []):
+                if out.get("address") == address:
+                    for token in out.get("assets", []):
+                        out_tokens.append({
+                            "tokenId": token.get("tokenId", ""),
+                            "amount": token.get("amount", 0)
+                        })
+            
+            formatted_transactions.append({
+                "txId": tx_id,
+                "timestamp": timestamp,
+                "formatted_date": date_time,
+                "valueChange": {
+                    "nanoErgs": net_change,
+                    "erg": net_change_erg
+                },
+                "tokenTransfers": {
+                    "inTokens": in_tokens,
+                    "outTokens": out_tokens,
+                    "hasTokenTransfers": bool(in_tokens or out_tokens)
+                }
+            })
+        
+        # Apply smart limiting if needed
+        limited_transactions, is_truncated = smart_limit(formatted_transactions, limit)
+        
+        return {
+            "address": address,
+            "total": total,
+            "transactions": limited_transactions,
+            "count": len(limited_transactions),
+            "is_truncated": is_truncated
+        }
+    except Exception as e:
+        logger.error(f"Error fetching transaction history for {address}: {str(e)}")
+        raise Exception(f"Error retrieving transaction history: {str(e)}")
 
 async def analyze_address(address: str, depth: int = 2, tx_limit: int = 5) -> str:
     """Perform forensic analysis on an Ergo address, following transaction flows up to a specified depth.

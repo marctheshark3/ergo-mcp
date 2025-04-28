@@ -1,6 +1,6 @@
 {
     "general": {
-        "base_url": "http://localhost:3001",
+        "base_url": "http://localhost:3003",
         "timeout": 10,
         "retries": 3
     },

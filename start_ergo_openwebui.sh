@@ -28,8 +28,8 @@ echo -e "${YELLOW}MCP_PORT: ${MCP_PORT}${NC}"
 echo -e "${YELLOW}MCPO_PORT: ${MCPO_PORT}${NC}"
 
 # Kill any existing processes
-pkill -f "mcpo" || true
-pkill -f "ergo_explorer" || true
+sudo pkill -f "mcpo" || true
+sudo pkill -f "ergo_explorer" || true
 
 # Wait a moment
 sleep 1

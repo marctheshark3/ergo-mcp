@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 import logging
 from typing import Dict, List, Any
+from dotenv import load_dotenv
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent.parent))
@@ -18,6 +19,15 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Load environment variables
+if os.path.exists(".env"):
+    load_dotenv()
+    logger.info("Loaded environment variables from .env file")
+
+# Get API key for authorization
+MCPO_API_KEY = os.environ.get("MCPO_API_KEY", "hello")  # Default to "hello" from .env if not set
+logger.info(f"Using MCPO API key: {MCPO_API_KEY[:4]}***")
 
 # Load test configuration
 def load_config():
@@ -38,6 +48,12 @@ def load_endpoint_params():
 
 ENDPOINT_PARAMS = load_endpoint_params()
 
+# Define headers with API key for all requests
+HEADERS = {
+    "Authorization": f"Bearer {MCPO_API_KEY}",
+    "Content-Type": "application/json"
+}
+
 def test_response_has_standard_fields():
     """Test that all endpoints return responses with standard fields."""
     failed_endpoints = []
@@ -52,7 +68,7 @@ def test_response_has_standard_fields():
             url = f"{BASE_URL}/{endpoint_name}"
             
             try:
-                response = requests.post(url, json=params, timeout=TIMEOUT)
+                response = requests.post(url, json=params, headers=HEADERS, timeout=TIMEOUT)
                 response.raise_for_status()
                 data = response.json()
                 
@@ -86,7 +102,7 @@ def test_metadata_fields():
             url = f"{BASE_URL}/{endpoint_name}"
             
             try:
-                response = requests.post(url, json=params, timeout=TIMEOUT)
+                response = requests.post(url, json=params, headers=HEADERS, timeout=TIMEOUT)
                 response.raise_for_status()
                 data = response.json()
                 
@@ -128,7 +144,7 @@ def test_expected_fields_present():
             expected_fields = endpoint_config["expected_fields"]
             
             try:
-                response = requests.post(url, json=params, timeout=TIMEOUT)
+                response = requests.post(url, json=params, headers=HEADERS, timeout=TIMEOUT)
                 response.raise_for_status()
                 response_data = response.json()
                 
@@ -177,7 +193,7 @@ def test_error_responses():
             url = f"{BASE_URL}/{endpoint_name}"
             
             try:
-                response = requests.post(url, json=params, timeout=TIMEOUT)
+                response = requests.post(url, json=params, headers=HEADERS, timeout=TIMEOUT)
                 data = response.json()
                 
                 # Check for error response format
@@ -216,7 +232,7 @@ def test_response_limits():
             url = f"{BASE_URL}/{endpoint_name}"
             
             try:
-                response = requests.post(url, json=params, timeout=TIMEOUT)
+                response = requests.post(url, json=params, headers=HEADERS, timeout=TIMEOUT)
                 response.raise_for_status()
                 data = response.json()
                 
@@ -262,7 +278,7 @@ def test_minimal_response_format():
             url = f"{BASE_URL}/{endpoint_name}"
             
             try:
-                response = requests.post(url, json=params, timeout=TIMEOUT)
+                response = requests.post(url, json=params, headers=HEADERS, timeout=TIMEOUT)
                 response.raise_for_status()
                 data = response.json()
                 
