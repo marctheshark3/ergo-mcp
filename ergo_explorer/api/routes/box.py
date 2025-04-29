@@ -13,15 +13,15 @@ def register_box_routes(mcp):
     """Register box-related routes with the MCP server."""
     
     @mcp.tool()
-    async def get_box(ctx: Context, box_id: str) -> str:
+    async def get_box(ctx: Context, box_id: str) -> dict:
         """Get detailed information about a box by its ID."""
         logger.info(f"Getting box info for ID: {box_id}")
         return await get_box_info(box_id)
 
     @mcp.tool()
-    async def get_box_by_index(ctx: Context, index: int) -> str:
+    async def get_box_by_index(ctx: Context, index: int) -> dict:
         """Get detailed information about a box by its index."""
         logger.info(f"Getting box info for index: {index}")
-        return await get_box_info(index, by_index=True)
+        return await get_box_info_json(index, by_index=True)
     
     logger.info("Registered box routes") 

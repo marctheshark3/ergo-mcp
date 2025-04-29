@@ -11,7 +11,7 @@ from ergo_explorer.api.node import (
     get_token_by_id_node,
     search_for_token_node,
     get_network_info_node,
-    get_node_wallet_addresses
+    # get_node_wallet_addresses
 )
 
 async def get_address_balance_from_node(address: str) -> str:

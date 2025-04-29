@@ -133,8 +133,7 @@ async def format_token_price(price_data: Dict) -> str:
     
     return formatted_output
 
-@standardize_response
-async def get_token(token_id: str) -> Dict[str, Any]:
+async def get_token_info(token_id: str) -> Dict[str, Any]:
     """
     Get detailed information about a token using standardized response format.
     
@@ -167,8 +166,7 @@ async def get_token(token_id: str) -> Dict[str, Any]:
         logger.error(f"Error fetching token information: {str(e)}")
         raise Exception(f"Error retrieving token information: {str(e)}")
 
-@standardize_response
-async def search_token(query: str, limit: Optional[int] = None) -> Tuple[List[Dict[str, Any]], bool]:
+async def search_token_info(query: str, limit: Optional[int] = None) -> Tuple[List[Dict[str, Any]], bool]:
     """
     Search for tokens by name or ID using standardized response format.
     

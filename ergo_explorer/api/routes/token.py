@@ -4,7 +4,7 @@ Token-related API routes for Ergo Explorer MCP.
 
 from mcp.server.fastmcp import Context
 from ergo_explorer.logging_config import get_logger
-from ergo_explorer.tools.blockchain import get_token_info
+from ergo_explorer.tools.token import get_token_info, search_token_info
 from ergo_explorer.tools.token_holders.holders import get_token_holders as get_token_holders_impl
 from ergo_explorer.tools.token_holders.collections import (
     search_collections as search_collections_impl,
@@ -19,13 +19,13 @@ def register_token_routes(mcp):
     """Register token-related routes with the MCP server."""
     
     @mcp.tool()
-    async def get_token(ctx: Context, token_id: str) -> str:
+    async def get_token(ctx: Context, token_id: str) -> dict:
         """Get detailed information about a token."""
         logger.info(f"Getting token info for ID: {token_id}")
         return await get_token_info(token_id)
 
     @mcp.tool()
-    async def get_token_holders(ctx: Context, token_id: str, include_raw: bool = False, include_analysis: bool = True) -> str:
+    async def get_token_holders(ctx: Context, token_id: str, include_raw: bool = False, include_analysis: bool = True) -> dict:
         """
         Get comprehensive token holder information.
         
@@ -38,7 +38,7 @@ def register_token_routes(mcp):
         return await get_token_holders_impl(token_id, include_raw, include_analysis)
     
     @mcp.tool()
-    async def get_collection_holders(ctx: Context, token_id: str, include_raw: bool = False, include_analysis: bool = True) -> str:
+    async def get_collection_holders(ctx: Context, token_id: str, include_raw: bool = False, include_analysis: bool = True) -> dict:
         """
         Get comprehensive token holder information for an NFT collection.
         
@@ -54,13 +54,13 @@ def register_token_routes(mcp):
         return await get_collection_holders_impl(token_id, include_raw, include_analysis)
 
     @mcp.tool()
-    async def search_token(ctx: Context, query: str) -> str:
+    async def search_token(ctx: Context, query: str) -> dict:
         """Search for tokens by ID or name."""
         logger.info(f"Searching for token with query: {query}")
-        return await search_for_token_from_node(query)
+        return await search_token_info(query)
     
     @mcp.tool()
-    async def search_collections(ctx: Context, query: str, limit: int = 10) -> str:
+    async def search_collections(ctx: Context, query: str, limit: int = 10) -> dict:
         """
         Search for NFT collections by name or ID.
         
@@ -75,33 +75,6 @@ def register_token_routes(mcp):
             Formatted text with collection details including name, ID, description, and category
         """
         logger.info(f"Searching for collections with query: {query}")
-        result = await search_collections_impl(query, limit)
-        
-        # Format the response
-        if "error" in result:
-            return result["error"]
-            
-        collections = result.get("items", [])
-        total = result.get("total", 0)
-        
-        if not collections:
-            return f"No collections found matching '{query}'"
-            
-        formatted_result = f"Found {total} collections matching '{query}':\n\n"
-        
-        for i, collection in enumerate(collections, 1):
-            collection_id = collection.get("collection_id", "Unknown")
-            name = collection.get("name", "Unknown Collection")
-            description = collection.get("description", "No description")
-            category = collection.get("category", "")
-            
-            formatted_result += f"{i}. {name}\n"
-            formatted_result += f"   ID: {collection_id}\n"
-            formatted_result += f"   Description: {description}\n"
-            if category:
-                formatted_result += f"   Category: {category}\n"
-            formatted_result += "\n"
-            
-        return formatted_result
+        return await search_collections_impl(query, limit)
     
     logger.info("Registered token routes") 

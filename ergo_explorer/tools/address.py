@@ -11,45 +11,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Original function kept for backward compatibility
-async def get_address_balance(address: str) -> str:
-    """Get the confirmed balance for an Ergo address.
-    
-    Args:
-        address: Ergo blockchain address
-    """
-    try:
-        balance = await fetch_balance(address)
-        
-        # Format ERG amount
-        erg_amount = balance.get("nanoErgs", 0) / 1_000_000_000
-        
-        result = f"Balance for {address}:\n"
-        result += f"• {erg_amount:.9f} ERG\n"
-        
-        # Format token balances
-        tokens = balance.get("tokens", [])
-        if tokens:
-            result += "\nTokens:\n"
-            for token in tokens:
-                token_amount = token.get("amount", 0)
-                token_name = token.get("name", "Unknown Token")
-                token_id = token.get("tokenId", "")
-                token_decimals = token.get("decimals", 0)
-                
-                # Format decimal amount correctly
-                if token_decimals > 0:
-                    token_formatted_amount = token_amount / (10 ** token_decimals)
-                    result += f"• {token_formatted_amount} {token_name} (ID: {token_id[:8]}...)\n"
-                else:
-                    result += f"• {token_amount} {token_name} (ID: {token_id[:8]}...)\n"
-        else:
-            result += "\nNo tokens found."
-            
-        return result
-    except Exception as e:
-        return f"Error fetching balance: {str(e)}"
-
 @standardize_response
 async def get_address_balance_json(address: str) -> Dict[str, Any]:
     """Get the confirmed balance for an Ergo address in standardized JSON format.

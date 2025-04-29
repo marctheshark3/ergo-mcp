@@ -4,15 +4,17 @@ Tools for the Ergo Explorer MCP server.
 
 # Address tools
 from ergo_explorer.tools.address import (
-    get_address_balance,
+    # get_address_balance,
     get_transaction_history,
     analyze_address
 )
 
-# Comprehensive address info
-from ergo_explorer.tools.blockchain_address_info import (
-    blockchain_address_info,
-    blockchain_address_info_markdown
+# Blockchain tools
+from ergo_explorer.tools.blockchain import (
+    get_blockchain_height,
+    get_address_full_balance,
+    get_address_transaction_history,
+    blockchain_status
 )
 
 # Transaction tools
@@ -31,8 +33,8 @@ from ergo_explorer.tools.block import (
 # Network tools
 from ergo_explorer.tools.network import (
     get_blockchain_stats,
-    get_network_hashrate,
-    get_mining_difficulty,
+    # get_network_hashrate,
+    # get_mining_difficulty,
 )
 
 # Token tools
