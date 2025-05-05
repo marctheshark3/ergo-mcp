@@ -41,6 +41,9 @@ from ergo_explorer.api.explorer import fetch_api, fetch_network_state
 # Import response standardization utilities
 from ergo_explorer.response_standardizer import standardize_response
 
+# Import the new utility function
+from ergo_explorer.util.standardize import condense_address
+
 # Set up logging
 logger = logging.getLogger(__name__)
 
@@ -602,87 +605,293 @@ async def get_address_full_balance(address: str) -> Dict[str, Any]:
             "unconfirmed": None
         }
 
-async def get_token_holders(token_id: str, format_output: bool = True) -> Union[str, List[Dict]]:
+async def _get_token_holder_data(token_id: str) -> Dict[str, Any]:
     """
-    Get all addresses holding a specific token with detailed analysis.
+    Internal function to fetch and analyze token holder data.
     
     Args:
         token_id: Token ID to search for
-        format_output: Whether to return formatted string (True) or raw data (False)
         
     Returns:
-        If format_output is True: A formatted string with holder information
-        If format_output is False: List of dictionaries with address and amount
+        Dictionary containing detailed holder information and analysis.
     """
     try:
         # Get all holders
         holders = await get_all_token_holders(token_id)
         
-        # If there are no holders, return appropriate message or empty list
+        # If there are no holders, return appropriate structure
         if not holders:
-            if format_output:
-                return f"No holders found for token {token_id}. This could be because:\n" \
-                       f"1. The token doesn't exist\n" \
-                       f"2. The local node doesn't have information about this token\n" \
-                       f"3. All tokens are in spent boxes (try using full node with transaction index)"
-            else:
-                return []
+            return {
+                "token_id": token_id,
+                "token_name": "Unknown Token",
+                "decimals": 0,
+                "total_supply_in_circulation": {"raw": 0, "formatted": 0},
+                "total_holders": 0,
+                "holders": [],
+                "analysis": {
+                    "error": "No holders found",
+                    "message": (f"No holders found for token {token_id}. This could be because:\n"
+                                f"1. The token doesn't exist\n"
+                                f"2. The local node doesn't have information about this token\n"
+                                f"3. All tokens are in spent boxes (try using full node with transaction index)")
+                }
+            }
         
         # Get token info if available
         try:
             token_info = await get_token_by_id(token_id)
             token_name = token_info.get("name", "Unknown Token")
             decimals = token_info.get("decimals", 0)
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Could not get token info for {token_id}: {str(e)}")
             # If we can't get token info, use defaults
             token_name = "Unknown Token"
             decimals = 0
         
         # Sort holders by amount in descending order
         holders.sort(key=lambda x: x["amount"], reverse=True)
-        
-        if not format_output:
-            return holders
             
         # Calculate total supply in circulation
         total_supply = sum(holder["amount"] for holder in holders)
         
-        # Format the output
-        result = f"Token Holder Analysis for {token_name} ({token_id})\n"
-        result += f"Total Holders: {len(holders):,}\n"
-        
-        # Format total supply based on decimals
-        if decimals > 0:
-            formatted_supply = total_supply / (10 ** decimals)
-            result += f"Total Supply in Circulation: {formatted_supply:,.{decimals}f}\n\n"
-        else:
-            result += f"Total Supply in Circulation: {total_supply:,}\n\n"
-        
-        result += "Top Holders:\n"
-        for i, holder in enumerate(holders[:20], 1):  # Show top 20 holders
+        # Process holder data
+        holder_data = []
+        for holder in holders:
             address = holder["address"]
             amount = holder["amount"]
+            percentage = (amount / total_supply * 100) if total_supply > 0 else 0
             
             # Format amount based on decimals
-            if decimals > 0:
-                formatted_amount = amount / (10 ** decimals)
-                percentage = (amount / total_supply) * 100
-                result += f"{i}. {address}\n"
-                result += f"   Amount: {formatted_amount:,.{decimals}f} ({percentage:.2f}%)\n"
-            else:
-                percentage = (amount / total_supply) * 100
-                result += f"{i}. {address}\n"
-                result += f"   Amount: {amount:,} ({percentage:.2f}%)\n"
-        
-        if len(holders) > 20:
-            remaining_holders = len(holders) - 20
-            remaining_amount = sum(h["amount"] for h in holders[20:])
-            remaining_percentage = (remaining_amount / total_supply) * 100
+            formatted_amount = amount / (10 ** decimals) if decimals > 0 else amount
             
-            result += f"\nRemaining {remaining_holders:,} holders: {remaining_percentage:.2f}% of supply"
+            holder_data.append({
+                # Condense address here
+                "address": condense_address(address),
+                "full_address": address, # Keep full address if needed elsewhere
+                "amount": {
+                    "raw": amount,
+                    "formatted": formatted_amount
+                },
+                "percentage": round(percentage, 4)
+            })
+            
+        # Calculate analysis metrics
+        num_holders = len(holders)
+        top_20_holders = holder_data[:min(20, num_holders)]
+        top_20_percentage = sum(h["percentage"] for h in top_20_holders)
         
+        remaining_holders_count = max(0, num_holders - 20)
+        remaining_percentage = 100 - top_20_percentage if num_holders > 0 else 0
+        
+        # Format total supply based on decimals
+        formatted_total_supply = total_supply / (10 ** decimals) if decimals > 0 else total_supply
+
+        # Build the result dictionary
+        result = {
+            "token_id": token_id,
+            "token_name": token_name,
+            "decimals": decimals,
+            "total_supply_in_circulation": {
+                "raw": total_supply,
+                "formatted": formatted_total_supply
+            },
+            "total_holders": num_holders,
+            "holders": holder_data,
+            "analysis": {
+                "top_holders_count": len(top_20_holders),
+                "top_holders_percentage": round(top_20_percentage, 2),
+                "remaining_holders_count": remaining_holders_count,
+                "remaining_holders_percentage": round(remaining_percentage, 2)
+            }
+        }
+
         return result
         
     except Exception as e:
-        logger.error(f"Error analyzing token holders: {str(e)}")
-        return f"Error analyzing token holders: {str(e)}" if format_output else [] 
+        error_msg = f"Error analyzing token holders for {token_id}: {str(e)}"
+        logger.error(error_msg)
+        # Ensure error response also conforms to expected structure somewhat
+        return {
+            "token_id": token_id,
+            "error": error_msg, 
+            "token_name": "Unknown",
+            "decimals": 0,
+            "total_supply_in_circulation": {"raw": 0, "formatted": 0},
+            "total_holders": 0,
+            "holders": [],
+            "analysis": {"error": error_msg}
+        }
+
+async def get_token_stats(token_id: str) -> Dict[str, Any]:
+    """
+    Get statistical analysis for token holders.
+
+    Args:
+        token_id: Token ID to analyze.
+
+    Returns:
+        Dictionary containing token statistics like total holders, supply, and distribution.
+    """
+    logger.info(f"Getting token stats for {token_id}")
+    try:
+        data = await _get_token_holder_data(token_id)
+        if "error" in data and "analysis" in data and "error" in data["analysis"]:
+             # Propagate specific error structure if it exists
+            return data
+        
+        # Extract only the stats part
+        stats = {
+            "token_id": data["token_id"],
+            "token_name": data["token_name"],
+            "decimals": data["decimals"],
+            "total_supply_in_circulation": data["total_supply_in_circulation"],
+            "total_holders": data["total_holders"],
+            "analysis": data["analysis"]
+        }
+        return stats
+    except Exception as e:
+        error_msg = f"Error getting token stats for {token_id}: {str(e)}"
+        logger.error(error_msg)
+        return {"error": error_msg, "token_id": token_id}
+
+async def get_token_holders(token_id: str, include_raw: bool = False, include_analysis: bool = True) -> Dict[str, Any]:
+    """
+    Get comprehensive token holder information.
+    
+    Args:
+        token_id: Token ID to analyze
+        include_raw: Include raw holder data
+        include_analysis: Include holder analysis
+    """
+    logger.info(f"Getting token holder list for {token_id}")
+    try:
+        data = await _get_token_holder_data(token_id)
+        if "error" in data:
+            # Propagate error structure if it exists
+            return {"error": data.get("error"), "token_id": token_id, "holders": []}
+            
+        # Extract simplified holder information
+        simplified_holders = []
+        for holder in data.get("holders", []):
+            simplified_holder = {
+                "address": holder["address"],
+                "amount": holder["amount"]["raw"]
+            }
+            
+            # Optionally include formatted amount
+            if include_raw:
+                simplified_holder["formatted_amount"] = holder["amount"]["formatted"]
+                simplified_holder["percentage"] = holder["percentage"]
+                simplified_holder["full_address"] = holder.get("full_address", holder["address"])
+            
+            simplified_holders.append(simplified_holder)
+        
+        result = {
+            "token_id": data["token_id"],
+            "token_name": data["token_name"],
+            "holders": simplified_holders
+        }
+        
+        # Optionally include analysis data
+        if include_analysis:
+            result["decimals"] = data["decimals"]
+            result["total_supply"] = data["total_supply_in_circulation"]["raw"]
+            result["formatted_total_supply"] = data["total_supply_in_circulation"]["formatted"]
+            result["total_holders"] = data["total_holders"]
+            result["analysis"] = data["analysis"]
+            
+        return result
+    except Exception as e:
+        error_msg = f"Error getting token holder list for {token_id}: {str(e)}"
+        logger.error(error_msg)
+        return {"error": error_msg, "token_id": token_id, "holders": []}
+
+async def get_histogram_token_stats(token_id: str, bin_count: int = 10) -> Dict[str, Any]:
+    """
+    Get token holder distribution data suitable for histogram visualization.
+    
+    Args:
+        token_id: Token ID to analyze
+        bin_count: Number of bins to divide the holder amounts into
+        
+    Returns:
+        Dictionary containing binned distribution data for token holders.
+    """
+    logger.info(f"Getting token histogram data for {token_id} with {bin_count} bins")
+    try:
+        data = await _get_token_holder_data(token_id)
+        if "error" in data:
+            return {"error": data.get("error"), "token_id": token_id}
+            
+        holders = data.get("holders", [])
+        if not holders:
+            return {
+                "token_id": token_id,
+                "token_name": data.get("token_name", "Unknown Token"),
+                "error": "No holders found",
+                "bins": []
+            }
+            
+        # Extract amounts from holders
+        amounts = [holder["amount"]["raw"] for holder in holders]
+        
+        # Find min and max amounts (excluding outliers if there are enough data points)
+        amounts.sort()
+        min_amount = amounts[0]
+        max_amount = amounts[-1]
+        
+        # Create bins
+        bins = []
+        if min_amount == max_amount:
+            # All holders have the same amount
+            bins.append({
+                "min_value": min_amount,
+                "max_value": max_amount,
+                "count": len(amounts),
+                "percentage": 100.0
+            })
+        else:
+            bin_size = (max_amount - min_amount) / bin_count
+            
+            # Create empty bins
+            for i in range(bin_count):
+                bin_min = min_amount + i * bin_size
+                bin_max = min_amount + (i + 1) * bin_size
+                # For the last bin, ensure we include the max value
+                if i == bin_count - 1:
+                    bin_max = max_amount
+                    
+                bins.append({
+                    "min_value": bin_min,
+                    "max_value": bin_max,
+                    "count": 0,
+                    "addresses": []
+                })
+            
+            # Fill bins with holder data
+            for holder in holders:
+                amount = holder["amount"]["raw"]
+                # Find appropriate bin
+                bin_index = min(int((amount - min_amount) / bin_size), bin_count - 1)
+                bins[bin_index]["count"] += 1
+                bins[bin_index]["addresses"].append(holder["address"])
+            
+            # Calculate percentages
+            total_holders = len(holders)
+            for bin_data in bins:
+                bin_data["percentage"] = round((bin_data["count"] / total_holders) * 100, 2)
+        
+        return {
+            "token_id": token_id,
+            "token_name": data.get("token_name", "Unknown Token"),
+            "total_holders": len(holders),
+            "min_amount": min_amount,
+            "max_amount": max_amount,
+            "bin_count": len(bins),
+            "bins": bins
+        }
+        
+    except Exception as e:
+        error_msg = f"Error generating histogram data for {token_id}: {str(e)}"
+        logger.error(error_msg)
+        return {"error": error_msg, "token_id": token_id} 

@@ -19,16 +19,10 @@ def register_block_routes(mcp):
     """Register block-related routes with the MCP server."""
     
     @mcp.tool()
-    async def get_block_by_height(ctx: Context, height: int) -> dict:
-        """Get block data by height."""
-        logger.info(f"Getting block by height: {height}")
-        return await fetch_block_by_height(height)
-
-    @mcp.tool()
-    async def get_block_by_hash(ctx: Context, block_hash: str) -> dict:
-        """Get block data by hash."""
-        logger.info(f"Getting block by hash: {block_hash}")
-        return await fetch_block_by_hash(block_hash)
+    async def get_block_by_block_id(ctx: Context, block_id: str) -> dict:
+        """Get block data by block id."""
+        logger.info(f"Getting block by block id: {block_id}")
+        return await fetch_block_by_block_id(block_id)
 
     @mcp.tool()
     async def get_latest_blocks(ctx: Context, limit: int = 10) -> dict:

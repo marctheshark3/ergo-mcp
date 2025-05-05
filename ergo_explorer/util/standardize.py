@@ -161,4 +161,19 @@ class StandardizationError(Exception):
     """
     Exception raised for errors in response standardization.
     """
-    pass 
+    pass
+
+def condense_address(address: str, length: int = 5) -> str:
+    """
+    Condenses a blockchain address for display.
+
+    Args:
+        address: The full address string.
+        length: The number of characters to show from the start and end.
+
+    Returns:
+        A condensed address string (e.g., 'abcde...vwxyz').
+    """
+    if not isinstance(address, str) or len(address) <= 2 * length:
+        return address  # Return original if too short or not a string
+    return f"{address[:length]}...{address[-length:]}" 

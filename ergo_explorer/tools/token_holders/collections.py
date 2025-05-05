@@ -305,7 +305,7 @@ async def process_nft_holders(nft_id: str) -> Dict:
         return None
 
 async def get_collection_holders(collection_id: str, include_raw: bool = False, include_analysis: bool = True, 
-                            use_cache: bool = True, batch_size: int = 10) -> Union[str, Dict]:
+                            use_cache: bool = True, batch_size: int = 10) -> Dict:
     """
     Get comprehensive holder information for an NFT collection.
     
@@ -314,25 +314,29 @@ async def get_collection_holders(collection_id: str, include_raw: bool = False, 
     
     Args:
         collection_id: Token ID of the collection
-        include_raw: Include raw holder data
-        include_analysis: Include analysis
+        include_raw: (Deprecated, kept for compatibility but ignored)
+        include_analysis: Include analysis section in the result dictionary
         use_cache: Whether to use cache
         batch_size: Number of NFTs to process in parallel
         
     Returns:
-        Markdown-formatted analysis or raw data
+        Dictionary containing collection holder data and optional analysis.
     """
     # Check cache first if enabled
     if use_cache and collection_id in _CACHE["holders"]:
         logger.debug(f"Cache hit for collection holders {collection_id}")
         cached_result = _CACHE["holders"][collection_id]
-        
-        # Check if we have the right format cached
-        if include_raw and isinstance(cached_result, dict):
-            return cached_result
-        elif not include_raw and isinstance(cached_result, str):
-            return cached_result
-    
+        # Ensure cached result is a dictionary
+        if isinstance(cached_result, dict):
+            # Return cached result if analysis requirement matches
+            if include_analysis == ('analysis' in cached_result):
+                 return cached_result
+            # Else, let it regenerate if analysis requirement differs
+        else:
+            logger.warning(f"Invalid cache type found for {collection_id}, regenerating.")
+            # Clear invalid cache entry
+            del _CACHE["holders"][collection_id]
+            
     try:
         # Get collection metadata
         collection_metadata = await get_collection_metadata(collection_id)
@@ -415,32 +419,6 @@ async def get_collection_holders(collection_id: str, include_raw: bool = False, 
         # Sort holders by NFT count in descending order
         result["holders"].sort(key=lambda x: x["nft_count"], reverse=True)
         
-        # Cache raw data for future use
-        if use_cache:
-            _CACHE["holders"][collection_id + "_raw"] = result
-            
-        # Return raw data if requested
-        if include_raw:
-            return result
-            
-        # Format the result as markdown with optional analysis
-        formatted_result = f"""# Collection Holder Analysis: {result["collection_name"]}
-
-## Overview
-- Collection ID: {collection_id}
-- Name: {result["collection_name"]}
-- Description: {result["collection_description"]}
-- Total Unique NFTs: {result["total_nfts"]}
-- Total Unique Holders: {result["total_holders"]}
-
-## Top Holders
-| Rank | Address | Unique NFTs Held | Percentage |
-|------|---------|-----------|------------|
-"""
-        # Add top 20 holders or all if less than 20
-        for i, holder in enumerate(result["holders"][:min(20, len(result["holders"]))]):
-            formatted_result += f"| {i+1} | {holder['address']} | {holder['nft_count']} | {holder['percentage']}% |\n"
-
         # Add analysis if requested
         if include_analysis and result["total_holders"] > 0:
             # Calculate metrics
@@ -449,24 +427,23 @@ async def get_collection_holders(collection_id: str, include_raw: bool = False, 
             unique_ratio = result["total_holders"] / result["total_nfts"] if result["total_nfts"] > 0 else 0
             avg_nfts_per_holder = result["total_nfts"] / result["total_holders"] if result["total_holders"] > 0 else 0
             
-            formatted_result += f"""
-## Distribution Analysis
+            result["analysis"] = {
+                "concentration": {
+                    "top_10_percentage": round(top_10_percentage, 2),
+                    "num_unique_holders": result["total_holders"],
+                    "avg_nfts_per_holder": round(avg_nfts_per_holder, 2)
+                },
+                "collection_metrics": {
+                    "unique_holder_ratio": round(unique_ratio, 4),
+                    "collection_size": result["total_nfts"]
+                }
+            }
 
-### Concentration
-- Top 10 holders control: {top_10_percentage:.2f}% of collection NFTs
-- Number of unique holders: {result["total_holders"]}
-- Average NFTs per holder: {avg_nfts_per_holder:.2f}
-
-### Collection Metrics
-- Unique holder ratio: {unique_ratio:.4f} (higher values mean more distributed ownership)
-- Collection size: {result["total_nfts"]} unique NFTs
-"""
-            
-        # Cache formatted result
+        # Cache the dictionary result
         if use_cache:
-            _CACHE["holders"][collection_id] = formatted_result
+            _CACHE["holders"][collection_id] = result
             
-        return formatted_result
+        return result
             
     except Exception as e:
         error_msg = f"Error analyzing collection holders: {str(e)}"

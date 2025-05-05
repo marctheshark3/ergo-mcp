@@ -5,7 +5,11 @@ Token-related API routes for Ergo Explorer MCP.
 from mcp.server.fastmcp import Context
 from ergo_explorer.logging_config import get_logger
 from ergo_explorer.tools.token import get_token_info, search_token_info
-from ergo_explorer.tools.token_holders.holders import get_token_holders as get_token_holders_impl
+from ergo_explorer.tools.blockchain import (
+    get_token_stats as get_token_stats_from_blockchain,
+    get_token_holders as get_token_holders_list_from_blockchain,
+    get_histogram_token_stats as get_histogram_token_stats_from_blockchain
+)
 from ergo_explorer.tools.token_holders.collections import (
     search_collections as search_collections_impl,
     get_collection_holders as get_collection_holders_impl
@@ -25,6 +29,17 @@ def register_token_routes(mcp):
         return await get_token_info(token_id)
 
     @mcp.tool()
+    async def get_token_stats(ctx: Context, token_id: str) -> dict:
+        """
+        Get statistical analysis for token holders.
+        
+        Args:
+            token_id: Token ID to analyze
+        """
+        logger.info(f"Getting token stats for token ID: {token_id}")
+        return await get_token_stats_from_blockchain(token_id)
+
+    @mcp.tool()
     async def get_token_holders(ctx: Context, token_id: str, include_raw: bool = False, include_analysis: bool = True) -> dict:
         """
         Get comprehensive token holder information.
@@ -34,8 +49,23 @@ def register_token_routes(mcp):
             include_raw: Include raw holder data
             include_analysis: Include holder analysis
         """
-        logger.info(f"Getting token holders for token ID: {token_id}")
-        return await get_token_holders_impl(token_id, include_raw, include_analysis)
+        logger.info(f"Getting token holder list for token ID: {token_id}")
+        return await get_token_holders_list_from_blockchain(token_id, include_raw, include_analysis)
+    
+    @mcp.tool()
+    async def get_histogram_token_stats(ctx: Context, token_id: str, bin_count: int = 10) -> dict:
+        """
+        Get token holder distribution data suitable for histogram visualization.
+        
+        Args:
+            token_id: Token ID to analyze
+            bin_count: Number of bins to divide the holder amounts into
+            
+        Returns:
+            Dictionary containing binned distribution data for token holders
+        """
+        logger.info(f"Getting token histogram data for token ID: {token_id} with {bin_count} bins")
+        return await get_histogram_token_stats_from_blockchain(token_id, bin_count)
     
     @mcp.tool()
     async def get_collection_holders(ctx: Context, token_id: str, include_raw: bool = False, include_analysis: bool = True) -> dict:
