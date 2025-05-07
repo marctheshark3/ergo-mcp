@@ -86,6 +86,12 @@ To become the definitive interface between AI assistants and the Ergo blockchain
    - Automated setup scripts
    - Environment variable configuration
 
+5. **Token Usage Optimization**
+   - Token metrics for all MCP endpoints
+   - Optimized response payloads for LLM consumption
+   - Automatic response truncation for large datasets
+   - Token usage tracking and reporting
+
 ## Use Cases
 
 1. **Blockchain Data Analysis**
@@ -139,60 +145,60 @@ All API responses follow a standardized format to ensure consistency and ease of
 }
 ```
 
-## Implementation Timeline
+## Token Estimation Implementation
 
-### Phase 1 (Core Features)
+To optimize interactions between AI assistants and the MCP server, we have implemented token estimation features that provide accurate token counts for various LLM models. This allows AI assistants to make informed decisions about context window usage and response handling.
 
-**Status: Implemented**
+### Current Implementation
 
-- Basic blockchain exploration capabilities
-- Address balance and transaction lookups
-- Token information retrieval
-- Basic system statistics
-- Standardized response wrappers for all endpoints
-- Docker containerization
+- **Token Counting Utilities**: Created a comprehensive module (`token_counter.py`) that estimates tokens for different LLM models
+- **Model-Specific Estimation**: Support for various LLM models including Claude, GPT-4, GPT-3.5, Gemini, Mistral, and LLaMA
+- **Response Integration**: All MCP responses now include token count estimates and section breakdowns in their metadata
+- **Fallback Mechanisms**: Graceful degradation when tiktoken library is not available
+- **Threshold Configuration**: Customizable thresholds for token truncation based on model type
+- **Token Usage Tiers**: Categorization of responses into minimal, standard, intensive, and excessive tiers
 
-### Phase 2 (Current Development)
+### Future Token Optimization Plans
 
-**Status: In Progress**
+- **Response Truncation**: Implement automatic truncation of responses that exceed token thresholds
+- **Summarization Options**: Provide summarized versions of data-intensive responses with options to retrieve full details
+- **Pagination Parameters**: Add pagination for responses with high token counts
+- **Selective Field Selection**: Allow clients to request specific fields to reduce token usage
+- **Token Budget Parameter**: Allow clients to specify a maximum token budget for responses
+- **Caching Optimization**: Cache token estimates for common responses to improve performance
+- **Model-Optimized Formatting**: Format responses differently based on which model will consume them
 
-- **Enhanced Address Analysis**
-  - **Comprehensive blockchain_address_info endpoint**
-  - **Detailed token balance information**
-  - **Transaction categorization and analysis**
-  - **Support for both JSON and markdown output formats**
-  - Common address interaction detection
-  - Address clustering for entity identification
-  - Transaction pattern analysis between multiple addresses
+### Metrics and Analysis
 
-- **Enhanced Token Analytics**
-  - Token name-based search capabilities
-  - Historical token holder distribution tracking
-  - Non-standard collection lookup mechanisms
-  - Collection marketplace statistics (listings, sales frequency)
-  - Liquidity pool analysis (balance, % locked, holder distribution)
-  - Token money flow trend analysis (inflow/outflow)
-  - Advanced token metrics calculation (RSI, momentum indicators)
+We've created tools to analyze the token usage of all MCPO endpoints:
 
-- **Infrastructure Improvements**
-  - Comprehensive automated testing suite for all MCP endpoints
-  - MCPO OpenAPI endpoint testing framework
-  - Performance optimization for data-intensive queries
+1. **MCPO Endpoint Analyzer** (`scripts/mcpo_endpoints.py`): Identifies all implemented endpoints and their feature categories
+2. **Token Estimation Script** (`scripts/analyze_mcpo_endpoints.py`): Measures token usage across all endpoints with various test data
 
-- **Developer Features**
-  - ErgoScript contract analysis
-  - Oracle pool integration
-  - DEX price and liquidity data
+Initial analysis shows that most simple query endpoints use fewer than 500 tokens, while data-intensive endpoints like address transaction history or token holder lists can use 2,000-10,000 tokens depending on the data size.
 
-### Phase 3 (Future Enhancement)
+## Implementation Progress
 
-**Status: Planned**
+### Completed Features
 
-- Advanced analytics and visualization data
-- Transaction pattern recognition
-- Simplified transaction creation
-- Smart contract simulation
-- Enhanced security features
+- Basic blockchain query endpoints (block, transaction, address info)
+- Token information and holder lists
+- Network statistics endpoints
+- Response standardization framework
+- Token estimation integration
+
+### In-Progress Features
+
+- Address interaction detection
+- Token transaction analysis
+- Smart contract interaction endpoints
+
+### Planned Features
+
+- Wallet integration
+- Oracle pool integration
+- Comprehensive transaction analysis
+- EIP-specific endpoints
 
 ## Data Sources and Integration
 
@@ -275,6 +281,21 @@ def blockchain_address_info(
 def get_token(token_id: str) -> dict:
     """Get detailed information about a token."""
     # Implementation details
+```
+
+### Token Analysis Tools
+
+```python
+@standardize_response
+def analyze_mcpo_endpoints() -> Dict[str, Any]:
+    """
+    Analyze all MCPO endpoints and generate a token usage report.
+    This is used by the scripts/analyze_mcpo_endpoints.py tool.
+    
+    Returns:
+        Dictionary with token usage statistics for all endpoints
+    """
+    # Implementation in scripts/analyze_mcpo_endpoints.py
 ```
 
 ## Limitations and Constraints

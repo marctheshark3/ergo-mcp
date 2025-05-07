@@ -14,6 +14,7 @@ from ergo_explorer.api.routes.block import register_block_routes
 # from ergo_explorer.api.routes.node import register_node_routes
 # from ergo_explorer.api.routes.eip import register_eip_routes
 from ergo_explorer.api.routes.address_book import register_address_book_routes
+from ergo_explorer.api.routes.address_clustering import register_address_clustering_routes
 
 __all__ = [
     "register_all_routes",
@@ -28,4 +29,5 @@ def register_all_routes(mcp: FastMCP):
     register_block_routes(mcp)
     # register_node_routes(mcp)
     # register_eip_routes(mcp)
-    register_address_book_routes(mcp) 
+    register_address_book_routes(mcp)
+    register_address_clustering_routes(mcp) 

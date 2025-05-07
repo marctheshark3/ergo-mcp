@@ -174,3 +174,32 @@ cython_debug/
 mcpo_config_standalone.json
 
 mcp-env/
+
+# Added by Claude Task Master
+# Logs
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+.DS_Store
+# Task Master files
+tasks.json
+tasks/
+.taskmasterconfig
+scripts/task-complexity-report.json
+
+# Added by Claude Task Master
+# Task files

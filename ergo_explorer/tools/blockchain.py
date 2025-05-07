@@ -11,7 +11,7 @@ This module provides high-level tools for interacting with the Ergo blockchain:
 
 import logging
 from typing import Dict, List, Optional, Union, Any, Tuple
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from ergo_explorer.api.node import (
     get_indexed_height,
@@ -43,6 +43,22 @@ from ergo_explorer.response_standardizer import standardize_response
 
 # Import the new utility function
 from ergo_explorer.util.standardize import condense_address
+
+# Import token history tracking tools
+from ergo_explorer.tools.token_holders import (
+    get_token_by_id,
+    get_unspent_boxes_by_token_id,
+    get_box_by_id,
+    get_boxes_by_token_id,
+    get_token_holders,
+    get_collection_metadata,
+    get_collection_nfts,
+    get_collection_holders,
+    search_collections,
+    get_token_history,
+    clear_token_history_cache,
+    track_token_transfers_by_boxes
+)
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -894,4 +910,133 @@ async def get_histogram_token_stats(token_id: str, bin_count: int = 10) -> Dict[
     except Exception as e:
         error_msg = f"Error generating histogram data for {token_id}: {str(e)}"
         logger.error(error_msg)
-        return {"error": error_msg, "token_id": token_id} 
+        return {"error": error_msg, "token_id": token_id}
+
+async def get_historical_token_holder_data(
+    token_id: str,
+    max_transactions: int = 1000000,  # Set to a very high value essentially removing the limit
+    offset: int = 0,
+    limit: int = 100,
+    include_transfers: bool = False  # Default to False to reduce response size
+) -> Dict[str, Any]:
+    """
+    Get historical token holder distribution data showing how ownership has changed over time.
+    
+    This function uses the box-based approach to analyze all boxes that have ever contained 
+    the specified token. For each box, it extracts information about:
+    - The address that held the token
+    - The block height when the token was in that wallet
+    - Transaction details for token movements
+    
+    This provides a comprehensive view of token history without relying on time-based filtering.
+    
+    Args:
+        token_id: Token ID to analyze
+        max_transactions: Maximum number of transactions to analyze
+        offset: Number of transfers to skip for pagination 
+        limit: Maximum number of transfers to return
+        include_transfers: Whether to include transaction details in the response
+        
+    Returns:
+        Dictionary containing historical token holder distribution data
+    """
+    try:
+        logger.info(f"Getting historical token holder data for token ID: {token_id}")
+        
+        # Use the box-based method to track token transfers
+        # This is more efficient and provides block height information
+        update_result = await track_token_transfers_by_boxes(
+            token_id, 
+            max_transactions=max_transactions
+        )
+        
+        if "error" in update_result:
+            logger.error(f"Error tracking token transfers: {update_result.get('error')}")
+            return {
+                "error": update_result.get("error"),
+                "status": "error"
+            }
+        
+        # Get token history from cache/storage
+        history = get_token_history(token_id)
+        
+        # Get all transfers (sorted by timestamp, newest first)
+        transfers = sorted(history.transfers, key=lambda t: t.timestamp, reverse=True)
+        
+        # Create list of formatted transfers
+        recent_transfers = [t.to_dict() for t in transfers[:100]]
+        
+        # Get snapshot data for all time periods
+        snapshots = list(history.snapshots.values())
+        snapshots.sort(key=lambda s: s.timestamp)
+        
+        # Format snapshots for distribution changes over time
+        distribution_changes = []
+        for snapshot in snapshots:
+            snapshot_data = snapshot.to_dict()
+            distribution_changes.append(snapshot_data)
+        
+        # Create the response dictionary
+        result = {
+            "token_id": token_id,
+            "token_name": history.metadata.get("token_name", "Unknown"),
+            "first_tracked": history.metadata.get("first_tracked"),
+            "last_updated": history.metadata.get("last_updated"),
+            "distribution_changes": distribution_changes,
+            "recent_transfers": recent_transfers,
+            "total_transfers": len(history.transfers),
+            "total_snapshots": len(history.snapshots),
+            "status": "success"
+        }
+        
+        # Add some metadata to the response
+        result["query"] = {
+            "token_id": token_id,
+            "max_transactions": max_transactions,
+            "earliest_height": update_result.get("earliest_height"),
+            "latest_height": update_result.get("latest_height")
+        }
+        
+        # Format transfers with pagination
+        if "recent_transfers" in result:
+            transfers = result["recent_transfers"]
+            
+            # Calculate total transfers for pagination info
+            total_transfers = len(transfers)
+            
+            # Apply pagination
+            paginated_transfers = transfers[offset:offset+limit]
+            
+            # Format transfers for API consumption
+            for transfer in paginated_transfers:
+                # Convert timestamps to ISO format if needed
+                if "timestamp" in transfer and not isinstance(transfer["timestamp"], str):
+                    transfer["timestamp"] = transfer["timestamp"].isoformat()
+                
+                # Condense addresses for better display
+                if "from_address" in transfer and transfer["from_address"]:
+                    transfer["from_address_condensed"] = condense_address(transfer["from_address"])
+                
+                if "to_address" in transfer and transfer["to_address"]:
+                    transfer["to_address_condensed"] = condense_address(transfer["to_address"])
+            
+            # Update result with paginated transfers
+            result["recent_transfers"] = paginated_transfers
+            
+            # Add pagination info
+            result["pagination"] = {
+                "offset": offset,
+                "limit": limit,
+                "total": total_transfers,
+                "has_more": (offset + limit) < total_transfers
+            }
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error getting historical token holder data: {str(e)}")
+        return {
+            "error": str(e),
+            "status": "error",
+            "token_id": token_id
+        } 

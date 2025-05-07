@@ -149,9 +149,11 @@ This project bridges the gap between AI assistants and the Ergo blockchain ecosy
 
 - **Blockchain Exploration**: Retrieve blocks, transactions, and network statistics
 - **Address Analysis**: Query balances, transaction history, and perform forensic analysis
-- **Token Intelligence**: View token information, holder distributions, and collection data
+- **Token Intelligence**: View token information, holder distributions, historical ownership tracking, and collection data
 - **Ecosystem Integration**: Access EIP information, oracle pool data, and address book
 - **Advanced Analytics**: Analyze blockchain patterns, token metrics, and transaction flows
+- **Entity Identification**: Detect related addresses using advanced address clustering algorithms
+- **Interactive Visualizations**: Generate and interact with network visualizations for entity analysis
 
 ## Response Standardization
 
@@ -181,6 +183,186 @@ All endpoints in the Ergo Explorer MCP implement a standardized response format 
 ```
 
 For more information on response standardization, see [RESPONSE_STANDARDIZATION.md](./RESPONSE_STANDARDIZATION.md).
+
+## Entity Identification and Address Clustering
+
+The Ergo Explorer MCP provides advanced entity identification capabilities through address clustering algorithms. This feature helps identify groups of addresses likely controlled by the same entity.
+
+### Entity Identification Features
+
+- **Graph-based Clustering**: Identifies related addresses using transaction graph analysis
+- **Co-spending Detection**: Detects addresses used together in transaction inputs
+- **Confidence Scoring**: Assigns confidence levels to detected entity clusters
+- **Address Relationship Mapping**: Shows how addresses are related within an entity
+- **Interactive Visualization**: Provides network graph visualization of entities
+
+### Address Clustering Endpoints
+
+The following endpoints are available for entity identification:
+
+```
+/address_clustering/identify
+/address_clustering/visualize
+/address_clustering/openwebui_entity_tool
+/address_clustering/openwebui_viz_tool
+```
+
+### Open WebUI Integration
+
+Ergo Explorer MCP integrates with [Open WebUI](https://docs.openwebui.com/) to provide enhanced visualization and interaction capabilities:
+
+- **Entity Text Tool**: Returns a text summary of detected entities for an address
+- **Interactive Visualization Tool**: Renders an interactive D3.js network graph visualization
+- **Customizable Views**: Filter and search entities, zoom and pan visualization
+- **Entity Analysis**: Explore relationships between addresses and entities
+
+### Usage Example
+
+To identify entities related to an address:
+
+```python
+from ergo_explorer.api import make_request
+
+# Identify entities for an address
+response = make_request("address_clustering/identify", {
+    "address": "9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN",
+    "depth": 2,
+    "tx_limit": 100
+})
+
+# Get visualization for an address
+viz_response = make_request("address_clustering/visualize", {
+    "address": "9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN",
+    "depth": 2,
+    "tx_limit": 100
+})
+
+# Access entity clusters
+entities = response["data"]["clusters"]
+for entity_id, entity_data in entities.items():
+    print(f"Entity {entity_id}: {len(entity_data['addresses'])} addresses")
+    print(f"Confidence: {entity_data['confidence_score']}")
+```
+
+### Open WebUI Tool Integration
+
+To use the Open WebUI tools:
+
+```
+[Tool: openwebui_entity_tool]
+[Address: 9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN]
+[Depth: 2]
+[TX Limit: 100]
+
+[Tool: openwebui_viz_tool]
+[Address: 9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN]
+[Depth: 2]
+[TX Limit: 100]
+```
+
+## Token Estimation
+
+The Ergo Explorer MCP includes built-in token estimation capabilities to help AI assistants optimize their context window usage. This feature provides an estimate of the number of tokens in each response for various LLM models.
+
+### Token Estimation Features
+
+- **Automatic Token Counting**: Each response includes an estimate of its token count
+- **Model-Specific Estimation**: Supports various LLM models (Claude, GPT, Mistral, etc.)
+- **Breakdown by Response Section**: Provides token counts for data, metadata, and status
+- **Configurable Thresholds**: Response truncation based on token count thresholds
+- **Fallback Mechanism**: Works even if `tiktoken` is not available
+
+### Token Estimation in Responses
+
+Token estimation is included in the `metadata` section of all standardized responses:
+
+```json
+{
+  "status": "success",
+  "data": {
+    // Response data
+  },
+  "metadata": {
+    "execution_time_ms": 123,
+    "result_size_bytes": 456,
+    "is_truncated": false,
+    "token_estimate": 789,
+    "token_breakdown": {
+      "data": 650,
+      "metadata": 89,
+      "status": 50
+    }
+  }
+}
+```
+
+### Usage
+
+To access token estimates in responses:
+
+```python
+from ergo_explorer.api import make_request
+
+# Make a request to any endpoint
+response = make_request("blockchain/status")
+
+# Access token estimation information
+token_count = response["metadata"]["token_estimate"]
+is_truncated = response["metadata"]["is_truncated"]
+
+print(f"Response contains approximately {token_count} tokens")
+if is_truncated:
+    print("Response was truncated to fit within token limits")
+```
+
+### Model-Specific Estimation
+
+You can specify which LLM model to use for token estimation:
+
+```python
+from ergo_explorer.api import make_request
+
+# Request with specific model type for token estimation
+response = make_request("blockchain/address_info", 
+                        {"address": "9hdcMw4eRpJPJGx8RJhvdRgFRsE1URpQCsAWM3wG547gQ9awZgi"},
+                        model_type="gpt-4")
+
+# The token_estimate will be calculated based on GPT-4's tokenization
+```
+
+### Token Usage Guidelines
+
+| Response Type | Target Token Range | Optimization Strategy |
+|---------------|-------------------|------------------------|
+| Simple queries | < 500 tokens | Full response without truncation |
+| Standard queries | 500-2000 tokens | Selective field inclusion |
+| Complex queries | 2000-5000 tokens | Pagination or truncated response |
+| Data-intensive | > 5000 tokens | Summary with optional detail retrieval |
+
+## Historical Token Holder Tracking
+
+The Ergo Explorer MCP includes comprehensive functionality for tracking the historical ownership of tokens and analyzing how distribution changes over time:
+
+### Key Features
+
+- **Complete Token History**: Track all boxes that have ever contained the token to provide a comprehensive view of token movements through the blockchain
+- **Block Height Tracking**: Includes block height information for all token transfers 
+- **Token Transfer Monitoring**: Follow tokens as they move between addresses
+- **Distribution Metrics**: Calculate concentration metrics (Gini coefficient) for token distribution
+- **Advanced Box Analysis**: Uses efficient box-based method to analyze all transactions involving a token
+
+### Usage Examples
+
+```json
+// Simple request with just essential parameters
+GET /token/historical_token_holders
+{
+  "token_id": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413",
+  "max_transactions": 200
+}
+```
+
+Response format includes detailed token transfer history and snapshots of token distribution at various points in time (or block heights).
 
 ## Installation
 

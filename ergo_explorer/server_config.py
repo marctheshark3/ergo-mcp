@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 def create_server():
     """Create and configure the MCP server."""
     # Create MCP server
-    mcp = FastMCP("Ergo Explorer", dependencies=["httpx"])
+    mcp = FastMCP("Ergo Explorer", dependencies=["httpx", "networkx"])
     
     # Register all routes
     register_all_routes(mcp)

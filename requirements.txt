@@ -10,6 +10,7 @@ aiohttp>=3.8.4
 GitPython>=3.1.40
 markdown>=3.5.1
 mcpo>=0.0.12  # MCP to OpenAPI proxy
+networkx>=3.1.0  # For address clustering and entity identification
 
 # Test dependencies
 pytest>=7.3.1
