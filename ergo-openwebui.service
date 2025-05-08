@@ -1,0 +1,31 @@
+[Unit]
+Description=Ergo Explorer MCP and MCPO Service
+After=network.target
+Documentation=https://github.com/abchrisxyz/ergowatch
+
+[Service]
+Type=simple
+User=ai-admin
+Group=ai-admin
+WorkingDirectory=/home/ai-admin/ergo-mcp
+ExecStart=/bin/bash /home/ai-admin/ergo-mcp/start_simple.sh
+ExecStop=/usr/bin/pkill -f "mcpo|ergo_explorer"
+Restart=on-failure
+RestartSec=5s
+
+# Logging
+StandardOutput=append:/home/ai-admin/ergo-mcp/logs/systemd-ergo-openwebui.log
+StandardError=append:/home/ai-admin/ergo-mcp/logs/systemd-ergo-openwebui-error.log
+
+# Resource limits
+TimeoutStartSec=120
+TimeoutStopSec=30
+LimitNOFILE=65536
+MemoryLimit=2G
+CPUQuota=80%
+
+# Environment variables can be set here if needed
+# Environment=VARIABLE=value
+
+[Install]
+WantedBy=multi-user.target 
