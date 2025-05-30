@@ -431,6 +431,8 @@ async def get_box_info(identifier: Union[str, int], by_index: bool = False) -> D
         creation_height = box_data.get("creationHeight", 0)
         ergo_tree = box_data.get("ergoTree", "Unknown")
         assets = box_data.get("assets", [])
+        address = box_data.get("address", "Unknown")
+        spent_transaction_id = box_data.get("spentTransactionId", "Unknown")
         
         # Format assets/tokens data
         formatted_assets = []
@@ -442,6 +444,8 @@ async def get_box_info(identifier: Union[str, int], by_index: bool = False) -> D
         
         return {
             "id": box_id,
+            "address": address,
+            "spent_transaction_id": spent_transaction_id,
             "value": {
                 "nanoerg": value_nanoerg,
                 "erg": value_erg

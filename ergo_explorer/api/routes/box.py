@@ -18,10 +18,10 @@ def register_box_routes(mcp):
         logger.info(f"Getting box info for ID: {box_id}")
         return await get_box_info(box_id)
 
-    @mcp.tool()
-    async def get_box_by_index(ctx: Context, index: int) -> dict:
-        """Get detailed information about a box by its index."""
-        logger.info(f"Getting box info for index: {index}")
-        return await get_box_info_json(index, by_index=True)
+    # @mcp.tool()
+    # async def get_box_by_index(ctx: Context, index: int) -> dict:
+    #     """Get detailed information about a box by its index."""
+    #     logger.info(f"Getting box info for index: {index}")
+    #     return await get_box_info_json(index, by_index=True)
     
     logger.info("Registered box routes") 
