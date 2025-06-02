@@ -81,6 +81,27 @@ async def get_block_by_hash(block_hash: str) -> Dict:
     except Exception as e:
         logger.error(f"Error fetching block with hash {block_hash} via Node API: {e}", exc_info=True)
         return {"error": f"Failed to fetch block data from Node API: {str(e)}"}
+    
+async def get_block_by_block_id(block_id: str) -> Dict:
+    """
+    Fetch a block by its ID using the direct Node API.
+    
+    Args:
+        block_id: The ID of the block to fetch
+
+    Returns:
+        A dictionary containing block data or an error message
+    """
+    try:
+        logger.info(f"Fetching block with ID {block_id} via Node API")
+        # Directly use the /blocks/{block_id} endpoint
+        block_data = await fetch_node_api(f"blocks/{block_id}")
+        return block_data
+    except Exception as e:
+        logger.error(f"Error fetching block with ID {block_id} via Node API: {e}", exc_info=True)
+        return {"error": f"Failed to fetch block data from Node API: {str(e)}"} 
+    
+    
 
 async def get_latest_blocks(limit: int = 10) -> Dict:
     """

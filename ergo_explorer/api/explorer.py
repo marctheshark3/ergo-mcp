@@ -52,8 +52,91 @@ async def fetch_balance(address: str) -> Dict:
 
 async def fetch_address_transactions(address: str, limit: int = 20, offset: int = 0) -> Dict:
     """Fetch transactions for an address."""
-    params = {"limit": limit, "offset": offset}
-    return await fetch_api(f"addresses/{address}/transactions", params=params)
+    try:
+        url = f"{ERGO_EXPLORER_API}/addresses/{address}/transactions"
+        logging.info(f"Making API request to: {url}")
+        
+        params = {"limit": limit, "offset": offset}
+        
+        async with httpx.AsyncClient() as client:
+            headers = {"User-Agent": USER_AGENT}
+            response = await client.get(url, headers=headers, params=params, timeout=30.0)
+            
+            # Log request details
+            logging.info(f"HTTP Request: {response.request.method} {response.request.url}")
+            logging.info(f"HTTP Response: {response.status_code}")
+            
+            # Check for error status codes
+            if response.status_code != 200:
+                logging.error(f"HTTP error received: {response.status_code} for address {address}")
+                return {
+                    "items": [],
+                    "total": 0,
+                    "error": f"HTTP error: {response.status_code}",
+                    "address": address
+                }
+            
+            # Try to parse JSON response
+            try:
+                data = response.json()
+                # Validate the response structure
+                if not isinstance(data, dict):
+                    logging.error(f"Invalid response format: expected dict, got {type(data)}")
+                    return {
+                        "items": [],
+                        "total": 0,
+                        "error": "Invalid response format",
+                        "address": address
+                    }
+                
+                # Ensure the expected structure exists
+                if "items" not in data:
+                    logging.warning(f"No 'items' field in response for address {address}. Keys: {list(data.keys())}")
+                    data["items"] = []
+                
+                if "total" not in data:
+                    data["total"] = len(data.get("items", []))
+                    
+                # Log some information about the results    
+                logging.info(f"Retrieved {len(data.get('items', []))} transactions for address {address} (total: {data.get('total', 0)})")
+                
+                # Add the address to the response for reference
+                data["address"] = address
+                
+                return data
+            except ValueError as e:
+                logging.error(f"Failed to parse JSON response from address transactions: {str(e)}")
+                return {
+                    "items": [],
+                    "total": 0,
+                    "error": "Invalid JSON response",
+                    "address": address
+                }
+                
+    except httpx.HTTPStatusError as e:
+        logging.error(f"HTTP error occurred in fetch_address_transactions: {str(e)}")
+        return {
+            "items": [],
+            "total": 0,
+            "error": f"HTTP error: {e.response.status_code}",
+            "address": address
+        }
+    except httpx.RequestError as e:
+        logging.error(f"Request error occurred in fetch_address_transactions: {str(e)}")
+        return {
+            "items": [],
+            "total": 0,
+            "error": f"Request failed: {str(e)}",
+            "address": address
+        }
+    except Exception as e:
+        logging.error(f"Unexpected error in fetch_address_transactions: {str(e)}", exc_info=True)
+        return {
+            "items": [],
+            "total": 0,
+            "error": f"Unexpected error: {str(e)}",
+            "address": address
+        }
 
 async def fetch_transaction(tx_id: str) -> Dict:
     """Fetch details for a specific transaction."""
@@ -70,6 +153,28 @@ async def fetch_network_state() -> Dict:
 async def fetch_box(box_id: str) -> Dict:
     """Fetch details for a specific box (UTXO)."""
     return await fetch_api(f"boxes/{box_id}")
+
+async def get_token_by_id(token_id: str) -> Dict:
+    """Fetch details for a specific token by ID."""
+    return await fetch_api(f"tokens/{token_id}")
+
+async def fetch_token_info(token_id: str) -> Dict:
+    """
+    Fetch detailed information about a token by its ID.
+    
+    Args:
+        token_id: The token ID to look up
+        
+    Returns:
+        A dictionary containing token details including name, description, and metadata
+    """
+    try:
+        response = await fetch_api(f"tokens/{token_id}")
+        logging.info(f"Successfully fetched token info for {token_id}")
+        return response
+    except Exception as e:
+        logging.error(f"Error fetching token info for {token_id}: {str(e)}")
+        return {"error": str(e)}
 
 async def search_tokens(query: str) -> Dict:
     """Search for tokens by ID or symbol."""

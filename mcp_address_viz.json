@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "id": "center",
+      "label": "9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN",
+      "type": "main",
+      "size": 25
+    },
+    {
+      "id": "node_0",
+      "label": "9f3AaA...TiwjCy",
+      "type": "recurring",
+      "size": 20,
+      "title": null
+    },
+    {
+      "id": "node_1",
+      "label": "2iHkR7...CfdPpe",
+      "type": "contract",
+      "size": 15,
+      "title": "Known: Smart Contract"
+    },
+    {
+      "id": "node_2",
+      "label": "9eg7v2...FEtYEn",
+      "type": "contract",
+      "size": 12,
+      "title": null
+    },
+    {
+      "id": "node_3",
+      "label": "9gPoho...Ane1Y8",
+      "type": "recurring",
+      "size": 11,
+      "title": null
+    },
+    {
+      "id": "node_4",
+      "label": "3bseGy...XLULxS",
+      "type": "contract",
+      "size": 7,
+      "title": "Known: Smart Contract"
+    },
+    {
+      "id": "node_5",
+      "label": "2scJRP...k3Vnnw",
+      "type": "contract",
+      "size": 7,
+      "title": "Known: Smart Contract"
+    },
+    {
+      "id": "node_6",
+      "label": "2HqXK7...pBnzn4",
+      "type": "contract",
+      "size": 7,
+      "title": "Known: Smart Contract"
+    },
+    {
+      "id": "node_7",
+      "label": "9gJJoS...oHPgmZ",
+      "type": "recurring",
+      "size": 7,
+      "title": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_in_0",
+      "source": "node_0",
+      "target": "center",
+      "width": 3.6,
+      "count": 18
+    },
+    {
+      "id": "edge_out_0",
+      "source": "center",
+      "target": "node_0",
+      "width": 1,
+      "count": 2
+    },
+    {
+      "id": "edge_out_1",
+      "source": "center",
+      "target": "node_1",
+      "width": 2.0,
+      "count": 10
+    },
+    {
+      "id": "edge_in_2",
+      "source": "node_2",
+      "target": "center",
+      "width": 1.4,
+      "count": 7
+    },
+    {
+      "id": "edge_in_3",
+      "source": "node_3",
+      "target": "center",
+      "width": 1,
+      "count": 3
+    },
+    {
+      "id": "edge_out_3",
+      "source": "center",
+      "target": "node_3",
+      "width": 1,
+      "count": 3
+    },
+    {
+      "id": "edge_in_4",
+      "source": "node_4",
+      "target": "center",
+      "width": 1,
+      "count": 1
+    },
+    {
+      "id": "edge_out_4",
+      "source": "center",
+      "target": "node_4",
+      "width": 1,
+      "count": 1
+    },
+    {
+      "id": "edge_in_5",
+      "source": "node_5",
+      "target": "center",
+      "width": 1,
+      "count": 1
+    },
+    {
+      "id": "edge_out_5",
+      "source": "center",
+      "target": "node_5",
+      "width": 1,
+      "count": 1
+    },
+    {
+      "id": "edge_in_6",
+      "source": "node_6",
+      "target": "center",
+      "width": 1,
+      "count": 1
+    },
+    {
+      "id": "edge_out_6",
+      "source": "center",
+      "target": "node_6",
+      "width": 1,
+      "count": 1
+    },
+    {
+      "id": "edge_out_7",
+      "source": "center",
+      "target": "node_7",
+      "width": 1,
+      "count": 2
+    }
+  ],
+  "stats": {
+    "total_transactions_analyzed": 10,
+    "unique_addresses": 64,
+    "total_incoming": 31,
+    "total_outgoing": 76,
+    "total_volume_nano": 8706599221956,
+    "total_volume_erg": 8706.599221956,
+    "first_tx_timestamp": 1741637066454,
+    "last_tx_timestamp": 1746289213345,
+    "token_type_counts": {
+      "unknown": 154,
+      "nft": 161,
+      "governance": 4,
+      "stablecoin": 2,
+      "utility": 6
+    },
+    "time_of_day_activity": {
+      "12-15": 4,
+      "9-12": 2,
+      "15-18": 4
+    },
+    "day_of_week_activity": {
+      "Saturday": 1,
+      "Thursday": 2,
+      "Wednesday": 1,
+      "Tuesday": 2,
+      "Monday": 4
+    },
+    "first_tx_date": "2025-03-10 16:04:26 UTC",
+    "last_tx_date": "2025-05-03 12:20:13 UTC"
+  }
+}

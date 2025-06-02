@@ -1,654 +1,444 @@
-<<<<<<< HEAD
-# Ergo Explorer MCP Server
-[![MCP Server](https://glama.ai/mcp/servers/ergo-explorer/badge)](https://glama.ai/mcp/servers/ergo-explorer)
-=======
-# Ergo MCP
->>>>>>> 245e16143ae14fbbdd124ce6aee11f626d6c4ac0
+# MCP Response Standardizer
 
-A Model Context Protocol (MCP) server for interacting with the Ergo blockchain. This package provides a set of tools for exploring blocks, transactions, addresses, and other aspects of the Ergo blockchain.
+A standardization tool for Ergo MCP API responses that transforms various output formats (JSON, Markdown, plaintext) into a consistent JSON structure for improved integration and usability.
 
-## Features
+## Problem
 
-<<<<<<< HEAD
-- Check address balances
-- Analyze transactions
-- View transaction history
-- Perform forensic analysis of addresses
-- Search for tokens
-- Monitor network status
-- Direct node connection support
-- ErgoWatch analytics integration
+The MCP API returns responses in inconsistent formats:
+- Some endpoints return JSON
+- Some return Markdown
+- Some return plain text
+- Some return mixed formats (Markdown with embedded JSON)
 
-## Prerequisites
+This inconsistency makes it difficult to integrate with other systems and requires custom handling for each endpoint.
 
-- Python 3.8+
-- FastMCP package
-- httpx
-- python-dotenv
-=======
-- Block exploration: retrieve blocks by height or hash, get latest blocks, etc.
-- Network statistics: blockchain stats, hashrate, mining difficulty, etc.
-- Mempool information: pending transactions status and statistics
-- Token price information: get token prices from DEXes
-- **NEW**: OpenAPI integration with Open WebUI via MCPO
->>>>>>> 245e16143ae14fbbdd124ce6aee11f626d6c4ac0
+## Solution
 
-## Installation
-
-### Using a Virtual Environment (Recommended)
-
-We strongly recommend using a virtual environment to isolate dependencies:
-
-```bash
-# Create a virtual environment
-python -m venv .venv
-
-# Activate the virtual environment
-# On Linux/Mac:
-source .venv/bin/activate
-# On Windows:
-# .venv\Scripts\activate
-
-# Install the package
-pip install ergo-mcp
-```
-
-### Using pip (System-wide)
-
-```bash
-pip install ergo-mcp
-```
-<<<<<<< HEAD
-=======
-
-### From Source
-
-```bash
-git clone https://github.com/marctheshark3/ergo-mcp.git
-cd ergo-mcp
-
-# Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install the package
-pip install .
-```
->>>>>>> 245e16143ae14fbbdd124ce6aee11f626d6c4ac0
-
-### Using Docker
-
-The project provides a Docker image for easy deployment:
-
-```bash
-# Build the Docker image
-./build_docker.sh
-# or manually
-docker build -t mcp/ergo-explorer .
-
-# Run the container
-docker run -p 3001:3001 \
-  -e ERGO_NODE_API=http://your-node-url:9053 \
-  -e ERGO_NODE_API_KEY=your-api-key \
-  mcp/ergo-explorer
-```
-
-### Using the Container Manager
-
-<<<<<<< HEAD
-### Environment Variables
-
-The server can be configured through environment variables in the `.env` file:
-=======
-For development and easier management, use the provided container management script:
->>>>>>> 245e16143ae14fbbdd124ce6aee11f626d6c4ac0
-
-```bash
-# Make the script executable
-chmod +x manage_mcp.sh
-
-# Build the image and start a container
-./manage_mcp.sh reload
-
-# Other commands:
-./manage_mcp.sh start    # Start the container
-./manage_mcp.sh stop     # Stop the container
-./manage_mcp.sh restart  # Restart the container
-./manage_mcp.sh status   # Show container status
-./manage_mcp.sh logs     # Show container logs
-./manage_mcp.sh debug    # Run with interactive shell
-./manage_mcp.sh clean    # Remove stopped containers
-```
-
-The manager ensures only one container runs at a time and provides a consistent environment. See `mcp_config.md` for detailed documentation.
-
-### Configure for Cursor
-
-To use with Cursor, update your MCP configuration:
-
-```json
-"mcpServers": {
-  "ergo-explorer": {
-    "command": "docker",
-    "args": [
-      "run", 
-      "-i", 
-      "--rm", 
-      "--add-host=host.docker.internal:host-gateway",
-      "-e", "ERGO_NODE_API=http://host.docker.internal:9053",
-      "-e", "ERGO_NODE_API_KEY=your-api-key", 
-      "ergo-explorer-mcp:latest"
-    ]
-  }
-}
-```
-
-<<<<<<< HEAD
-### Using with Cursor
-=======
-## Usage
-
-### As a Module
-
-Run the MCP server as a Python module from your virtual environment:
-
-```bash
-# Make sure your virtual environment is activated, or use the full path to Python
-# Using the full path (recommended to ensure the correct Python is used):
-/path/to/your/project/.venv/bin/python -m ergo_explorer
-
-# Or with activated virtual environment:
-python -m ergo_explorer
-```
-
-With custom configuration:
-
-```bash
-/path/to/your/project/.venv/bin/python -m ergo_explorer --port 3002 --env-file .env.local --debug
-```
-
-### Using the Consolidated Run Script
-
-We provide a consolidated run script that handles environment setup, dependency installation, and server startup:
-
-```bash
-# Run with default settings
-./run_server_consolidated.sh
->>>>>>> 245e16143ae14fbbdd124ce6aee11f626d6c4ac0
-
-# Run with custom arguments
-./run_server_consolidated.sh --port 3002 --debug
-```
-
-<<<<<<< HEAD
-1. Open Cursor and go to Settings (gear icon)
-2. Navigate to "AI" → "Claude" → "MCP Settings"
-3. Click "Add MCP Server"
-4. Configure with the following command:
-
-```bash
-/path/to/venv/python /path/to/ergo-explorer-mcp/run_server.py
-```
-
-Replace `/path/to/venv/python` with your virtual environment Python path and `/path/to/ergo-explorer-mcp` with the actual path where you cloned the repository.
-
-### Using with Claude Desktop
-
-To use this MCP server with Claude Desktop, add the following to your `claude_desktop_config.json`:
+The `MCPResponseStandardizer` transforms all responses into a consistent JSON structure:
 
 ```json
 {
-  "mcpServers": {
-    "ergo-explorer": {
-      "command": "python",
-      "args": [
-        "/path/to/ergo-explorer-mcp/run_server.py"
-      ],
-      "env": {
-        "ERGO_EXPLORER_API": "https://api.ergoplatform.com/api/v1",
-        "ERGO_NODE_API": "http://localhost:9053",
-        "ERGO_NODE_API_KEY": "your-api-key",
-        "SERVER_PORT": "3001"
-      }
-    }
+  "success": true,
+  "data": {
+    // Standardized response data extracted from the original
+  },
+  "meta": {
+    "format": "json|markdown|text|mixed",
+    "endpoint": "endpoint_name",
+    "timestamp": "ISO-timestamp"
   }
 }
 ```
 
-## Available Tools
-
-### Explorer API Tools
-
-- **get_address_balance**: Get the confirmed balance for an Ergo address
-- **get_transaction_history**: Get the transaction history for an Ergo address
-- **analyze_address**: Perform forensic analysis on an Ergo address
-- **analyze_transaction**: Analyze transaction details
-- **search_for_token**: Search for tokens on the Ergo blockchain
-- **get_network_status**: Get current network status
-
-### Node API Tools
-
-- **get_node_wallet**: Get node wallet information
-- **get_address_balance_from_node**: Get address balance from node
-- **analyze_transaction_from_node**: Analyze transaction using node
-- **get_transaction_history_from_node**: Get transaction history from node
-- **get_network_status_from_node**: Get network status from node
-- **search_for_token_from_node**: Search tokens using node
-
-### ErgoWatch API Tools
-
-- **get_address_balance_history**: Get balance history
-- **get_address_balance_at_height**: Get balance at height
-- **get_contract_stats**: Get contract statistics
-- **get_p2pk_stats**: Get P2PK address statistics
-- **get_exchange_addresses**: Get exchange address info
-- **get_rich_list**: Get address rich list
-- **get_address_rank**: Get address rank by balance
-
-## Resource Endpoints
-
-### Explorer API Resources
-- `ergo://address/{address}/balance`: Address balance
-- `ergo://transaction/{tx_id}`: Transaction details
-
-### Node API Resources
-- `ergo://node/address/{address}/balance`: Node address balance
-- `ergo://node/transaction/{tx_id}`: Node transaction details
-
-## API Reference
-
-This server integrates with:
-- [Ergo Explorer API](https://api.ergoplatform.com/api/v1)
-- [Ergo Node API](https://github.com/ergoplatform/ergo/blob/master/src/main/resources/api/openapi.yaml)
-- [ErgoWatch API](https://api.ergo.watch/docs)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-=======
-The script automatically:
-- Creates and activates a virtual environment if needed
-- Installs dependencies if not already installed
-- Sets up the logging directory
-- Configures environment variables
-- Starts the server
-
-### As a Command-line Tool
-
-After installation, you can run the server directly from the command line:
-
-```bash
-# Using the full path to the virtual environment:
-/path/to/your/project/.venv/bin/ergo-mcp
-
-# Or with activated virtual environment:
-ergo-mcp
-```
-
-With custom configuration:
-
-```bash
-/path/to/your/project/.venv/bin/ergo-mcp --port 3002 --env-file .env.local --debug
-```
-
-### Environment Variables
-
-The server can be configured using environment variables in a `.env` file:
-
-- `SERVER_HOST`: Host to bind the server to (default: 0.0.0.0)
-- `SERVER_PORT`: Port to run the server on (default: 3001)
-- `SERVER_WORKERS`: Number of worker processes (default: 4)
-- `ERGO_NODE_API`: URL of the Ergo node API (for node-specific features)
-- `ERGO_NODE_API_KEY`: API key for the Ergo node (if required)
-
-### Configure for Claude.app
-
-Add to your Claude settings, making sure to use the full path to your virtual environment's Python:
+For error responses:
 
 ```json
-"mcpServers": {
-  "ergo": {
-    "command": "/path/to/your/project/.venv/bin/python",
-    "args": ["-m", "ergo_explorer"]
+{
+  "success": false,
+  "error": {
+    "code": 400,
+    "message": "Error message"
+  },
+  "meta": {
+    "format": "json|markdown|text|mixed",
+    "endpoint": "endpoint_name",
+    "timestamp": "ISO-timestamp"
   }
 }
 ```
-
-Or if installed via pip in your virtual environment:
-
-```json
-"mcpServers": {
-  "ergo": {
-    "command": "/path/to/your/project/.venv/bin/ergo-mcp",
-    "args": []
-  }
-}
-```
-
-## API Documentation
-
-Once the server is running, you can access the API documentation at:
-
-```
-http://localhost:3001/docs
-```
-
-## Recent Changes
-
-### Token Holder Analysis
-
-We've enhanced the token holder analysis functionality:
-
-- Improved token holder data retrieval using the Node API
-- Added comprehensive distribution analysis 
-- Created batch export tools for processing multiple tokens
-
-### Export Tools
-
-New tools for exporting token holder data are available:
-
-```bash
-# Single token export
-python -m ergo_explorer.tools.export_token_holders <token_id> [output_dir]
-
-# Batch token export from file
-python -m ergo_explorer.tools.batch_export_token_holders -f token_list.txt -o output_dir
-
-# Batch token export with direct token IDs
-python -m ergo_explorer.tools.batch_export_token_holders -t token1 token2 token3 -o output_dir
-```
-
-### Code Cleanup
-
-We've performed extensive code cleanup:
-- Removed redundant and deprecated files
-- Consolidated server startup scripts
-- Improved Docker support
-- Enhanced logging configuration
-
-## Tool Reference
-
-### MCP Tool Naming Convention
-
-All tools are now consistently named with the `mcp_ergo_explorer_` prefix for clarity and to avoid conflicts with other MCPs. 
-
-For backward compatibility, all tools are also available with their original non-prefixed names (e.g., `get_height` is an alias for `mcp_ergo_explorer_get_height`), but these aliases are deprecated and may be removed in a future version.
-
-### Primary Tools
-
-#### Blockchain Information
-- `mcp_ergo_explorer_get_height`: Get the current blockchain height and indexing status
-- `mcp_ergo_explorer_get_difficulty_info`: Get comprehensive information about blockchain difficulty and network hashrate
-
-#### Transactions
-- `mcp_ergo_explorer_get_transaction`: Get transaction details by ID
-- `mcp_ergo_explorer_get_transaction_by_index`: Get transaction details by index
-- `mcp_ergo_explorer_analyze_transaction`: Detailed analysis of a transaction
-- `mcp_ergo_explorer_get_transaction_history`: Get transaction history for an address
-
-#### Addresses
-- `mcp_ergo_explorer_get_balance`: Get detailed balance information for an address
-- `mcp_ergo_explorer_analyze_address`: Deep analysis of an address with transaction patterns and holdings
-
-#### Boxes (UTXOs)
-- `mcp_ergo_explorer_get_box`: Get box details by ID
-- `mcp_ergo_explorer_get_box_by_index`: Get box details by index
-
-#### Tokens
-- `mcp_ergo_explorer_get_token`: Get token information
-- `mcp_ergo_explorer_get_token_price`: Get token price information
-- `mcp_ergo_explorer_get_token_holders`: Get address distribution analysis for a token
-- `mcp_ergo_explorer_get_token_holders_raw`: Get raw token holder data
-- `mcp_ergo_explorer_get_token_holders_json`: Get comprehensive token holder information
-- `mcp_ergo_explorer_search_token`: Search for tokens by ID or name
-
-#### Blocks
-- `mcp_ergo_explorer_get_block_by_height`: Get block by height
-- `mcp_ergo_explorer_get_block_by_hash`: Get block by hash
-- `mcp_ergo_explorer_get_latest_blocks`: Get most recent blocks
-- `mcp_ergo_explorer_get_block_transactions`: Get transactions in a block
-
-#### Node
-- `mcp_ergo_explorer_get_node_wallet`: Get information about the connected node's wallet
-- `mcp_ergo_explorer_get_mempool_info`: Get current mempool status
-
-### Deprecated Tools
-
-The following tools have been removed or replaced:
-
-- `get_address_txs`: Redundant with `mcp_ergo_explorer_get_transaction_history`
-- `get_address_balance`: Redundant with `mcp_ergo_explorer_get_balance`
-- `get_network_hashrate`: Functionality merged into `mcp_ergo_explorer_get_difficulty_info`
-- `get_mining_difficulty`: Functionality merged into `mcp_ergo_explorer_get_difficulty_info`
-- `get_info` and `get_info_raw`: Too vague, replaced by more specific tools
-
-## Development
-
-### Setting Up a Development Environment
-
-```bash
-git clone https://github.com/marctheshark3/ergo-mcp.git
-cd ergo-mcp
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
-```
-
-### Running Tests
-
-The project includes a comprehensive test suite to ensure all MCP tools work as expected. To run the tests:
-
-1. Make sure you have all the test dependencies installed:
-   ```bash
-   pip install -e ".[test]"
-   # or
-   pip install -r requirements.txt
-   ```
-
-2. Run the tests using pytest:
-   ```bash
-   # Run all tests
-   python -m pytest
-   
-   # Run tests with coverage report
-   python -m pytest --cov=ergo_explorer
-   
-   # Run specific test files
-   python -m pytest tests/unit/test_address_tools.py
-   ```
-
-3. Alternatively, use the provided test runner script:
-   ```bash
-   python tests/run_tests.py
-   ```
-
-The test suite includes unit tests for all MCP tools, including:
-- Address tools
-- Transaction tools
-- Block tools
-- Network tools
-- Token tools
-- Node tools
-- Server implementation
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-# Ergo Explorer MCP - NFT Collection Analysis
-
-This module extends the Ergo Explorer MCP to support detailed analysis of NFT collections following the EIP-34 standard on the Ergo blockchain.
 
 ## Features
 
-- **Collection Metadata Retrieval**: Get comprehensive metadata about NFT collections
-- **Collection NFT Discovery**: Find all NFTs belonging to a specific collection
-- **Holder Analysis**: Analyze NFT ownership distribution across collections
-- **Distribution Metrics**: Get insights into collection concentration and uniqueness
+- Automatically detects response format (JSON, Markdown, plaintext)
+- Extracts structured data from Markdown responses
+- Preserves original data structure for JSON responses
+- Extracts embedded JSON from mixed-format responses
+- Provides consistent error handling
+- Includes metadata about original format and processing timestamp
 
 ## Usage
 
-### Collection Analysis
+### Basic Usage
 
 ```python
-from ergo_explorer.tools.token_holders import get_collection_holders
+from mcp_response_standardizer import MCPResponseStandardizer
 
-# Get comprehensive collection holder analysis
-collection_id = "your_collection_token_id_here"
-analysis = await get_collection_holders(collection_id)
-print(analysis)
+# Initialize the standardizer
+standardizer = MCPResponseStandardizer()
 
-# Get raw data for further processing
-raw_data = await get_collection_holders(collection_id, include_raw=True)
+# Standardize a response
+endpoint_name = "blockchain_status"
+response_content = "..."  # Content from the MCP API
+status_code = 200  # HTTP status code from the API call
+
+# Get standardized response
+standardized = standardizer.standardize_response(
+    endpoint_name, 
+    response_content, 
+    status_code
+)
+
+# Access the standardized data
+if standardized["success"]:
+    data = standardized["data"]
+    # Use the standardized data...
+else:
+    error = standardized["error"]
+    print(f"Error {error['code']}: {error['message']}")
 ```
 
-### Collection Metadata
+### Command Line Usage
 
-```python
-from ergo_explorer.tools.token_holders import get_collection_metadata
-
-# Get collection metadata based on EIP-34 standard
-collection_id = "your_collection_token_id_here"
-metadata = await get_collection_metadata(collection_id)
-print(metadata)
-```
-
-### Discovering Collection NFTs
-
-```python
-from ergo_explorer.tools.token_holders import get_collection_nfts
-
-# Find all NFTs in a collection
-collection_id = "your_collection_token_id_here"
-nfts = await get_collection_nfts(collection_id)
-print(f"Found {len(nfts)} NFTs in collection")
-
-# Limit the number of NFTs returned
-limited_nfts = await get_collection_nfts(collection_id, limit=50)
-```
-
-## Command Line Interface
+You can also use the standardizer from the command line:
 
 ```bash
-# Get collection holder analysis
-python -m ergo_explorer collection_holders --collection-id <COLLECTION_ID>
-
-# Get detailed analysis with raw data
-python -m ergo_explorer collection_holders --collection-id <COLLECTION_ID> --raw
-
-# Get collection metadata
-python -m ergo_explorer collection_metadata --collection-id <COLLECTION_ID>
+python mcp_response_standardizer.py blockchain_status response.txt
 ```
 
-## Understanding EIP-34 NFT Collections
+Where:
+- `blockchain_status` is the endpoint name
+- `response.txt` is a file containing the response content
 
-The NFT Collection Standard (EIP-34) defines how NFT collections are structured on the Ergo blockchain. Key concepts:
+## Testing
 
-1. **Collection Token**: A token representing the collection itself
-2. **Issuer Box**: The box that issues the collection token (contains collection metadata)
-3. **NFT Association**: NFTs are linked to collections via the R7 register
-4. **Metadata Registers**:
-   - R4: Collection standard version
-   - R5: Collection information (logo, images, category)
-   - R6: Social media links
-   - R7: Minting expiry timestamp
-   - R8: Additional information
+A test script `test_standardizer.py` is provided to demonstrate the standardizer with sample responses:
+
+```bash
+python test_standardizer.py
+```
+
+This script:
+1. Creates sample responses in different formats
+2. Saves them to the `sample_responses` directory
+3. Processes each sample using the standardizer
+4. Saves the standardized output for comparison
 
 ## Implementation Details
 
-The collection analysis functionality is built on top of the existing token holder analysis module. It uses:
+The standardizer uses the following approach:
 
-1. **Ergo Node API**: For retrieving box and token data
-2. **Explorer API**: For searching and discovering NFTs
-
-For large collections, the analysis might take some time due to API rate limits and the need to check each NFT's register values.
+1. Check if response is an error based on HTTP status code
+2. Determine the original format (JSON, Markdown, text)
+3. Process the response according to its format:
+   - JSON: Parse and preserve the structure
+   - Markdown: Extract structured data (headers, lists, tables, code blocks)
+   - Text: Convert to key-value pairs when possible
+   - Mixed: Extract embedded JSON and combine with other extracted data
+4. Format the result in the standardized structure
+5. Include metadata about the original format and processing
 
 ## Requirements
 
-- Ergo Node API access
-- Ergo Explorer API access
-- Python 3.7+
-- httpx library
+- Python 3.6+
+- No external dependencies required
 
-## Configuration
+# Ergo Explorer MCP
 
-The module uses the following environment variables:
+Ergo Explorer Model Context Protocol (MCP) is a comprehensive server that provides AI assistants with direct access to Ergo blockchain data through a standardized interface.
 
-- `ERGO_NODE_API`: URL of the Ergo Node API (default: http://localhost:9053)
-- `ERGO_NODE_API_KEY`: API key for the Ergo Node
-- `ERGO_EXPLORER_API`: URL of the Ergo Explorer API (default: https://api.ergoplatform.com/api/v1)
+## Overview
 
-## MCPO Integration with Open WebUI
+This project bridges the gap between AI assistants and the Ergo blockchain ecosystem by:
 
-This package now includes integration with [MCPO](https://github.com/open-webui/mcpo) (Model Context Protocol to OpenAPI) to enable seamless interaction with [Open WebUI](https://github.com/open-webui/open-webui).
+- Providing structured blockchain data in AI-friendly formats
+- Enabling complex blockchain analysis through simple natural language queries
+- Supporting token analytics, address intelligence, and ecosystem monitoring
+- Standardizing blockchain data access patterns for AI models
 
-### Quick Start with MCPO
+## Features
 
-Run the integrated setup script to configure and start both the Ergo MCP server and MCPO proxy:
+- **Blockchain Exploration**: Retrieve blocks, transactions, and network statistics
+- **Address Analysis**: Query balances, transaction history, and perform forensic analysis
+- **Token Intelligence**: View token information, holder distributions, historical ownership tracking, and collection data
+- **Ecosystem Integration**: Access EIP information, oracle pool data, and address book
+- **Advanced Analytics**: Analyze blockchain patterns, token metrics, and transaction flows
+- **Entity Identification**: Detect related addresses using advanced address clustering algorithms
+- **Interactive Visualizations**: Generate and interact with network visualizations for entity analysis
 
-```bash
-# Make the script executable
-chmod +x start_ergo_openwebui.sh
+## Response Standardization
 
-# Run in standalone mode
-./start_ergo_openwebui.sh
+All endpoints in the Ergo Explorer MCP implement a standardized response format system that:
 
-# Or run with Docker Compose
-./start_ergo_openwebui.sh --mode docker
-```
+- Supports both human-readable (markdown) and machine-readable (JSON) formats
+- Provides consistent structure across all endpoints
+- Maintains backward compatibility through dual-format support
+- Implements comprehensive error handling
+- Uses the `@standardize_response` decorator for automatic format conversion
 
-The script will:
-1. Install MCPO if needed
-2. Generate a secure API key
-3. Create configuration files
-4. Start both the Ergo MCP server and MCPO proxy
-5. Provide instructions for connecting to Open WebUI
+### Standard JSON Response Structure:
 
-### Manual MCPO Setup
-
-If you prefer to set up MCPO manually:
-
-```bash
-# Install MCPO
-pip install mcpo
-
-# Create a configuration file (mcpo_config.json)
+```json
 {
-  "mcpServers": {
-    "ergo": {
-      "command": "python",
-      "args": ["-m", "ergo_explorer", "--port", "3001"],
-      "workingDir": "$(pwd)"
-    }
+  "status": "success",  // or "error"
+  "data": {
+    // Endpoint-specific structured data
   },
-  "auth": {
-    "apiKey": "your-api-key-here"
-  },
-  "port": 8000,
-  "host": "0.0.0.0"
+  "metadata": {
+    "execution_time_ms": 123,
+    "result_size_bytes": 456,
+    "is_truncated": false,
+    "token_estimate": 789
+  }
 }
-
-# Run MCPO
-mcpo --config mcpo_config.json
 ```
 
-### Connecting to Open WebUI
+For more information on response standardization, see [RESPONSE_STANDARDIZATION.md](./RESPONSE_STANDARDIZATION.md).
 
-After starting the MCPO proxy:
+## Entity Identification and Address Clustering
 
-1. Go to Open WebUI's Models section
-2. Click "Add New Model"
-3. Select "API" as the model type
-4. Configure with:
-   - Name: Ergo Explorer
-   - Endpoint URL: http://your-server-ip:8000
-   - API Key: The API key from your MCPO configuration
-   - API Type: OpenAI Compatible
-5. Save the configuration
+The Ergo Explorer MCP provides advanced entity identification capabilities through address clustering algorithms. This feature helps identify groups of addresses likely controlled by the same entity.
 
-For detailed instructions, see [OPENWEBUI_INTEGRATION.md](OPENWEBUI_INTEGRATION.md).
->>>>>>> 245e16143ae14fbbdd124ce6aee11f626d6c4ac0
+### Entity Identification Features
+
+- **Graph-based Clustering**: Identifies related addresses using transaction graph analysis
+- **Co-spending Detection**: Detects addresses used together in transaction inputs
+- **Confidence Scoring**: Assigns confidence levels to detected entity clusters
+- **Address Relationship Mapping**: Shows how addresses are related within an entity
+- **Interactive Visualization**: Provides network graph visualization of entities
+
+### Address Clustering Endpoints
+
+The following endpoints are available for entity identification:
+
+```
+/address_clustering/identify
+/address_clustering/visualize
+/address_clustering/openwebui_entity_tool
+/address_clustering/openwebui_viz_tool
+```
+
+### Open WebUI Integration
+
+Ergo Explorer MCP integrates with [Open WebUI](https://docs.openwebui.com/) to provide enhanced visualization and interaction capabilities:
+
+- **Entity Text Tool**: Returns a text summary of detected entities for an address
+- **Interactive Visualization Tool**: Renders an interactive D3.js network graph visualization
+- **Customizable Views**: Filter and search entities, zoom and pan visualization
+- **Entity Analysis**: Explore relationships between addresses and entities
+
+### Usage Example
+
+To identify entities related to an address:
+
+```python
+from ergo_explorer.api import make_request
+
+# Identify entities for an address
+response = make_request("address_clustering/identify", {
+    "address": "9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN",
+    "depth": 2,
+    "tx_limit": 100
+})
+
+# Get visualization for an address
+viz_response = make_request("address_clustering/visualize", {
+    "address": "9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN",
+    "depth": 2,
+    "tx_limit": 100
+})
+
+# Access entity clusters
+entities = response["data"]["clusters"]
+for entity_id, entity_data in entities.items():
+    print(f"Entity {entity_id}: {len(entity_data['addresses'])} addresses")
+    print(f"Confidence: {entity_data['confidence_score']}")
+```
+
+### Open WebUI Tool Integration
+
+To use the Open WebUI tools:
+
+```
+[Tool: openwebui_entity_tool]
+[Address: 9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN]
+[Depth: 2]
+[TX Limit: 100]
+
+[Tool: openwebui_viz_tool]
+[Address: 9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN]
+[Depth: 2]
+[TX Limit: 100]
+```
+
+## Token Estimation
+
+The Ergo Explorer MCP includes built-in token estimation capabilities to help AI assistants optimize their context window usage. This feature provides an estimate of the number of tokens in each response for various LLM models.
+
+### Token Estimation Features
+
+- **Automatic Token Counting**: Each response includes an estimate of its token count
+- **Model-Specific Estimation**: Supports various LLM models (Claude, GPT, Mistral, etc.)
+- **Breakdown by Response Section**: Provides token counts for data, metadata, and status
+- **Configurable Thresholds**: Response truncation based on token count thresholds
+- **Fallback Mechanism**: Works even if `tiktoken` is not available
+
+### Token Estimation in Responses
+
+Token estimation is included in the `metadata` section of all standardized responses:
+
+```json
+{
+  "status": "success",
+  "data": {
+    // Response data
+  },
+  "metadata": {
+    "execution_time_ms": 123,
+    "result_size_bytes": 456,
+    "is_truncated": false,
+    "token_estimate": 789,
+    "token_breakdown": {
+      "data": 650,
+      "metadata": 89,
+      "status": 50
+    }
+  }
+}
+```
+
+### Usage
+
+To access token estimates in responses:
+
+```python
+from ergo_explorer.api import make_request
+
+# Make a request to any endpoint
+response = make_request("blockchain/status")
+
+# Access token estimation information
+token_count = response["metadata"]["token_estimate"]
+is_truncated = response["metadata"]["is_truncated"]
+
+print(f"Response contains approximately {token_count} tokens")
+if is_truncated:
+    print("Response was truncated to fit within token limits")
+```
+
+### Model-Specific Estimation
+
+You can specify which LLM model to use for token estimation:
+
+```python
+from ergo_explorer.api import make_request
+
+# Request with specific model type for token estimation
+response = make_request("blockchain/address_info", 
+                        {"address": "9hdcMw4eRpJPJGx8RJhvdRgFRsE1URpQCsAWM3wG547gQ9awZgi"},
+                        model_type="gpt-4")
+
+# The token_estimate will be calculated based on GPT-4's tokenization
+```
+
+### Token Usage Guidelines
+
+| Response Type | Target Token Range | Optimization Strategy |
+|---------------|-------------------|------------------------|
+| Simple queries | < 500 tokens | Full response without truncation |
+| Standard queries | 500-2000 tokens | Selective field inclusion |
+| Complex queries | 2000-5000 tokens | Pagination or truncated response |
+| Data-intensive | > 5000 tokens | Summary with optional detail retrieval |
+
+## Historical Token Holder Tracking
+
+The Ergo Explorer MCP includes comprehensive functionality for tracking the historical ownership of tokens and analyzing how distribution changes over time:
+
+### Key Features
+
+- **Complete Token History**: Track all boxes that have ever contained the token to provide a comprehensive view of token movements through the blockchain
+- **Block Height Tracking**: Includes block height information for all token transfers 
+- **Token Transfer Monitoring**: Follow tokens as they move between addresses
+- **Distribution Metrics**: Calculate concentration metrics (Gini coefficient) for token distribution
+- **Advanced Box Analysis**: Uses efficient box-based method to analyze all transactions involving a token
+
+### Usage Examples
+
+```json
+// Simple request with just essential parameters
+GET /token/historical_token_holders
+{
+  "token_id": "d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413",
+  "max_transactions": 200
+}
+```
+
+Response format includes detailed token transfer history and snapshots of token distribution at various points in time (or block heights).
+
+## Installation
+
+### Prerequisites
+
+- Python 3.8+
+- Access to Ergo Explorer API
+- Optional: Access to Ergo Node API (for advanced features)
+
+### Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ergo-mcp/ergo-explorer-mcp.git
+   cd ergo-explorer-mcp
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Configure your environment:
+   ```bash
+   # Set up environment variables
+   export ERGO_EXPLORER_API="https://api.ergoplatform.com/api/v1"
+   export ERGO_NODE_API="http://your-node-address:9053"  # Optional
+   export ERGO_NODE_API_KEY="your-api-key"  # Optional
+   ```
+
+4. Run the MCP server:
+   ```bash
+   python -m ergo_explorer.server
+   ```
+
+### Docker Installation (Recommended)
+
+1. Build the Docker image:
+   ```bash
+   docker build -t ergo-explorer-mcp .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -d -p 8000:8000 \
+     -e ERGO_EXPLORER_API="https://api.ergoplatform.com/api/v1" \
+     -e ERGO_NODE_API="http://your-node-address:9053" \
+     -e ERGO_NODE_API_KEY="your-api-key" \
+     --name ergo-mcp ergo-explorer-mcp
+   ```
+
+## Development
+
+To contribute to the project:
+
+1. Fork the repository
+2. Create a feature branch
+3. Set up a development environment:
+   ```bash
+   pip install -r requirements.txt
+   pip install -r requirements.test.txt
+   ```
+4. Run tests:
+   ```bash
+   pytest
+   ```
+5. Submit a pull request
+
+## Documentation
+
+For comprehensive documentation, see:
+
+- [API Reference](./docs/API_REFERENCE.md)
+- [Feature Roadmap](./TODO_FEATURES.md)
+- [Response Standardization](./RESPONSE_STANDARDIZATION.md)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.

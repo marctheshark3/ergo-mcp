@@ -8,14 +8,23 @@ This module provides tools for interacting with Ergo tokens:
 """
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union, Tuple
 from datetime import datetime
 
 from ergo_explorer.api.ergodex import get_token_price as fetch_token_price, get_erg_price_usd
+from ergo_explorer.api.explorer import (
+    get_token_by_id as fetch_token_by_id,
+    search_tokens as fetch_tokens
+)
+
+# Import response standardization utilities
+from ergo_explorer.response_format import standardize_response, smart_limit
+from ergo_explorer.response_config import ResponseConfig
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
+# Original function kept for backward compatibility
 async def get_token_price(token_id: str) -> Dict:
     """
     Get the current price of a token in ERG and USD.
@@ -122,4 +131,83 @@ async def format_token_price(price_data: Dict) -> str:
 - **24h Change**: {abs(price_change_24h):.2f}% {change_direction}
 """
     
-    return formatted_output 
+    return formatted_output
+
+async def get_token_info(token_id: str) -> Dict[str, Any]:
+    """
+    Get detailed information about a token using standardized response format.
+    
+    Args:
+        token_id: ID of the token to retrieve
+        
+    Returns:
+        A dictionary containing token information
+    """
+    try:
+        logger.info(f"Fetching token information for {token_id}")
+        token_data = await fetch_token_by_id(token_id)
+        
+        if "error" in token_data:
+            raise Exception(token_data["error"])
+            
+        # Transform to standardized format
+        return {
+            "id": token_data.get("id", ""),
+            "boxId": token_data.get("boxId", ""),
+            "name": token_data.get("name", ""),
+            "description": token_data.get("description", ""),
+            "decimals": token_data.get("decimals", 0),
+            "type": token_data.get("type", ""),
+            "emissionAmount": token_data.get("emissionAmount", 0),
+            "mintingHeight": token_data.get("mintingHeight", 0),
+            "transactionId": token_data.get("transactionId", "")
+        }
+    except Exception as e:
+        logger.error(f"Error fetching token information: {str(e)}")
+        raise Exception(f"Error retrieving token information: {str(e)}")
+
+async def search_token_info(query: str, limit: Optional[int] = None) -> Tuple[List[Dict[str, Any]], bool]:
+    """
+    Search for tokens by name or ID using standardized response format.
+    
+    Args:
+        query: Search query (token name or ID)
+        limit: Maximum number of results to return
+        
+    Returns:
+        Tuple of (tokens_list, is_truncated)
+    """
+    try:
+        logger.info(f"Searching for tokens with query: {query}")
+        
+        # Apply default limit if not specified
+        if limit is None:
+            limit = ResponseConfig.get_limit("tokens")
+            
+        # Fetch tokens from Explorer API
+        tokens_data = await fetch_tokens(query)
+        
+        if "error" in tokens_data:
+            raise Exception(tokens_data["error"])
+            
+        # Extract token items and standardize format
+        tokens = tokens_data.get("items", [])
+        
+        # Transform to standardized format
+        formatted_tokens = []
+        for token in tokens:
+            formatted_tokens.append({
+                "id": token.get("id", ""),
+                "name": token.get("name", ""),
+                "description": token.get("description", ""),
+                "decimals": token.get("decimals", 0),
+                "emissionAmount": token.get("emissionAmount", 0)
+            })
+        
+        # Apply smart limiting
+        limited_tokens, is_truncated = smart_limit(formatted_tokens, limit)
+        
+        return limited_tokens, is_truncated
+    except Exception as e:
+        logger.error(f"Error searching for tokens: {str(e)}")
+        raise Exception(f"Error searching for tokens: {str(e)}") 

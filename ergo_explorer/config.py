@@ -49,3 +49,7 @@ RATE_LIMITS = {
     "node": None,    # local resource limits apply
     "ergowatch": 60  # requests per minute
 }
+
+# Cache settings
+# Default timeout for in-memory cache items (in seconds)
+CACHE_TIMEOUT = 3600  # 1 hour

@@ -70,6 +70,7 @@ async def get_indexed_height() -> Dict:
 
 async def get_transaction_by_id(tx_id: str) -> Dict:
     """Get transaction details by ID."""
+    logger.info(f"Fetching transaction details for {tx_id}")
     return await fetch_node_api(f"blockchain/transaction/byId/{tx_id}")
 
 async def get_transaction_by_index(tx_index: int) -> Dict:
@@ -203,13 +204,6 @@ async def get_network_info_node() -> Dict:
     """Legacy function for getting network info."""
     return await fetch_node_api("info")
 
-# Mempool-related endpoints - REMOVED
-# async def get_mempool_transactions_node(offset: int = 0, limit: int = 100) -> Dict:
-#     ...
-# async def get_mempool_size_node() -> Dict:
-#     ...
-# async def get_mempool_statistics_node() -> Dict:
-#     ...
 
 async def submit_transaction_node(tx_data: Dict) -> Dict:
     """Submit a transaction to the node."""

@@ -1,0 +1,1226 @@
+{
+  "address": "9gUDVVx75KyZ783YLECKngb1wy8KVwEfk3byjdfjUyDVAELAPUN",
+  "common_interactions": [
+    {
+      "address": "9f3AaAirSTGYKWqDcw8hEa4Pk4hYiS96VC3Kpcr7CKTuqTiwjCy",
+      "incoming_count": 20,
+      "outgoing_count": 2,
+      "total_volume_nano": 9298073771956,
+      "first_interaction": 1741188474828,
+      "last_interaction": 1741188474828,
+      "token_transfers": [
+        {
+          "name": "Sigmanaut Mining DAO Back2Back Commemorative NFT (0f3d...113f)",
+          "id": "0f3dbfd11a9f70706fab094fbc11e7f198760cfe1302de15faf67d4593c6113f"
+        },
+        {
+          "name": "gau-SHARK (4c0d...9a1a)",
+          "id": "4c0d55a78530837424af5b326f34fc98a6c4a131fc26e3af7c54355187d19a1a"
+        },
+        {
+          "name": "Cybercitizen #4044 (fa76...3a65)",
+          "id": "fa76ac3f7b1511bb0ed25d58af6c849545c3bd8f73c08cb6ac778755b16d3a65"
+        },
+        {
+          "name": "Mac Pro (f9a9...b789)",
+          "id": "f9a93f2e78c959426ecc74e9194fe7049e53bb49f3afd80f77f90f3ad95eb789"
+        },
+        {
+          "name": "Sigmanauts Membership (2fc7...b376)",
+          "id": "2fc708364db30fba73634e74dfbd6d946f44766fce71721de925e5167a68b376"
+        },
+        {
+          "name": "Dark Ergo Botz #1 (28c8...c18b)",
+          "id": "28c8ec4b03a88fcdfa004f229de5cca14beca41fe266047ae0463f22da43c18b"
+        },
+        {
+          "name": "Paideia (1fd6...d489)",
+          "id": "1fd6e032e8476c4aa54c18c1a308dce83940e8f4a28f576440513ed7326ad489"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (3e12...0121)",
+          "id": "3e12231f64a415cee83b1e852b883ffc366014cfc6f0e11204ec790550d70121"
+        },
+        {
+          "name": "GluonW GAU (886b...edc8)",
+          "id": "886b7721bef42f60c6317d37d8752da8aca01898cae7dae61808c4a14225edc8"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (48c4...442e)",
+          "id": "48c440d82c7749dbaa5ab8b6169f57d1ddafdf4e2f9380f4aad1aca12c64442e"
+        },
+        {
+          "name": "Ergobotz #3 (7758...f00a)",
+          "id": "775849aab4d5a457389a312b802ee5c505602412ad2fdcc20b13c6fb7261f00a"
+        },
+        {
+          "name": "GORT (7ba2...37f9)",
+          "id": "7ba2a85fdb302a181578b1f64cb4a533d89b3f8de4159efece75da41041537f9"
+        },
+        {
+          "name": "Shaggy (f100...8106)",
+          "id": "f100123eb4161919bc5e5b2ffe5fb91f7c93b524f372cbba5c7d6b004efa8106"
+        },
+        {
+          "name": "Sigmanauts Mining Pool Configuration NFT (10ba...46fc)",
+          "id": "10ba19fae939a8c185eddb239d85f4dc8a77564cb6167578d8019f24696446fc"
+        },
+        {
+          "name": "QUACKS (0899...074f)",
+          "id": "089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f"
+        },
+        {
+          "name": "TESTSIGMAPOOL-NFT-2 (791f...b873)",
+          "id": "791f0c8c811976b2d1624f762a122ef891d696c66bb2c0f3ab82d847920eb873"
+        },
+        {
+          "name": "TESTSIGMAPOOL-NFT-4 (b026...5137)",
+          "id": "b026d5634787e82b0b7b35daec0994db64153dc7a94003bd203bd4224b9c5137"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (1776...d4e7)",
+          "id": "17761b0afe795487971ab3a84fbbadddc568c011007ea68942a3b99d81e3d4e7"
+        },
+        {
+          "name": "Sigma BYTES (286e...43ef)",
+          "id": "286e73c71f843418847a20e30012526e1686c01b48ff8a2beac68182ddae43ef"
+        },
+        {
+          "name": "CyberCar #464 (12fb...e174)",
+          "id": "12fbc209fe1159019ea7430a315e9a73302e47fa2405888ad25270c5b71ce174"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (cd36...8d49)",
+          "id": "cd36531998495d1a93539453fa4399360873402cdfde2233bfbbfc523d378d49"
+        },
+        {
+          "name": "ada-SHARK (c5f2...7740)",
+          "id": "c5f2ee2714b2aa74e62ba37bfd7938fce7f156a05acb48dcd63d446b067e7740"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (176d...c38d)",
+          "id": "176d97bcdd1b206fb2f1c1c91702267885d35014534a6e9b24adb9dee73fc38d"
+        },
+        {
+          "name": "Mew Fund #37 ERG/COCKMEMETUM LP (86cf...c8e1)",
+          "id": "86cfd128839415b1ab53a077235a5f2d288a3e8479c22937ad2f685619bcc8e1"
+        },
+        {
+          "name": "Bober Voting Token (b0b3...28bd)",
+          "id": "b0b312074964b3a388ff4fa2aa055d72da512c098521316b35ca235e5ec628bd"
+        },
+        {
+          "name": "Sigmanaut Mining DAO Back2Back Commemorative NFT #2 (0550...d87e)",
+          "id": "05504a1f4b7e28d26c9cb06f8a254ba08bca4ffbd5ef6a103dac424d206ad87e"
+        },
+        {
+          "name": "PDV (ca0e...7675)",
+          "id": "ca0ed0092eaaa22b6bfcc407d221b3aaa5c8f643e843cb6aafff6af955947675"
+        },
+        {
+          "name": "GluonW GAUC (9944...19d2)",
+          "id": "9944ff273ff169f32b851b96bbecdbb67f223101c15ae143de82b3e7f75b19d2"
+        },
+        {
+          "name": "Dark Erdoge (1465...52a8)",
+          "id": "1465c9b9de602bd75f8f38df83118e2c8b1d5b2f5518514dd1438149053652a8"
+        },
+        {
+          "name": "Ergobotz #2 (f834...9159)",
+          "id": "f834b2d4e7cd66fd1d7e3c5089739ce19600f0a5a68321dcbdfc11341fb49159"
+        },
+        {
+          "name": "erg-SHARK (a09e...0f10)",
+          "id": "a09e1e39c1f71afc07cd5fd4db119a5b3252f2648300b1a1ad75a30537330f10"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Configuration NFT - Season 0 (22a1...38fb)",
+          "id": "22a19ed7d3d1a69729c730984d90c12eb19d75671c06d2509bc1558a9a4938fb"
+        },
+        {
+          "name": "Sigma BYTES (4c77...3c8f)",
+          "id": "4c779e4debf9268d8a9e625ae6eb3e35517331733cfc0352d8b7efdff81e3c8f"
+        },
+        {
+          "name": "Ergo_34d449dc_LP (4823...526a)",
+          "id": "48239ff2588591d2ee3fc03f5571558b6d4a33ec97d5671eb2a540276efd526a"
+        },
+        {
+          "name": "DevDAO Membership (aa86...9716)",
+          "id": "aa867a74d4e1e95950046e2130471959cdac262ea734008f055ba6ebe8ce9716"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (8d31...44a3)",
+          "id": "8d319044d5a30ec285e74620ee67aa64be224f58cccd8f050e921d55637144a3"
+        },
+        {
+          "name": "rsn-SHARK (39f8...c607)",
+          "id": "39f8469e6ea098605c7dd53e3395dd980ff6f54af60129d1aaa51ca89f9bc607"
+        },
+        {
+          "name": "Bober (b0b3...20e0)",
+          "id": "b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0"
+        },
+        {
+          "name": "COCKMEMETUM (919b...35b0)",
+          "id": "919be0b1063f2eb3f1aa0ad0b8753d6564f97658b5986908e2734cb22b2a35b0"
+        },
+        {
+          "name": "Sigma BYTES (a846...768d)",
+          "id": "a84635c5cf91d4ea9c47f79d06b0473f99ba297e807db215e283353c2fa0768d"
+        },
+        {
+          "name": "Sigma BYTES (99ce...15bb)",
+          "id": "99ceaa2e68be3ff69c34397f32f654826431a71198c43dbf63736772530615bb"
+        },
+        {
+          "name": "Fucks (2486...e041)",
+          "id": "2486c279e097c3aeb8116239fca671b9000efa12d8f20c92ca5b7795a359e041"
+        },
+        {
+          "name": "AuctionCoin (52f4...d5bd)",
+          "id": "52f4544ce8a420d484ece16f9b984d81c23e46971ef5e37c29382ac50f80d5bd"
+        },
+        {
+          "name": "btc-SHARK (c316...0f07)",
+          "id": "c316e07ea2c2bb020c670bc2b926df5b7da318026d3a97920ed09e7fa4110f07"
+        },
+        {
+          "name": "SigUSD (03fa...bf04)",
+          "id": "03faf2cb329f2e90d6d23b58d91bbb6c046aa143261cc21f52fbe2824bfcbf04"
+        },
+        {
+          "name": "Cybercitizen #5981 (b791...5e0c)",
+          "id": "b7912b3d75e8faa02fdf17a9242ce9f087fb6453b9278fb19c57fe1af6235e0c"
+        },
+        {
+          "name": "[CyberVerse] HYPE Emote (8e1e...ceb1)",
+          "id": "8e1e2418742582115958cd971ce38c000c782981d63aad5aba1bdb5d6ffeceb1"
+        },
+        {
+          "name": "Ergobotz #1 (fa31...4993)",
+          "id": "fa31577a62bb0b613bba379a830f358c483c72bdfd887aac0187b38a9c1a4993"
+        },
+        {
+          "name": "TESTSIGMAPOOL-NFT-3 (f3fc...9a50)",
+          "id": "f3fc827810b666277941dc78b7966ebf11a13dcf454e7a418a8aa7c0f5869a50"
+        },
+        {
+          "name": "TESTSIGMAPOOL-NFT-5 (8b5e...0329)",
+          "id": "8b5e1bc285234f609570e5bcbecc2f41f5f0f86481601dc8bacca1b00f7b0329"
+        },
+        {
+          "name": "SHARK (ff93...6e1b)",
+          "id": "ff9318934c9420f595f314eebc7188df7d8b4a7beb0fccc5b28e8ab272bb6e1b"
+        },
+        {
+          "name": "Sigma BYTES (75cb...c287)",
+          "id": "75cba2f6ac2973eaaa6bfcc48dd989da40d781ca060c3ff902b32f6eb037c287"
+        },
+        {
+          "name": "TESTSIGMAPOOL-NFT-5 (f1e8...c6a7)",
+          "id": "f1e87120e844066c4604c4ae24ee43c30b5dad09cc499b851a310a7f88c1c6a7"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (aa11...b68a)",
+          "id": "aa11470f16d9f13ed3073f497d7934a390b22a1400c8acead209406db38eb68a"
+        },
+        {
+          "name": "bPaideia (0040...5983)",
+          "id": "0040ae650c4ed77bcd20391493abe84c1a9bb58ee88e87f15670c801e2fc5983"
+        },
+        {
+          "name": "ada-SHARK (aedc...a272)",
+          "id": "aedc193d83b8de0101fb0fb1abfb1285ab1f0182711511e79919df635e40a272"
+        },
+        {
+          "name": "Testing Pool - QUACKS (16e3...9551)",
+          "id": "16e31e44bcdb3b9be2843ce6ac871a1f073919c7260dab8e54b3e6f094619551"
+        },
+        {
+          "name": "Cybercitizen #4778 (7543...5ee8)",
+          "id": "7543644db672cfa028695e635b3c66bf21fd13685751f11590639016a0b95ee8"
+        },
+        {
+          "name": "ErgOne (fcfc...2a1b)",
+          "id": "fcfca7654fb0da57ecf9a3f489bcbeb1d43b56dce7e73b352f7bc6f2561d2a1b"
+        },
+        {
+          "name": "ErgoHack VIII Community Awards Stake Key (322e...6fd1)",
+          "id": "322e5fe76476fa8bde019f51de96adb59d472efb47f546cef9b8c92d9e776fd1"
+        },
+        {
+          "name": "Sigmanauts Mining DAO (0930...69cd)",
+          "id": "093036f093dd3e049179a9b25f7622ac21cf7c9d375af490eaaa433642fb69cd"
+        },
+        {
+          "name": "Ergobotz #4 (788d...385d)",
+          "id": "788d55e0a22e7244158ae17abb8dc42a93122a8836765786839ca7a96609385d"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 1 (7160...eda8)",
+          "id": "71606a277d27d7461b256fc01a7e9812ade12a9e4b0177569109ed8e45e7eda8"
+        },
+        {
+          "name": "Cybercitizen #6529 (6ed5...9a3e)",
+          "id": "6ed546c6c771ec276bfc3bfbf44dff5884d7a9fc546c0fdfd029a08a281e9a3e"
+        },
+        {
+          "name": "Sigma BYTES (7a83...d3e6)",
+          "id": "7a83764860e9e4b23d6203357df2585c6565a77d4c0b334b963afdfbbfdad3e6"
+        },
+        {
+          "name": "rsn-SHARK (1305...3128)",
+          "id": "13055fbd2f16c1913a0f475e91cfeee886a66eb3f772326e3c555c07e2f33128"
+        },
+        {
+          "name": "Shark Botz #1 (43e8...856e)",
+          "id": "43e8803ca559976ad631d69807311f5476daaa1271efcbdfb4695e5ee0d8856e"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (263a...6c6b)",
+          "id": "263ad60fd1e860749061f13e95ae3ea7ecf573fd4e04122ac0aa48c4dd746c6b"
+        },
+        {
+          "name": "LASTBYTE (0581...2a1a)",
+          "id": "05814562c1e964c0d9b7a4733d1687d1601e9fe27fccf632ee3344bf94022a1a"
+        },
+        {
+          "name": "rsBTC (7a51...88b0)",
+          "id": "7a51950e5f548549ec1aa63ffdc38279505b11e7e803d01bcf8347e0123c88b0"
+        },
+        {
+          "name": "TRUMP 2024 (72f4...3ce8)",
+          "id": "72f431450530aa0b750918d23ba5f891f08e4840cc37fdc64745a3c3c1353ce8"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (a3c3...5897)",
+          "id": "a3c37e6b95effc0ed6beb439eafd8d10b4384bdf34bcfab167a34ac43fdf5897"
+        },
+        {
+          "name": "tiger-shark (059a...5634)",
+          "id": "059a94256c6eee5b18f99be00605cdc1f2327c61916b413528239a928d105634"
+        },
+        {
+          "name": "ProxyToken (9b97...26d8)",
+          "id": "9b9730a18f914ef36d3e284df16eca0e3ed28d8bd5827024ade420d5ff5c26d8"
+        },
+        {
+          "name": "Flame Shards (9a2f...46e5)",
+          "id": "9a2f05f8cc30fcd88aa39cf46eb1c6765f547c28a8240faa47f4bad4c6be46e5"
+        },
+        {
+          "name": "Cybercitizen #5372 (123a...49b1)",
+          "id": "123a3dae88b226ea2f2771ec70919fc252fba792aab4c415f23752225bbb49b1"
+        },
+        {
+          "name": "love (3405...6386)",
+          "id": "3405d8f709a19479839597f9a22a7553bdfc1a590a427572787d7c44a88b6386"
+        },
+        {
+          "name": "SIGMANAUTSMININGPOOL (0f70...d5ea)",
+          "id": "0f709a2f38ec1b2c5c94a6efd43824b82ce2900d083dd34948c6ce75fd11d5ea"
+        },
+        {
+          "name": "TESTSIGMAPOOL-NFT-5 (b8c7...b1fb)",
+          "id": "b8c7f6c351ea0ad46ac12ec38381e8edf29519e4bc44abc11a042bd0d7aab1fb"
+        },
+        {
+          "name": "RSN (8b08...4c4b)",
+          "id": "8b08cdd5449a9592a9e79711d7d79249d7a03c535d17efaee83e216e80a44c4b"
+        },
+        {
+          "name": "OINK (24c3...ecf2)",
+          "id": "24c380b40c934db2273affc782e091df28c965f1e513f8f5f09fc1d12646ecf2"
+        },
+        {
+          "name": "btc-SHARK (461f...4b13)",
+          "id": "461f76e7ff4504a12075b1ea971a5bac06fcfd0bcc44b35a89382e9e964c4b13"
+        },
+        {
+          "name": "cypx-SHARK (c6f0...fe52)",
+          "id": "c6f0e59936b6cd51681a5c2e84d8893cf3da9148333ee4cbe45281d57b5cfe52"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 1 (962d...9738)",
+          "id": "962d84df3ca93065491b9847de9db379ef01fe927912cdc2bb7514082e7e9738"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (2706...651a)",
+          "id": "270619a2c297c0818e8afc59c8a0ae679fed0c3d91d9295384f4203f23db651a"
+        },
+        {
+          "name": "Sigmanaut (cdc1...3581)",
+          "id": "cdc1aebec795ce9822492b5e62fdd93bb2a03653f7c3dfcfabbb0c98f6a33581"
+        },
+        {
+          "name": "PHP (34d4...575d)",
+          "id": "34d449dc84a27d0f8fb2166d415a7223604f6426fb2d83ee099f2312182d575d"
+        },
+        {
+          "name": "Sigmanaut Mining Pool Miner ID - Season 0 (a893...991e)",
+          "id": "a8939dbf45202a30a9f098747e04a082dcacceb222c60d671dde721cff85991e"
+        }
+      ],
+      "token_types": {
+        "unknown": 84,
+        "nft": 94,
+        "stablecoin": 2,
+        "governance": 2,
+        "utility": 2
+      },
+      "is_dex": false,
+      "is_smartcontract": false,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": null,
+      "related_addresses": [
+        "9eg7v2...FEtYEn"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1744810065030,
+          1744810065030,
+          1743704224309,
+          1742240277270,
+          1742232555265,
+          1741638103734,
+          1741188474828,
+          1741188474828
+        ],
+        "values": [
+          300000,
+          551436148500,
+          1200000,
+          300000,
+          300000,
+          300000,
+          2562000000000,
+          152420000000,
+          300000,
+          300000,
+          300000,
+          300000,
+          332000000000,
+          2670000000000,
+          300000,
+          4507663228,
+          28280000000,
+          4507663228,
+          551432948500,
+          551485148500,
+          300000,
+          1890000000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.7,
+        "smartcontract": 0.0,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.2
+      },
+      "formatted_address": "9f3AaA...TiwjCy",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:27:54 UTC",
+      "last_interaction_date": "2025-03-05 10:27:54 UTC",
+      "total_volume_erg": 9298.073771956
+    },
+    {
+      "address": "2iHkR7CWvD1R4j1yZg5bkeDRQavjAaVPeTDFGGLZduHyfWMuYpmhHocX8GJoaieTx78FntzJbCBVL6rf96ocJoZdmWBL2fci7NqWgAirppPQmZ7fN9V6z13Ay6brPriBKYqLp1bT2Fk4FkFLCfdPpe",
+      "incoming_count": 0,
+      "outgoing_count": 20,
+      "total_volume_nano": 31100000,
+      "first_interaction": 1741188474828,
+      "last_interaction": 1741188474828,
+      "token_transfers": [],
+      "token_types": {},
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [],
+      "time_patterns": {
+        "timestamps": [
+          1746289213345,
+          1746123243679,
+          1744810065030,
+          1743704224309,
+          1742324716677,
+          1742307245009,
+          1742240277270,
+          1742232555265,
+          1741638103734,
+          1741637066454,
+          1741637066454,
+          1741637066454,
+          1741637066454,
+          1741636534244,
+          1741636534244,
+          1741632367647,
+          1741632367647,
+          1741188778089,
+          1741188523506,
+          1741188474828
+        ],
+        "values": [
+          1100000,
+          1850000,
+          1100000,
+          1100000,
+          4000000,
+          4000000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1100000,
+          1850000,
+          2000000,
+          2000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "2iHkR7...CfdPpe",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:27:54 UTC",
+      "last_interaction_date": "2025-03-05 10:27:54 UTC",
+      "total_volume_erg": 0.0311
+    },
+    {
+      "address": "9gPohoQooaGWbZbgTb1JrrqFWiTpM2zBknEwiyDANwmAtAne1Y8",
+      "incoming_count": 5,
+      "outgoing_count": 5,
+      "total_volume_nano": 26777200000,
+      "first_interaction": 1741632367647,
+      "last_interaction": 1741632367647,
+      "token_transfers": [
+        {
+          "name": "Dark Ergo Botz #1 (28c8...c18b)",
+          "id": "28c8ec4b03a88fcdfa004f229de5cca14beca41fe266047ae0463f22da43c18b"
+        },
+        {
+          "name": "Pumperino (7c78...12da)",
+          "id": "7c788b124df40d5ab4d4c428dd7a1290b5b8579da4e8cbddeea060b1671312da"
+        },
+        {
+          "name": "Shaggy (f100...8106)",
+          "id": "f100123eb4161919bc5e5b2ffe5fb91f7c93b524f372cbba5c7d6b004efa8106"
+        },
+        {
+          "name": "erg-SHARK (05cd...5c5a)",
+          "id": "05cdcfb6532b3f22f2cc8f1bd3133ee446517e037927c79b9e9ddae3d1075c5a"
+        },
+        {
+          "name": "Shark Botz #1 (43e8...856e)",
+          "id": "43e8803ca559976ad631d69807311f5476daaa1271efcbdfb4695e5ee0d8856e"
+        },
+        {
+          "name": "cypx-SHARK (3557...1332)",
+          "id": "3557965da63f58e8309b6cf8eb2e780f374ca9d1c1fe2b3e7c7383e2980f1332"
+        },
+        {
+          "name": "btc-SHARK (c316...0f07)",
+          "id": "c316e07ea2c2bb020c670bc2b926df5b7da318026d3a97920ed09e7fa4110f07"
+        },
+        {
+          "name": "Bober (b0b3...20e0)",
+          "id": "b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0"
+        },
+        {
+          "name": "PHP (34d4...575d)",
+          "id": "34d449dc84a27d0f8fb2166d415a7223604f6426fb2d83ee099f2312182d575d"
+        },
+        {
+          "name": "Dark Erdoge (1465...52a8)",
+          "id": "1465c9b9de602bd75f8f38df83118e2c8b1d5b2f5518514dd1438149053652a8"
+        },
+        {
+          "name": "thisguyfucks (74d7...c506)",
+          "id": "74d7745b32e895008027a853ea7a6974ba3cbd1efa986537563c12d6ab22c506"
+        },
+        {
+          "name": "SigRSV (003b...85d0)",
+          "id": "003bd19d0187117f130b62e1bcab0939929ff5c7709f843c5c4dd158949285d0"
+        },
+        {
+          "name": "Sigma BYTES (e32b...2481)",
+          "id": "e32bfcb3c30f255f3af44cd0726cd08a6c6ac329d51ff3265332c02f5e1d2481"
+        },
+        {
+          "name": "ProxyToken (8ed7...3d1f)",
+          "id": "8ed7f48376dc586b9d9cd4c40b006089cd66fa94ca6fef809d65d4268efc3d1f"
+        },
+        {
+          "name": "gau-SHARK (45ef...2340)",
+          "id": "45ef868218040401a0cae203d8a62b3a4651d03e753b7bef633f9300aa552340"
+        },
+        {
+          "name": "love (3405...6386)",
+          "id": "3405d8f709a19479839597f9a22a7553bdfc1a590a427572787d7c44a88b6386"
+        },
+        {
+          "name": "rsn-SHARK (39f8...c607)",
+          "id": "39f8469e6ea098605c7dd53e3395dd980ff6f54af60129d1aaa51ca89f9bc607"
+        },
+        {
+          "name": "ada-SHARK (aedc...a272)",
+          "id": "aedc193d83b8de0101fb0fb1abfb1285ab1f0182711511e79919df635e40a272"
+        }
+      ],
+      "token_types": {
+        "unknown": 118,
+        "nft": 12,
+        "utility": 8
+      },
+      "is_dex": false,
+      "is_smartcontract": false,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": null,
+      "related_addresses": [],
+      "time_patterns": {
+        "timestamps": [
+          1742324716677,
+          1742324716677,
+          1742307245009,
+          1742307245009,
+          1742307245009,
+          1742232555265,
+          1741632367647,
+          1741632367647,
+          1741632367647,
+          1741632367647
+        ],
+        "values": [
+          3247000000,
+          3236600000,
+          1000000,
+          3254200000,
+          3247000000,
+          1000000,
+          3447850000,
+          3444750000,
+          3449950000,
+          3447850000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.55,
+        "smartcontract": 0.0,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "9gPoho...Ane1Y8",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-10 14:46:07 UTC",
+      "last_interaction_date": "2025-03-10 14:46:07 UTC",
+      "total_volume_erg": 26.7772
+    },
+    {
+      "address": "9eg7v2nkypUZbdyvSKSD9kg8FNwrEdTrfC2xdXWXmEpDAFEtYEn",
+      "incoming_count": 8,
+      "outgoing_count": 0,
+      "total_volume_nano": 2400000,
+      "first_interaction": 1741188474828,
+      "last_interaction": 1741188474828,
+      "token_transfers": [
+        {
+          "name": "Testing Pool - QUACKS (16e3...9551)",
+          "id": "16e31e44bcdb3b9be2843ce6ac871a1f073919c7260dab8e54b3e6f094619551"
+        },
+        {
+          "name": "QUACKS (0899...074f)",
+          "id": "089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f"
+        }
+      ],
+      "token_types": {
+        "unknown": 8
+      },
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": null,
+      "related_addresses": [
+        "9f3AaA...TiwjCy"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1746289213345,
+          1744810065030,
+          1741188474828
+        ],
+        "values": [
+          300000,
+          300000,
+          300000,
+          300000,
+          300000,
+          300000,
+          300000,
+          300000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.24,
+        "smartcontract": 0.8,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.2
+      },
+      "formatted_address": "9eg7v2...FEtYEn",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:27:54 UTC",
+      "last_interaction_date": "2025-03-05 10:27:54 UTC",
+      "total_volume_erg": 0.0024
+    },
+    {
+      "address": "9fCMmB72WcFLseNx6QANheTCrDjKeb9FzdFNTdBREt2FzHTmusY",
+      "incoming_count": 0,
+      "outgoing_count": 3,
+      "total_volume_nano": 1200000000,
+      "first_interaction": 1741636534244,
+      "last_interaction": 1741636534244,
+      "token_transfers": [],
+      "token_types": {},
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [],
+      "time_patterns": {
+        "timestamps": [
+          1741637066454,
+          1741637066454,
+          1741636534244
+        ],
+        "values": [
+          400000000,
+          400000000,
+          400000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "9fCMmB...HTmusY",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-10 15:55:34 UTC",
+      "last_interaction_date": "2025-03-10 15:55:34 UTC",
+      "total_volume_erg": 1.2
+    },
+    {
+      "address": "3bseGyqZTWQP9iNVKcDSqKrXPC2RjG79BUgkdZNJdziBM5KEgWnn681wfa6V2qhjaGBuDJCtt2FuXek2GgFfqnVii1uNni9m4HHADAuUVzDV12U8fdVYiPhhUscBJkwfZeSf4rWhmYqySAJeooZ5nRmGnuY9HXNUTDk5ioY8go56S9oGrtEGh3qdKF766ARX6dQ3bXLzHhnfY1no8xppxohNnfTn3oxF11sUMY6pCWm1E9nLrmrqHd4NqhGpTP4sAsJbAFZPyWHetsfXoBYVHqokkdXAxg3jSgKWXXNxc4hhrUaWqwvMgc4PVLRmUXB4GNyfCSSeM4Aha8pM7ADZBLDqUKqMCoV7Jqcso5ymtcg92K6ZGkJhnPTUZsd2yyF7PWnaz7J4NfZLuQLzu9HqrBpUnY1qAcQgvGQVDUHvoqsbD5cisTBXSQCoK6Gyq7m8QqdT9CLyLn5WSMKSoAxzvYnmsNjvwPrZuJg8coK5jCSUpmckYfAxVByGLB14HYC8gYoqodHWWq1JAwsR3iHbGyH7xERDGLTQFdFejHDqbhVuwqwNiAwf3RRFfr65QfnmhLmah9bZ2d9WhcN4QDsWsevxkQzwPgCTZQKfM1Q8SUYxu7M32YXifTR9MqFoB4dkrS2nUzvHxhxRXo3pxRtbMjRCkeZvsKjqGKLGU15s1u9pEavYMZp5gwjkn3ksgDUaFUtcA8ziC7PYTibk65HzNCZMdUHb19ykWNWqawqfqoQbogTgJy2YFLY5853bf9UtUEYsKATB8epEPVpVsvX66SKy8NkXCVycqsMp7HPrReJ3y1vboKP9WfYoGCVTkPy8rPvvpNtfyByvQ7C78yyCGCgT36Dj81j5TxXucXhnP7fTcKi8HPFMTSWJQrc2KJyNwCaowmaLzHsRpoU31MohQ9EeubaRHUH5DfUDguZskvyLkaXYmhNjF74Xg2GwLVd9enT1DQcAn7ntCJdmcHEaCU6eijwWx8cyWAfn3pkPD77UMww7txcRSuzshJoHehVe22pM4CkrnoxXHskv1L4wjYjPd2RaPLoctkYN5ztAyE1N5erhniFug8rQtr4FAqYgSiTmgVB5T6Zo7FLUGeFjbTeRwwuUz4zhXyVFWvzQabZnMUg9djHbVeFYa4gHcJ6dJpUDbXwLxrpWkhXjRJGGCXLhTRJcse8mG5taxrPFMMZbqbPSqcgoJyhoMFRrUEDNVHNyWPD87xtpfynnFdjch4EBLbSx7VX7VaU4PnRNxkTiga3ZE17jT3KhK2eGZJRTAQFEYeu8GdMVVFrk2pgKaGYidYGoD2fiyAtEaanNpk3DBmcMHuYv9HphXzc4PMXwHTGBW729hZPZW6bCnqQXFwMmzZRCon7R5V7A3vdXWpjXVmAe3DttL6weuCr3s8KMkwTj1ntKYE4fUJ1xW3BWyEpgG2YKrkGGnbyK8Ar6q955BAxUDnGvcdKQtLfoYHb34bcHpgoMP5Q9vkqv5j3ryZBktdzdBMBP1RGQqUQnohyzGWRh3eZAgcjSv8NMv16UbYyRQaTFytNPeAriJ33EWSPZJtAb6NxibZxwrQeDzdjaSTNxWSngoXgBeeqET5753AzfwDsLVLHzYSzeHTTp62w1aYB8zcknohQWU23EZFjP7jdhScx8tJcPhc6Xg3catSEVdsxNvJmumBPpos9EaHu9Dt1wok74NvmUd6t6hiGZ8tyHNLoQZqswuu3H8jHVqyyxBT8qEfxcw47qKkW1w7ButmWKxi7E5WEuq6nJcP4qNU5ZFDsTBYT4Vswg8fRZ6aSC1F84H7wnWCBkQdXLULxS",
+      "incoming_count": 1,
+      "outgoing_count": 1,
+      "total_volume_nano": 2000000000,
+      "first_interaction": 1746123243679,
+      "last_interaction": 1746123243679,
+      "token_transfers": [
+        {
+          "name": "Ergo DevDAO (a650...43be)",
+          "id": "a650291cd343d511a435b8720476736fcaf3e6c87f977b4e8123bcff666543be"
+        },
+        {
+          "name": "DevDAO Stake State (7ee7...0542)",
+          "id": "7ee7f834403ddae04f6e547f97b6c713033d4676667be490121dc659f5230542"
+        }
+      ],
+      "token_types": {
+        "nft": 2,
+        "unknown": 2
+      },
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [
+        "2scJRP...k3Vnnw",
+        "2HqXK7...pBnzn4"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1746123243679,
+          1746123243679
+        ],
+        "values": [
+          1000000000,
+          1000000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "3bseGy...XLULxS",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-05-01 14:14:03 UTC",
+      "last_interaction_date": "2025-05-01 14:14:03 UTC",
+      "total_volume_erg": 2.0
+    },
+    {
+      "address": "2scJRPJWreaqyaD2DMksXjjwaLjE9TbPeT4714YUkqifpUeRxh8N8iiduRAXUqfnZ4QsoMU7xPKFimsvQ7EUQKmNt2sYgFSEoArpSEv7Xv3KLLciEaUpCTL1oQJ8k38cKufePBWTiLdAmSUw9pm1eAjquczeqbcjUZXgZFvxzp9jXugp952o2TUUCY47goh8Y4X6WEuAyg1euPBAPq3bCWgrXVqWUt8CUDaqM535t6e3QLK4jHpMeXWxzPSZ8T7sRqRGgSeRoLkP9PQ8nLR97Gfhjjuf65GJuUL2VREuu5c5GjoQ59qRU2THbHdnQ5fApWBfi25n53RcADE1DgsJA6TFxQFEreZEmtd7CsaWWM9UeLG3ft1sJi1Qix6c82mSnJdiYR93Dty4yZ7KRDww4syDHqCisEprfqhKMsusNGvwBk5VAyEHuPPdgyRb4kguKjxftGnjhskARf7rXiFL7Tp9dMZ4u2rvY5wXzQngqSBFvErvKyb323uT8uS7R6Jch8Q6d2HKgDmy3zH4BWoZt5U2AcfNWsgxo35DY4HDAXUmoNxWShADGQBoWAkJ31tgdPNmQmpCVdhwacZpCGVHVpU43BDRBR3ahM9tZ2Sxw2EpYGr88jVoAqnvq3ckV31MmjXYPeSmcbq2DoHUGJDUz8xZvJ7LzD2Tv1naEhoamTWhHnfZS4ryv1P2ZVHUjQmugUdnszvMXzyAkS3aE6Fp6YyYoth1iVf7wzgmLQfiLVTxtmWFKZPczZwj3AFTpwWC7pXaXm9L1HzgmY1BPZkivXhzQEAQt1t51pTt5wLDJKVyBJPnB9ymMmhfHbSswzGkWMpoWSPxySsmenh735NfnMRa1AN9crpoqq3G2V9fTZZCGbaAJSwCdoE9W4ZpoJx8DDhMcaCxTJXTJT9jsRAorRiQAQGT2pRbboEDEa7ZLzA3uWR3hMsjTBTDMdm6k7j36FNU1UuUDjkgC9EVk78ELi3Za6KBC9Ww8uB54QuvGVhm2XxUXnJyzYkYZYWfCkHgnmYxyfR51P7xHzLCp1ECHkUVWz6mD3EQNxtSxnhqxXZQV8dzN7nYsrriGYsgNjpaS9ehkbYDguGP3feEhiLbhVWpm4Eb288xdes1dS32YfkDWomhe5zm3f1gV3BqrNhqQ7winAQduVyjXpLoAGATFRbzx3jkxjEYcwyB69gcmDPrX71c5fRg1BxVQEbLmQKTtGTw7UDDFkdViJ43Ds1trNfPT2Cf5Nypzv526ejk1pF1Gvn8Zaj8dt19kt995Rv7YmR28fNrxDntk5whFUf8LmsYgYeZDC9egSoBYxCRtR8C1Fkz6m2jPyLioiasj8aJd6HeZFGM6zy7rXEV6zZbbzUdoW7EU2JhWuJmop7vbQfv95PkTjn7NkpzhBDMFPBD3iJMQ3ReW54anPH2QXjU8dszohMqhrGa5DrZmGCEMq1g1RZyD9th3ouP5jh1SDH6unvAPJ1HcUtPsnpBsoi6gEAc2e5u2NtFRPD4uEekvLygUGB3cWhkaHEA7BojP83TpRWuZ7F7eohfDrBtBsiCTYYFhKLXvYw5D3VYk8aMXNNqUCWwrQLugWRnAzkZLjS2P6TQnnXJMCQn6yR7ou7dNUXkZn7zPQDkvURdjnJFYqeZ9w4kaL256L5M1g4JFwRFv9EW15CSY7rycLo46widZi5VzBES4wk3Vnnw",
+      "incoming_count": 1,
+      "outgoing_count": 1,
+      "total_volume_nano": 2000000,
+      "first_interaction": 1746123243679,
+      "last_interaction": 1746123243679,
+      "token_transfers": [],
+      "token_types": {},
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [
+        "3bseGy...XLULxS",
+        "2HqXK7...pBnzn4"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1746123243679,
+          1746123243679
+        ],
+        "values": [
+          1000000,
+          1000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "2scJRP...k3Vnnw",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-05-01 14:14:03 UTC",
+      "last_interaction_date": "2025-05-01 14:14:03 UTC",
+      "total_volume_erg": 0.002
+    },
+    {
+      "address": "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",
+      "incoming_count": 1,
+      "outgoing_count": 1,
+      "total_volume_nano": 10000000,
+      "first_interaction": 1746123243679,
+      "last_interaction": 1746123243679,
+      "token_transfers": [
+        {
+          "name": "DevDAO Proposal (7ea0...d8d3)",
+          "id": "7ea0ad2e1d436bc2c0fb6456f569f0782a16361b61c6668af80c2e18b855d8d3"
+        },
+        {
+          "name": "Paideia (1fd6...d489)",
+          "id": "1fd6e032e8476c4aa54c18c1a308dce83940e8f4a28f576440513ed7326ad489"
+        }
+      ],
+      "token_types": {
+        "nft": 2,
+        "governance": 2
+      },
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [
+        "3bseGy...XLULxS",
+        "2scJRP...k3Vnnw"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1746123243679,
+          1746123243679
+        ],
+        "values": [
+          5000000,
+          5000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "2HqXK7...pBnzn4",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-05-01 14:14:03 UTC",
+      "last_interaction_date": "2025-05-01 14:14:03 UTC",
+      "total_volume_erg": 0.01
+    },
+    {
+      "address": "9h7L7sUHZk43VQC3PHtSp5ujAWcZtYmWATBH746wi75C5XHi68b",
+      "incoming_count": 0,
+      "outgoing_count": 2,
+      "total_volume_nano": 250000000,
+      "first_interaction": 1741188778089,
+      "last_interaction": 1741188778089,
+      "token_transfers": [],
+      "token_types": {},
+      "is_dex": false,
+      "is_smartcontract": false,
+      "is_p2p": true,
+      "is_recurring": false,
+      "name": null,
+      "type": null,
+      "related_addresses": [],
+      "time_patterns": {
+        "timestamps": [
+          1746123243679,
+          1741188778089
+        ],
+        "values": [
+          50000000,
+          200000000
+        ],
+        "recurring_daily": false,
+        "recurring_weekly": false,
+        "recurring_monthly": false
+      },
+      "confidence_scores": {
+        "dex": 0.05,
+        "smartcontract": 0.2,
+        "p2p": 1.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "9h7L7s...XHi68b",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:32:58 UTC",
+      "last_interaction_date": "2025-03-05 10:32:58 UTC",
+      "total_volume_erg": 0.25
+    },
+    {
+      "address": "9gJJoSCfS17ygkPySGvvYWvHugU49ZJtqJGWvtzLyjhqVoHPgmZ",
+      "incoming_count": 0,
+      "outgoing_count": 2,
+      "total_volume_nano": 5300000,
+      "first_interaction": 1742307245009,
+      "last_interaction": 1742307245009,
+      "token_transfers": [
+        {
+          "name": "Dark Ergo Botz #1 (28c8...c18b)",
+          "id": "28c8ec4b03a88fcdfa004f229de5cca14beca41fe266047ae0463f22da43c18b"
+        },
+        {
+          "name": "Shark Botz #1 (43e8...856e)",
+          "id": "43e8803ca559976ad631d69807311f5476daaa1271efcbdfb4695e5ee0d8856e"
+        }
+      ],
+      "token_types": {
+        "nft": 3
+      },
+      "is_dex": false,
+      "is_smartcontract": false,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": null,
+      "related_addresses": [],
+      "time_patterns": {
+        "timestamps": [
+          1742324716677,
+          1742307245009
+        ],
+        "values": [
+          3200000,
+          2100000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.09,
+        "smartcontract": 0.2,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "9gJJoS...oHPgmZ",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-18 10:14:05 UTC",
+      "last_interaction_date": "2025-03-18 10:14:05 UTC",
+      "total_volume_erg": 0.0053
+    },
+    {
+      "address": "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",
+      "incoming_count": 1,
+      "outgoing_count": 1,
+      "total_volume_nano": 2000000000,
+      "first_interaction": 1741188778089,
+      "last_interaction": 1741188778089,
+      "token_transfers": [
+        {
+          "name": "Sigmanauts Mining DAO Proposal (6850...c4ad)",
+          "id": "685065346a3665873115d64aadfe82e10f07cfdc526148802aa3e0f5bcd2c4ad"
+        },
+        {
+          "name": "Sigmanauts Mining DAO Action (fad4...ddad)",
+          "id": "fad4c073aa6aa6e4e5e442f2a22cba81f24a7d1a1c165aafd3fe7343cd84ddad"
+        },
+        {
+          "name": "Paideia DAO (171c...e842)",
+          "id": "171c56d1aa54a6709bdadcc0f053e7a786411224a8f40111a6878549a3fae842"
+        }
+      ],
+      "token_types": {
+        "nft": 2,
+        "unknown": 4
+      },
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [],
+      "time_patterns": {
+        "timestamps": [
+          1741188778089,
+          1741188778089
+        ],
+        "values": [
+          1000000000,
+          1000000000
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "4Q3iJw...G5gzCY",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:32:58 UTC",
+      "last_interaction_date": "2025-03-05 10:32:58 UTC",
+      "total_volume_erg": 2.0
+    },
+    {
+      "address": "5vSUZRZbdVbnk4sJWjg2uhL94VZWRg4iatK9VgMChufzUgdihgvhR8yWSUEJKszzV7Vmi6K8hCyKTNhUaiP8p5ko6YEU9yfHpjVuXdQ4i5p4cRCzch6ZiqWrNukYjv7Vs5jvBwqg5hcEJ8u1eerr537YLWUoxxi1M4vQxuaCihzPKMt8NDXP4WcbN6mfNxxLZeGBvsHVvVmina5THaECosCWozKJFBnscjhpr3AJsdaL8evXAvPfEjGhVMoTKXAb2ZGGRmR8g1eZshaHmgTg2imSiaoXU5eiF3HvBnDuawaCtt674ikZ3oZdekqswcVPGMwqqUKVsGY4QuFeQoGwRkMqEYTdV2UDMMsfrjrBYQYKUBFMwsQGMNBL1VoY78aotXzdeqJCBVKbQdD3ZZWvukhSe4xrz8tcF3PoxpysDLt89boMqZJtGEHTV9UBTBEac6sDyQP693qT3nKaErN8TCXrJBUmHPqKozAg9bwxTqMYkpmb9iVKLSoJxG7MjAj72SRbcqQfNCVTztSwN3cRxSrVtz4p87jNFbVtFzhPg7UqDwNFTaasySCqM",
+      "incoming_count": 1,
+      "outgoing_count": 1,
+      "total_volume_nano": 72952588339684,
+      "first_interaction": 1741188523506,
+      "last_interaction": 1741188523506,
+      "token_transfers": [
+        {
+          "name": "ERG_Paideia_LP (879c...0544)",
+          "id": "879c71d7d9ad213024962824e7f6f225b282dfb818326b46e80e155a11a90544"
+        },
+        {
+          "name": "None (666b...8200)",
+          "id": "666be5df835a48b99c40a395a8aa3ea6ce39ede2cd77c02921d629b9baad8200"
+        },
+        {
+          "name": "Paideia (1fd6...d489)",
+          "id": "1fd6e032e8476c4aa54c18c1a308dce83940e8f4a28f576440513ed7326ad489"
+        }
+      ],
+      "token_types": {
+        "nft": 2,
+        "unknown": 2,
+        "governance": 2
+      },
+      "is_dex": true,
+      "is_smartcontract": false,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": "ErgoDEX",
+      "type": "DEX",
+      "related_addresses": [
+        "qzJHLE...EtBnKe"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1741188523506,
+          1741188523506
+        ],
+        "values": [
+          36471133396422,
+          36481454943262
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 1.0,
+        "smartcontract": 0.0,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "5vSUZR...sySCqM",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:28:43 UTC",
+      "last_interaction_date": "2025-03-05 10:28:43 UTC",
+      "total_volume_erg": 72952.588339684
+    },
+    {
+      "address": "qzJHLEUymMCAojtLHuMc6mUxoWjkCzAECwnq6kuNxyPQVs9DMQbeErWsUtYGRuczeHutraTKGY4jpegvkVzWGpXgCRuLcw545DDrqWrinb3mFfnD2neyY6UGTHLkj3Rs5koucSBad1MHwtaFHJwRYrE57pq9eyMQVJeQpoyDNVrcc8yrs9Pq6Mj7GZQxWWC91voviGX5gcdYBkZRDJL1tTemiNB1sA5617hkSDD5yvugH6gsVDwo2oitwUyFvnmdSgiQTvuKot34DjQKK1FVLCCBhrUKwK2UwPaZDxgwDKFieWvq68Re4bDGVSEFWGuoBD26ccn8qNEQokhRvXQpmX33Vxt12tbxjmvq4uzwVboEBzrAEZk4tYGvEo9bLBcosAj1jLsW2Z4bJu7Eb46qWZLNmksyzJmnKahKZLLqqDw1E7ZPTRwBvSgkQeQnDjGS211Vaw56P4bo1d5H63BYMeGvzwmNabeBgq2pURzzKvzCm8EsdWvemJhoBJzNA4Eruv6g9TrC6icaxs5rwWca792KCXFgn2XSCfREsk8pMSq5mTD1pFicd9bRr1jwno5JBtkEv9MmbKnmKezKbT6jx2f22Eps4Bxk7XTcGrC7Cbhc75BEZJnTG9nLbuU9GLJifqu2ybQBhfTMUz3su5ZceHQX9x8yYGJ7su385i1YAFCg7eAgad31ZpCYDtNEtBnKe",
+      "incoming_count": 1,
+      "outgoing_count": 1,
+      "total_volume_nano": 20657613680,
+      "first_interaction": 1741188474828,
+      "last_interaction": 1741188474828,
+      "token_transfers": [],
+      "token_types": {},
+      "is_dex": false,
+      "is_smartcontract": true,
+      "is_p2p": false,
+      "is_recurring": true,
+      "name": null,
+      "type": "Smart Contract",
+      "related_addresses": [
+        "5vSUZR...sySCqM"
+      ],
+      "time_patterns": {
+        "timestamps": [
+          1741188523506,
+          1741188474828
+        ],
+        "values": [
+          10328806840,
+          10328806840
+        ],
+        "recurring_daily": true,
+        "recurring_weekly": true,
+        "recurring_monthly": true
+      },
+      "confidence_scores": {
+        "dex": 0.0,
+        "smartcontract": 0.85,
+        "p2p": 0.0,
+        "recurring": 0.0,
+        "related_entity": 0.0
+      },
+      "formatted_address": "qzJHLE...EtBnKe",
+      "avg_days_between_interactions": 0.0,
+      "first_interaction_date": "2025-03-05 10:27:54 UTC",
+      "last_interaction_date": "2025-03-05 10:27:54 UTC",
+      "total_volume_erg": 20.65761368
+    }
+  ],
+  "total_interactions_found": 13,
+  "statistics": {
+    "total_transactions_analyzed": 20,
+    "unique_addresses": 71,
+    "total_incoming": 39,
+    "total_outgoing": 98,
+    "total_volume_nano": 83586940152449,
+    "total_volume_erg": 83586.940152449,
+    "first_tx_timestamp": 1741188474828,
+    "last_tx_timestamp": 1746289213345,
+    "token_type_counts": {
+      "unknown": 219,
+      "nft": 171,
+      "governance": 7,
+      "stablecoin": 2,
+      "utility": 10
+    },
+    "time_of_day_activity": {
+      "12-15": 6,
+      "9-12": 5,
+      "15-18": 9
+    },
+    "day_of_week_activity": {
+      "Saturday": 1,
+      "Thursday": 2,
+      "Wednesday": 4,
+      "Tuesday": 2,
+      "Monday": 11
+    },
+    "first_tx_date": "2025-03-05 10:27:54 UTC",
+    "last_tx_date": "2025-05-03 12:20:13 UTC"
+  },
+  "address_clustering": {
+    "total_clusters": 7,
+    "largest_cluster_size": 2,
+    "avg_cluster_size": 1.4285714285714286
+  }
+}

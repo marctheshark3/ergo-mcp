@@ -48,14 +48,15 @@ echo -e "${YELLOW}MCP_PORT: ${MCP_PORT}${NC}"
 echo -e "${YELLOW}MCPO_PORT: ${MCPO_PORT}${NC}"
 
 # Kill any existing processes
-pkill -f "mcpo" || true
-pkill -f "ergo_explorer" || true
+sudo pkill -f "mcpo" || true
+sudo pkill -f "ergo_explorer" || true
 
 # Wait a moment
 sleep 1
 
 # Start Ergo Explorer MCP server
 echo -e "${YELLOW}Starting Ergo Explorer MCP server on port ${MCP_PORT}...${NC}"
+
 ${PYTHON_CMD} -m ergo_explorer --port ${MCP_PORT} > ergo_explorer.log 2>&1 &
 ERGO_PID=$!
 
@@ -65,6 +66,7 @@ sleep 3
 # Start MCPO with subprocess configuration
 echo -e "${YELLOW}Starting MCPO on port ${MCPO_PORT}...${NC}"
 # Use the current directory instead of trying to cd to a non-existent path
+
 mcpo --port ${MCPO_PORT} --api-key "${MCPO_API_KEY}" -- ${PYTHON_CMD} -m ergo_explorer --port ${MCPO_SUBPROCESS_PORT} > mcpo.log 2>&1 &
 MCPO_PID=$!
 
